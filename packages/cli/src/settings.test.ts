@@ -6,6 +6,10 @@ import { join } from "node:path";
 import { parse } from "yaml";
 import { readSettings, SettingsError, writeSettings } from "./settings.js";
 import { EXIT, run } from "./cli.js";
+import { useTestEnv } from "./testkit.js";
+
+// root 가 legacyDir 를 찾으며 홈 폴더 ~/.sdd/ 를 본다. 진짜 홈 대신 임시 홈을 쓴다
+useTestEnv();
 
 const tmp = () => realpathSync(mkdtempSync(join(tmpdir(), "product-settings-")));
 
