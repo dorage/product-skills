@@ -6,6 +6,7 @@ import { findProduct } from "./find.js";
 import { inspect as inspectDir } from "./inspect.js";
 import { type SetupResult, settingsOnly } from "./scaffold.js";
 import { setupInternal } from "./setupInternal.js";
+import { setupExternal } from "./setupExternal.js";
 import { readSettings, SettingsError } from "./settings.js";
 import { atLeast } from "./version.js";
 
@@ -109,6 +110,8 @@ const setup: Command = {
     at: { type: "string" },
     "allow-nested": { type: "boolean" },
     "settings-only": { type: "boolean" },
+    repo: { type: "string", multiple: true },
+    "use-existing-repo": { type: "boolean" },
   },
   run(values, _positionals, ctx): SetupResult {
     const mode = oneOf("mode", values.mode, MODES);
@@ -126,7 +129,11 @@ const setup: Command = {
     }
     if (values["settings-only"] === true) return settingsOnly(ctx.cwd, mode);
     if (mode === "internal") return setupInternal(ctx.cwd, { at, allowNested });
-    throw new CliError("error", "외부 셋업은 아직 없다");
+    return setupExternal(ctx.cwd, {
+      repos: (values.repo as string[] | undefined) ?? [],
+      useExistingRepo: values["use-existing-repo"] === true,
+      allowNested,
+    });
   },
 };
 
