@@ -3,6 +3,7 @@ import { readFileSync, realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { findProduct } from "./find.js";
+import { readSettings, SettingsError } from "./settings.js";
 import { atLeast } from "./version.js";
 
 // 종료 코드 (design.md 「오류 처리」)
@@ -67,7 +68,19 @@ const root: Command = {
         "/product:setup",
       ]);
     }
-    return { productDir: found.productDir };
+    let settings;
+    try {
+      settings = readSettings(found.settingsFile);
+    } catch (e) {
+      if (e instanceof SettingsError) {
+        throw new CliError("settings", `${e.file}: ${e.reason}`, ["/product:setup"], {
+          productDir: found.productDir,
+          file: e.file,
+        });
+      }
+      throw e;
+    }
+    return { productDir: found.productDir, mode: settings.mode, root: settings.root };
   },
 };
 
