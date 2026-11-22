@@ -45,6 +45,11 @@ export function setupExternal(cwd: string, opts: ExternalOptions): SetupResult {
   const need: string[] = [];
   const extra: Record<string, unknown> = {};
   const reasons: string[] = [];
+  if (opts.repos.length === 0) {
+    // 요구사항 2 인수 조건 2: 주소를 하나 이상 받는다
+    need.push("repo");
+    reasons.push("리포 주소(--repo)가 없다");
+  }
   if (g.inside && g.hasCommits && !opts.useExistingRepo) {
     need.push("use-existing-repo");
     reasons.push(`${cwd} 는 커밋이 있는 리포다. 이 리포를 product 루트로 써도 되는지 정한다`);
@@ -57,7 +62,7 @@ export function setupExternal(cwd: string, opts: ExternalOptions): SetupResult {
   }
   if (need.length > 0) {
     const flags = [
-      ...opts.repos.map((r) => `--repo ${q(r)}`),
+      ...(opts.repos.length ? opts.repos.map((r) => `--repo ${q(r)}`) : ["--repo <리포 주소>"]),
       ...(opts.useExistingRepo || need.includes("use-existing-repo") ? ["--use-existing-repo"] : []),
       ...(opts.allowNested || need.includes("allow-nested") ? ["--allow-nested"] : []),
     ];

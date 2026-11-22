@@ -46,6 +46,8 @@ export interface Output {
   code: number;
   stdout: string;
   stderr: string;
+  // 출력과 같은 내용의 결과. 터미널 질문 갈래가 need 를 읽는다
+  body: Record<string, unknown>;
 }
 
 type Result = Record<string, unknown>;
@@ -166,7 +168,7 @@ const COMMANDS: Record<string, Command> = { root, inspect, setup };
 
 const human = (r: Result): string =>
   Object.entries(r)
-    .filter(([k]) => k !== "status")
+    .filter(([k, v]) => k !== "status" || v !== "ok")
     .map(([k, v]) => `${k}: ${typeof v === "string" ? v : JSON.stringify(v)}`)
     .join("\n");
 
@@ -214,7 +216,9 @@ export function run(argv: string[], cwd: string = process.cwd()): Output {
     });
     checkExpect(values.expect);
     if (!cmd) {
-      if (values.version === true) return { code: EXIT.ok, stdout: `${VERSION}\n`, stderr: "" };
+      if (values.version === true) {
+        return { code: EXIT.ok, stdout: `${VERSION}\n`, stderr: "", body: { status: "ok", version: VERSION } };
+      }
       throw new CliError("error", "명령이 없다", [
         `product ${Object.keys(COMMANDS).join("|")} [--json] [--expect <버전>]`,
       ]);
@@ -226,6 +230,7 @@ export function run(argv: string[], cwd: string = process.cwd()): Output {
       code,
       stdout: `${json ? JSON.stringify(result) : human(result)}\n`,
       stderr: "",
+      body: result,
     };
   } catch (e) {
     const err =
@@ -236,8 +241,96 @@ export function run(argv: string[], cwd: string = process.cwd()): Output {
       code: EXIT[err.status],
       stdout: json ? `${JSON.stringify(body)}\n` : "",
       stderr: `${text}\n`,
+      body,
     };
   }
+}
+
+// 요구사항 5 인수 조건 7: 터미널에서 옵션 없이 부르면 빠진 답을 묻고 옵션으로 붙여 다시 부른다.
+// 표준 입력이 터미널이 아니면 묻지 않고 need 를 그대로 낸다 (E24)
+type Ask = (question: string) => Promise<string>;
+
+const yes = (a: string) => /^(y|yes|예|네|ㅇ)$/i.test(a.trim());
+
+async function answer(need: string, body: Record<string, unknown>, ask: Ask): Promise<string[] | null> {
+  switch (need) {
+    case "mode": {
+      for (;;) {
+        const a = (
+          await ask(
+            "셋업 방식을 고르세요\n  external: 지금 폴더를 product 루트로 삼고 리포를 repos/ 아래 submodule 로 더한다\n  internal: 이 리포 안에 .product/ 를 만들어 커밋한다\n(external/internal): ",
+          )
+        ).trim();
+        if (a === "external" || a === "internal") return ["--mode", a];
+      }
+    }
+    case "repo": {
+      const repos: string[] = [];
+      for (;;) {
+        const a = (await ask(repos.length ? "리포 주소 (빈 줄이면 끝): " : "리포 주소: ")).trim();
+        if (a) repos.push(a);
+        else if (repos.length) return repos.flatMap((r) => ["--repo", r]);
+      }
+    }
+    case "at": {
+      for (;;) {
+        const a = (await ask(`리포 맨 위(${String(body.top)})와 지금 폴더 중 어디에 .product/ 를 만들까요 (top/here): `)).trim();
+        if (a === "top" || a === "here") return ["--at", a];
+      }
+    }
+    case "use-existing-repo":
+      return yes(await ask("이 리포를 product 루트로 쓸까요 (y/N): ")) ? ["--use-existing-repo"] : null;
+    case "allow-nested":
+      return yes(await ask(`위쪽에 product 폴더 ${String(body.ancestor)} 가 있습니다. 그래도 여기에 셋업할까요 (y/N): `))
+        ? ["--allow-nested"]
+        : null;
+    default:
+      return null;
+  }
+}
+
+export async function runInteractive(argv: string[], cwd: string, isTTY: boolean, ask: Ask): Promise<Output> {
+  let args = argv;
+  for (let round = 0; round < 10; round++) {
+    const out = run(args, cwd);
+    const need = out.body.need;
+    if (out.code !== EXIT.need || !isTTY || !Array.isArray(need)) return out;
+    if (typeof out.body.reason === "string") process.stderr.write(`${out.body.reason}\n`);
+    for (const n of need as string[]) {
+      const extra = await answer(n, out.body, ask);
+      if (extra === null) {
+        const body = { status: "stopped", reason: "셋업을 하지 않았다", next: [] };
+        return { code: EXIT.stopped, stdout: "", stderr: "셋업을 하지 않았다\n", body };
+      }
+      args = [...args, ...extra];
+    }
+  }
+  return run(args, cwd);
+}
+
+async function main(): Promise<void> {
+  const argv = process.argv.slice(2);
+  const isTTY = process.stdin.isTTY === true;
+  let out: Output;
+  if (isTTY) {
+    const { createInterface } = await import("node:readline/promises");
+    // 질문 하나마다 열고 닫는다. 열어 둔 채 git 을 돌리면 터미널이 raw 모드로 남아
+    // Ctrl-C 와 git 의 비밀번호 질문이 먹지 않는다
+    const ask: Ask = async (q) => {
+      const rl = createInterface({ input: process.stdin, output: process.stdout });
+      try {
+        return await rl.question(q);
+      } finally {
+        rl.close();
+      }
+    };
+    out = await runInteractive(argv, process.cwd(), true, ask);
+  } else {
+    out = run(argv);
+  }
+  process.stdout.write(out.stdout);
+  process.stderr.write(out.stderr);
+  process.exitCode = out.code;
 }
 
 // npm 전역 설치는 bin 을 심볼릭 링크로 걸어서 실제 경로로 비교한다
@@ -251,9 +344,4 @@ const isMain = (() => {
     return false;
   }
 })();
-if (isMain) {
-  const out = run(process.argv.slice(2));
-  process.stdout.write(out.stdout);
-  process.stderr.write(out.stderr);
-  process.exitCode = out.code;
-}
+if (isMain) void main();
