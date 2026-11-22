@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 import { readFileSync, realpathSync } from "node:fs";
+import { homedir } from "node:os";
+import { relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { findProduct } from "./find.js";
 import { inspect as inspectDir } from "./inspect.js";
+import { legacyDir } from "./legacy.js";
 import { type SetupResult, settingsOnly } from "./scaffold.js";
 import { setupInternal } from "./setupInternal.js";
 import { setupExternal } from "./setupExternal.js";
@@ -64,10 +67,17 @@ const GLOBAL_OPTIONS = {
 } as const satisfies Options;
 
 const root: Command = {
-  options: {},
-  run(_values, _positionals, ctx) {
-    const found = findProduct(ctx.cwd);
+  options: { from: { type: "string" } },
+  run(values, _positionals, ctx) {
+    // V2: 경로를 받으면 그 경로에서 찾고, product 폴더가 없어도 실패로 보지 않는다
+    const from = typeof values.from === "string" ? resolve(ctx.cwd, values.from) : undefined;
+    const start = from ?? ctx.cwd;
+    const legacy = legacyDir(start, homedir());
+    const found = findProduct(start);
     if (!found) {
+      if (from !== undefined) {
+        return { productDir: null, mode: null, root: null, inRepos: null, legacyDir: legacy };
+      }
       throw new CliError("notFound", `${ctx.cwd} 에서 위로 올라가도 .product/ 가 없다`, [
         "/product:setup",
       ]);
@@ -84,9 +94,23 @@ const root: Command = {
       }
       throw e;
     }
-    return { productDir: found.productDir, mode: settings.mode, root: settings.root };
+    const result: Result = {
+      productDir: found.productDir,
+      mode: settings.mode,
+      root: settings.root,
+      legacyDir: legacy,
+    };
+    if (from !== undefined) result.inRepos = inRepos(from, settings.mode, settings.root);
+    return result;
   },
 };
+
+// E15: 외부 셋업 product 루트의 repos/{이름}/ 아래면 그 이름
+function inRepos(path: string, mode: string, rootDir: string): string | null {
+  if (mode !== "external") return null;
+  const parts = relative(rootDir, path).split(sep);
+  return parts[0] === "repos" && parts[1] ? parts[1] : null;
+}
 
 const inspect: Command = {
   options: {},

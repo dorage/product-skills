@@ -66,6 +66,7 @@ test("root 는 찾은 product 폴더 옆 설정 파일의 mode 와 root 를 돌�
     productDir: join(dir, ".product"),
     mode: "external",
     root: dir,
+    legacyDir: null,
   });
 });
 
