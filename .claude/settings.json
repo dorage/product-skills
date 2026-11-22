@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "product-skills": {
+      "source": {
+        "source": "directory",
+        "path": "."
+      }
+    }
+  },
+  "enabledPlugins": {
+    "product@product-skills": true
+  }
+}
