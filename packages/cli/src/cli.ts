@@ -3,6 +3,7 @@ import { readFileSync, realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { findProduct } from "./find.js";
+import { inspect as inspectDir } from "./inspect.js";
 import { readSettings, SettingsError } from "./settings.js";
 import { atLeast } from "./version.js";
 
@@ -84,8 +85,15 @@ const root: Command = {
   },
 };
 
+const inspect: Command = {
+  options: {},
+  run(_values, _positionals, ctx) {
+    return { ...inspectDir(ctx.cwd) };
+  },
+};
+
 // 하위 명령은 여기에 더한다
-const COMMANDS: Record<string, Command> = { root };
+const COMMANDS: Record<string, Command> = { root, inspect };
 
 const human = (r: Result): string =>
   Object.entries(r)
