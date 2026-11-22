@@ -89,13 +89,36 @@
 
 ## 저장 위치
 
-`product:draft`·`product:design`·`product:flow`·`product:brief-dev`·`product:brief-nondev`·`product:task`·`product:bdd` 가 문서를 쓰는 자리다. 스펙을 리포 밖에 두는 것은 리포를 더럽히지 않고, 워크트리를 지워도 스펙이 남게 하려는 것이다.
+`product:draft`·`product:persona-review`·`product:design`·`product:flow`·`product:brief-dev`·`product:brief-nondev`·`product:task`·`product:bdd` 가 문서를 쓰는 자리다. 문서는 `/product:setup` 으로 셋업한 product 폴더(`.product/`) 안 기능 폴더에 모은다. 어느 폴더에서 스킬을 불러도 위로 가장 가까운 product 폴더 한 곳에 한 기능의 문서가 쌓이게 하려는 것이다.
 
-### 경로
+### product 폴더 찾기
 
-- `~/.sdd/{리포 폴더}/{YYYYmmddHHMMSS}_{요청내용}/` 한 폴더에 한 요청의 `requirements.md`·`design.md`·`flow.md`·`brief-dev.md`·`brief-nondev.md`·`tasks.md`·`scenarios.md`·`features/` 를 모은다
-    - 예: `~/.sdd/dotfiles/20261102143005_제휴카페-임직원-할인/requirements.md`
-- `{리포 폴더}`: `product:setup` 「이름 정하기」의 이름. `~/.sdd/{리포 폴더}/` 는 그 스킬의 「실행」 명령을 그대로 돌려 얻는다. 없으면 그 명령이 만든다
+문서를 쓰기 전에 아래 명령을 그대로 실행한다. 경로를 받았을 때도 실행한다(「폴더 고르기」).
+
+```bash
+if command -v product >/dev/null 2>&1; then
+  product root --json --expect "$(cat {플러그인 폴더}/cli-version)"; echo "EXIT $?"
+else
+  echo "NO_CLI"
+fi
+```
+
+- `{플러그인 폴더}`: 이 문서가 든 `references/` 의 위 폴더. 스킬이 이 문서를 읽을 때 쓴 `${CLAUDE_PLUGIN_ROOT}` 경로다
+- 경로를 받았으면 `product root` 뒤에 `--from {경로}` 를 붙인다. 아직 없는 파일 경로여도 된다
+
+결과는 아래로 가른다. `EXIT` 가 0 이 아니면 문서를 쓰지 않는다. 경로를 받은 갈래의 `EXIT 4` 만 예외다(「폴더 고르기」). 표준 출력의 JSON 은 실패해도 남는다.
+
+- `EXIT 0`: JSON 의 `productDir`(product 폴더), `mode`(`external` 외부 셋업, `internal` 내부 셋업), `legacyDir`(예전 보관 폴더 `~/.sdd/{리포 이름}/` 이 있으면 그 경로, 없으면 `null`)를 쓴다. `--from` 이면 `inRepos` 도 온다. `--from` 으로 찾은 곳에 product 폴더가 없으면 `productDir`·`mode` 가 `null` 이다
+- `NO_CLI`: "product CLI 가 없습니다. node 를 설치한 뒤 `/product:setup` 을 다시 부르세요" 한 줄
+- `EXIT 3`: "product 폴더가 없습니다. `/product:setup` 을 먼저 부르세요" 한 줄
+- `EXIT 4`: JSON `reason` 의 파일 경로와 문제를 한 줄로 보여 주고 "`/product:setup` 을 다시 부르세요" 한 줄
+- `EXIT 5`: "product CLI 가 플러그인이 기대하는 버전보다 낮습니다. `/product:setup` 을 다시 부르세요" 한 줄
+- 그 밖: JSON `reason` 한 줄
+
+### 기능 폴더
+
+- `{productDir}/features/{YYYYmmddHHMMSS}_{요청내용}/` 한 폴더에 한 요청의 `requirements.md`·`design.md`·`flow.md`·`brief-dev.md`·`brief-nondev.md`·`tasks.md`·`scenarios.md`·`features/` 를 모은다
+    - 예: `.product/features/20261102143005_제휴카페-임직원-할인/requirements.md`
 - `{YYYYmmddHHMMSS}`: 폴더를 만드는 순간의 로컬 시각. 같은 이름의 폴더가 이미 있으면 1초 뒤 시각으로 다시 만든다
 - `{요청내용}`: 설명을 알아보기 쉽게 줄인 한국어. 원문을 그대로 옮기지 않고 핵심 명사 위주로 줄인다
     - 공백은 `-` 로 바꾸고, 파일 이름에 못 쓰는 글자(`/ : ? * " < > |`)는 지운다. 50자 이내
@@ -104,13 +127,34 @@
 
 ### 폴더 고르기
 
-- 설명에 경로가 있다 → 그 경로. 폴더면 그 안의 각 스킬 파일
+- 설명에 경로가 있다 → product 폴더를 찾지 않고 그 경로에 쓴다. 폴더면 그 안의 각 스킬 파일
+    - 「product 폴더 찾기」를 `--from {경로}` 로 실행해 `mode` 만 읽는다. `mode` 가 `null` 이면 외부 셋업으로 본다
+    - `EXIT 4` 면 JSON `reason` 한 줄을 남기고 외부 셋업으로 보고 그 경로에 쓴다. 경로를 주는 것은 product 폴더 찾기가 틀릴 때 쓰는 비상 탈출구라서다. `NO_CLI`·`EXIT 5` 면 쓰지 않는다
+    - `inRepos` 가 리포 이름이면 쓰기 전에 "{경로}는 실제 리포 `repos/{inRepos}/` 안이라 리포지토리 관리자에게 보일 수 있습니다" 한 줄을 남기고 그대로 쓴다
 - 없으면
-    - `product:draft` → 새 폴더를 만든다
-    - `product:persona-review`·`product:design`·`product:flow`·`product:brief-dev`·`product:brief-nondev`·`product:task`·`product:bdd` → `~/.sdd/{리포 폴더}/` 의 폴더를 최신순 최대 4개로 `AskUserQuestion` 한 번에 보여 주고 고르게 한다. 첫 옵션이 가장 최근 폴더다
+    - `product:draft` → `{productDir}/features/` 아래에 새 기능 폴더를 만든다. `features/` 가 없으면 함께 만든다
+    - `product:persona-review`·`product:design`·`product:flow`·`product:brief-dev`·`product:brief-nondev`·`product:task`·`product:bdd` → `{productDir}/features/` 의 폴더를 최대 4개로 `AskUserQuestion` 한 번에 보여 주고 고르게 한다. 아래 명령의 순서대로 보여 주고, 첫 옵션이 가장 최근 폴더다
         - 폴더가 하나도 없으면 쓰지 않고 "`/product:draft` 를 먼저 실행하세요" 한 줄을 남긴다
+    - `legacyDir` 가 `null` 이 아니면 고르게 할 때(폴더가 없다는 줄을 남길 때도) "예전 기능은 `{legacyDir}` 에 있습니다. 경로를 주면 이어 씁니다" 한 줄을 함께 남긴다. 예전 보관 폴더 안의 파일은 옮기거나 지우지 않는다
+
+```bash
+d=$(find "{productDir}/features" -mindepth 1 -maxdepth 1 -type d ! -name '.*' -exec basename {} \; 2>/dev/null)
+{ printf '%s\n' "$d" | grep -E '^[0-9]{14}' | sort -r; printf '%s\n' "$d" | grep -vE '^[0-9]{14}' | grep . | sort; } | head -n 4
+```
+
+이름 앞 14자리 시각의 내림차순이 최근 순서다. 이름이 14자리 숫자로 시작하지 않는 폴더는 맨 뒤에 놓는다.
+
 - 쓰기 전에 채팅에 "{경로}에 씁니다" 한 줄을 남긴다. 경로가 정해지기 전에는 파일을 쓰지 않는다
 - 같은 파일이 이미 있으면 덮어쓰기 전에 읽고, 갱신인지 새 파일인지 한 번 묻는다
+
+### 내부 셋업 문서에 쓰지 않을 것
+
+「product 폴더 찾기」의 `mode` 가 `internal` 이면 문서는 리포에 커밋되어 product 를 설치하지 않은 팀원도 읽는다. 아래는 문서에 쓰지 않고 채팅에만 남긴다.
+
+- 개인 설정: 사용자 전역 지시(`~/.claude/` 아래 파일), 설치한 플러그인과 스킬, 개인 git 설정
+- 이 컴퓨터에서 확인한 사실: 홈 폴더 아래 경로, 이 컴퓨터에 깔린 도구와 버전, 리포 밖 폴더를 본 결과
+
+리포 안 코드 경로와 리포 안에서 돌린 명령 결과는 팀원도 다시 확인할 수 있어서 문서에 써도 된다.
 
 ## 윤문
 
