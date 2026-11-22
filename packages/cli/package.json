@@ -1,0 +1,25 @@
+{
+  "name": "@dorage/product",
+  "version": "0.1.0",
+  "description": "product 플러그인의 셋업과 product 폴더 찾기를 맡는 CLI",
+  "type": "module",
+  "bin": {
+    "product": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && chmod +x dist/cli.js"
+  },
+  "dependencies": {
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.0",
+    "typescript": "~5.9.3"
+  }
+}

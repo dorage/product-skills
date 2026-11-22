@@ -51,7 +51,8 @@ flowchart TD
     T16 --> T17
     classDef done fill:#1f6feb,stroke:#1f6feb,color:#ffffff
     classDef todo fill:#cfe2ff,stroke:#1f6feb,color:#0b1f44
-    class T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17 todo
+    class T1 done
+    class T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16,T17 todo
 ```
 
 > 진행 규칙: 작업 하나를 끝내 커밋하면, 그 노드를 `todo` 줄에서 `done` 줄로 옮기고 그 작업의 체크박스를 체크한다. 노드가 0개가 된 `class` 줄은 지운다. 화살표로 이어지지 않은 작업은 동시에 진행해도 된다.
@@ -60,7 +61,7 @@ flowchart TD
 
 ### T1 워킹 스켈레톤: product root 가 .product 를 찾는다
 
-- [ ] 완료
+- [x] 완료
 - 선행: 없음
 - 가리키는 곳: design.md 컴포넌트 `packages/cli/` 패키지, `cli.ts`, `find.ts`, 리포 `.gitignore`, 요구사항 5 인수 조건 1 (패키지 자리)
 - 바꿀 파일: `packages/cli/package.json` (새), `packages/cli/tsconfig.json` (새), `packages/cli/src/cli.ts` (새), `packages/cli/src/find.ts` (새), `packages/cli/src/find.test.ts` (새), `.gitignore`
