@@ -4,7 +4,7 @@
 
 ```bash
 # 리포 루트에서
-npx tsx claude-plugins/sdd/evals/run.ts
+npx tsx plugins/sdd/evals/run.ts
 ```
 
 ## 무엇을 보는가
@@ -49,10 +49,10 @@ npx tsx claude-plugins/sdd/evals/run.ts
 
 ### 처음 한 번 (기준 만들기)
 
-- `npx tsx claude-plugins/sdd/evals/run.ts --runs 1` 로 한 번 돌려 본다. 기준이 없어서 비교 없이 돌리기만 한다
-- `claude-plugins/sdd/evals/results/{버전}-{커밋}/runs/{case}/run-1/out/` 의 결과물과 표를 읽고, 떨어진 채점기가 스킬 잘못인지 채점기 잘못인지 가른다. 채점기 잘못이면 case.yaml 을 고친다
-- 만족하면 `npx tsx claude-plugins/sdd/evals/run.ts --save-baseline` 으로 실행 3번짜리 기준을 저장한다
-- `claude-plugins/sdd/evals/baseline/current/` 을 커밋한다
+- `npx tsx plugins/sdd/evals/run.ts --runs 1` 로 한 번 돌려 본다. 기준이 없어서 비교 없이 돌리기만 한다
+- `plugins/sdd/evals/results/{버전}-{커밋}/runs/{case}/run-1/out/` 의 결과물과 표를 읽고, 떨어진 채점기가 스킬 잘못인지 채점기 잘못인지 가른다. 채점기 잘못이면 case.yaml 을 고친다
+- 만족하면 `npx tsx plugins/sdd/evals/run.ts --save-baseline` 으로 실행 3번짜리 기준을 저장한다
+- `plugins/sdd/evals/baseline/current/` 을 커밋한다
 
 ### 패치 모드와 전체 모드
 
@@ -74,13 +74,13 @@ npx tsx claude-plugins/sdd/evals/run.ts
 - `benchmark/eval-{i}/new_skill/run-{n}/`, `old_skill/run-{n}/`: `grading.json`(채점기 결과)과 `outputs/`(결과물)
 - `benchmark/blind/eval-{i}/run-{n}/A`, `B`: 어느 쪽이 새 버전인지 감춘 사본. 정답표는 `blind/key.json` 이고 비교가 끝날 때까지 열지 않는다
 - 자리마다 skill-creator 의 `agents/comparator.md` 를 따르는 하위 에이전트가 A·B 를 비교해 `comparison.json` 을 쓴다
-- `npx tsx claude-plugins/sdd/evals/compare.ts blind <benchmark 폴더>` 로 승패를 센다. 새 버전 승 수가 패 수 이상이면 통과 (4:4 통과, 3:5 회귀). 비긴 것은 세지 않는다
+- `npx tsx plugins/sdd/evals/compare.ts blind <benchmark 폴더>` 로 승패를 센다. 새 버전 승 수가 패 수 이상이면 통과 (4:4 통과, 3:5 회귀). 비긴 것은 세지 않는다
 - skill-creator 폴더에서 `uv run python -m scripts.aggregate_benchmark <benchmark 폴더> --skill-name sdd` 로 점수 요약(`benchmark.json`, `benchmark.md`)을 만든다
 
 ### 테스트
 
 ```bash
-npx tsx --test claude-plugins/sdd/evals/*.test.ts
+npx tsx --test plugins/sdd/evals/*.test.ts
 ```
 
 ## 첫 실제 실행에서 확인할 가정
