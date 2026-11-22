@@ -1,0 +1,14 @@
+{
+  "name": "product-skills",
+  "description": "제품을 만드는 데 쓰는 역할별(PM·디자인·개발) Claude Code 플러그인 묶음. 필요한 플러그인만 골라 설치한다",
+  "owner": {
+    "name": "dorage"
+  },
+  "plugins": [
+    {
+      "name": "sdd",
+      "source": "./plugins/sdd",
+      "description": "스펙 주도 개발 스킬 묶음 — /sdd:draft 요구사항, /sdd:persona-review 참여자별 검토, /sdd:design 설계, /sdd:flow 화면흐름, /sdd:task 구현 계획, /sdd:bdd Gherkin 시나리오, /sdd:brief-dev·/sdd:brief-nondev 기획 문서, /sdd:quick 채팅 스펙, /sdd:setup 준비"
+    }
+  ]
+}
