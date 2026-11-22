@@ -51,8 +51,8 @@ flowchart TD
     T16 --> T17
     classDef done fill:#1f6feb,stroke:#1f6feb,color:#ffffff
     classDef todo fill:#cfe2ff,stroke:#1f6feb,color:#0b1f44
-    class T1,T2,T3,T4,T5,T6,T7,T8,T9,T10 done
-    class T11,T12,T13,T14,T15,T16,T17 todo
+    class T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T12 done
+    class T11,T13,T14,T15,T16,T17 todo
 ```
 
 > 진행 규칙: 작업 하나를 끝내 커밋하면, 그 노드를 `todo` 줄에서 `done` 줄로 옮기고 그 작업의 체크박스를 체크한다. 노드가 0개가 된 `class` 줄은 지운다. 화살표로 이어지지 않은 작업은 동시에 진행해도 된다.
@@ -194,7 +194,7 @@ flowchart TD
 
 ### T12 setup 스킬 다시 쓰기
 
-- [ ] 완료
+- [x] 완료
 - 선행: T2, T9, T10
 - 가리키는 곳: 요구사항 1 인수 조건 1·2·5·6·8, 요구사항 5 인수 조건 1~8, design.md 컴포넌트 setup 스킬·`cli-version`, design.md 결정 S4, design.md 오류 E17~E20
 - 바꿀 파일: `plugins/product/skills/setup/SKILL.md`, `plugins/product/cli-version` (새)
