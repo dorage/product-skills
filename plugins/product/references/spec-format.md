@@ -169,15 +169,16 @@ d=$(find "{productDir}/features" -mindepth 1 -maxdepth 1 -type d ! -name '.*' -e
 
 ### 부르는 법
 
-- `cp {파일} {스펙 폴더}/.{파일 이름}.before` 로 원본을 남긴다
+- `cd {기능 폴더}` 로 기능 폴더로 옮겨 간다. humanize-korean 은 지금 폴더 아래에 작업 파일을 만들기 때문에, 작업 파일이 product 폴더 안에만 생기게 하려는 것이다
+- `cp {파일} {기능 폴더}/.{파일 이름}.before` 로 원본을 남긴다
 - `Skill(skill="humanize-korean:humanize-korean")` 를 부르고, args 에 아래를 넘긴다
     - 입력 파일 경로
     - 강도 "가볍게". 스펙은 고칠 곳이 적은 글이라 과윤문을 막는 가벼운 경로가 맞다
     - 장르 `report`
     - 건드리지 않을 것: 헤딩 줄, `@` 마커와 괄호 속 출처, 결정 ID(`A1`·`S2`)와 요구사항 번호, EARS 키워드(`THE System`·`SHALL`·`WHEN`·`WHILE`·`IF`·`THEN`), 표의 행과 열, 코드 블록과 mermaid, 백틱 안 글자, 경로, 숫자와 날짜, 체크박스
 - humanize-korean 이 `Agent` 로 부르는 에이전트(`humanize-korean:humanize-monolith`·`humanize-diagnostician`·`humanize-finalizer`)는 모두 `model: "sonnet"`, `effort: "low"` 를 넘겨 부른다. 에이전트 정의의 모델 대신 이 값을 쓴다. 문장만 다듬는 가벼운 일이라 sonnet low 로 충분하고, haiku 는 이 계정에서 꺼 두었다
-- 결과 `final.md` 에서 요약 블록과 끝의 빈 줄을 지운다. 이 명령으로 `final.md` 자체를 고친다
-    - `perl -0pi -e 's/\n*<!-- HUMANIZE-SUMMARY.*?-->\s*/\n/s' _workspace/{run_id}/final.md`
+- 결과 `final.md` 에서 요약 블록과 끝의 빈 줄을 지운다. 이 명령으로 `final.md` 자체를 고친다. `{작업 폴더}` 는 「작업 폴더 치우기」에서 `_workspace/{run_id}/` 를 찾은 폴더다
+    - `perl -0pi -e 's/\n*<!-- HUMANIZE-SUMMARY.*?-->\s*/\n/s' {작업 폴더}/_workspace/{run_id}/final.md`
 
 ### 덮어쓰기 전 검사
 
@@ -198,7 +199,9 @@ diff <(keep {원본}) <(keep {윤문본}) && echo SAME || echo DIFF
 
 ### 작업 폴더 치우기
 
-humanize-korean 은 지금 폴더 아래 `_workspace/{run_id}/` 에 작업 파일을 남긴다. 리포를 더럽히지 않도록 끝나면 옮긴다.
+humanize-korean 은 지금 폴더 아래 `_workspace/{run_id}/` 에 작업 파일을 남긴다. `cd` 가 다음 명령까지 이어지지 않으면 세션 폴더(Claude Code 를 연 폴더)에 생긴다. 리포를 더럽히지 않도록 끝나면 기능 폴더로 모은다.
 
-- `mv _workspace/{run_id} {스펙 폴더}/_humanize/{run_id}` 로 옮긴다. `01_input.txt` 가 윤문 전 원문으로 남는다
-- `_workspace/` 가 비었으면 `rmdir _workspace` 로 지운다. 다른 run 이 남아 있으면 그대로 둔다
+- `{작업 폴더}`: `{기능 폴더}/_workspace/{run_id}/` 가 있으면 기능 폴더, 없으면 세션 폴더다. 두 곳 다 없으면 옮기지 않고 끝맺음에 "윤문 작업 파일을 찾지 못했습니다" 한 줄을 붙인다
+- `mv {작업 폴더}/_workspace/{run_id} {기능 폴더}/_humanize/{run_id}` 로 옮긴다. `01_input.txt` 가 윤문 전 원문으로 남는다
+- `{작업 폴더}/_workspace/` 가 비었으면 `rmdir {작업 폴더}/_workspace` 로 지운다. 다른 run 이 남아 있으면 그대로 둔다
+- 「부르는 법」에서 옮겨 간 지금 폴더가 남아 있을 수 있으니 `cd {세션 폴더}` 로 돌아온다
