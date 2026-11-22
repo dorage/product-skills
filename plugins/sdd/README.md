@@ -2,6 +2,10 @@
 
 스펙 주도 개발(SDD) 스킬 묶음이다.
 
+```
+/plugin install sdd --marketplace dorage/product-skills
+```
+
 - `/sdd:draft` — 구현 전 요구사항 문서(requirements.md)
 - `/sdd:persona-review` — requirements.md 의 참여자마다 에이전트를 띄워 빠진 과정을 찾아 같은 문서에 보강. 참여자가 확정되면 draft 가 부른다
 - `/sdd:design` — requirements.md 를 받아 설계 문서(design.md)
@@ -23,8 +27,8 @@
 - `.claude-plugin/plugin.json` 의 `version` 을 올린다
     - 문장만 고쳤으면 셋째 자리 (0.1.0 → 0.1.1)
     - 스킬을 더하거나 빼거나 이름을 바꿨으면 둘째 자리 (0.1.1 → 0.2.0)
-- `/plugin update sdd@dotfiles` 를 실행하고 새 세션을 연다
+- `/plugin update sdd@product-skills` 를 실행하고 새 세션을 연다
 
 ## 평가
 
-스킬을 고치거나 버전을 올렸으면 `npx tsx claude-plugins/sdd/evals/run.ts` 로 스킬마다 결과물이 포맷 규칙을 지키는지 재고, 이전 버전보다 나빠졌는지 확인한다. 돌리는 법과 판정 규칙은 [evals/README.md](evals/README.md) 에 있다.
+스킬을 고치거나 버전을 올렸으면 `npx tsx plugins/sdd/evals/run.ts` 로 스킬마다 결과물이 포맷 규칙을 지키는지 재고, 이전 버전보다 나빠졌는지 확인한다. 돌리는 법과 판정 규칙은 [evals/README.md](evals/README.md) 에 있다.

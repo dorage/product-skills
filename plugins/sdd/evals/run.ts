@@ -1,7 +1,7 @@
 // sdd 플러그인 평가를 돌리고, 이전 버전과 비교해 회귀를 찾는다.
 //
 // 사용법 (리포 루트에서)
-//   npx tsx claude-plugins/sdd/evals/run.ts [--base <commit>] [--save-baseline] [--runs N] [-j N] [--case <glob>]
+//   npx tsx plugins/sdd/evals/run.ts [--base <commit>] [--save-baseline] [--runs N] [-j N] [--case <glob>]
 //
 // - 지금 버전은 .claude-plugin/plugin.json, 이전 버전은 baseline/current/meta.json 에서 읽는다
 // - 셋째 자리만 바뀌면 패치 모드: 지금 버전만 돌리고 baseline/current/aggregate.json 과 비교한다
