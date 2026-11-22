@@ -3,6 +3,7 @@ import { readFileSync, realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { findProduct } from "./find.js";
+import { atLeast } from "./version.js";
 
 // 종료 코드 (design.md 「오류 처리」)
 export const EXIT = {
@@ -40,17 +41,35 @@ export interface Output {
 }
 
 type Result = Record<string, unknown>;
-type Command = (args: string[], ctx: { cwd: string }) => Result;
-
-function root(_args: string[], ctx: { cwd: string }): Result {
-  const found = findProduct(ctx.cwd);
-  if (!found) {
-    throw new CliError("notFound", `${ctx.cwd} 에서 위로 올라가도 .product/ 가 없다`, [
-      "/product:setup",
-    ]);
-  }
-  return { productDir: found.productDir };
+type Options = NonNullable<Parameters<typeof parseArgs>[0]>["options"];
+type Values = Record<string, string | boolean | string[] | boolean[] | undefined>;
+interface Ctx {
+  cwd: string;
 }
+interface Command {
+  options: Options;
+  run(values: Values, positionals: string[], ctx: Ctx): Result;
+}
+
+// 모든 명령이 받는 옵션
+const GLOBAL_OPTIONS = {
+  json: { type: "boolean" },
+  version: { type: "boolean" },
+  expect: { type: "string" },
+} as const satisfies Options;
+
+const root: Command = {
+  options: {},
+  run(_values, _positionals, ctx) {
+    const found = findProduct(ctx.cwd);
+    if (!found) {
+      throw new CliError("notFound", `${ctx.cwd} 에서 위로 올라가도 .product/ 가 없다`, [
+        "/product:setup",
+      ]);
+    }
+    return { productDir: found.productDir };
+  },
+};
 
 // 하위 명령은 여기에 더한다
 const COMMANDS: Record<string, Command> = { root };
@@ -61,30 +80,56 @@ const human = (r: Result): string =>
     .map(([k, v]) => `${k}: ${typeof v === "string" ? v : JSON.stringify(v)}`)
     .join("\n");
 
-export function run(argv: string[], cwd: string = process.cwd()): Output {
-  let json = false;
-  try {
-    const { values, positionals } = parseArgs({
-      args: argv,
-      options: {
-        json: { type: "boolean" },
-        version: { type: "boolean" },
-      },
-      allowPositionals: true,
-      strict: false,
-    });
-    json = values.json === true;
-    if (values.version === true && positionals.length === 0) {
-      return { code: EXIT.ok, stdout: `${VERSION}\n`, stderr: "" };
+// 값을 받는 공통 옵션을 건너뛰고 처음 나오는 옵션 아닌 낱말을 하위 명령 이름으로 본다
+function commandIndex(argv: string[]): number {
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    if (a === "--expect") {
+      i++;
+      continue;
     }
-    const [name, ...rest] = positionals;
-    const cmd = name ? COMMANDS[name] : undefined;
-    if (!cmd) {
-      throw new CliError("error", `모르는 명령: ${name ?? "(없음)"}`, [
-        `product ${Object.keys(COMMANDS).join("|")} [--json]`,
+    if (!a.startsWith("-")) return i;
+  }
+  return -1;
+}
+
+function checkExpect(expect: unknown): void {
+  if (typeof expect !== "string") return;
+  if (!atLeast(VERSION, expect)) {
+    throw new CliError(
+      "version",
+      `product CLI ${VERSION} 가 기대 버전 ${expect} 보다 낮다`,
+      ["/product:setup"],
+      { version: VERSION, expect },
+    );
+  }
+}
+
+export function run(argv: string[], cwd: string = process.cwd()): Output {
+  const json = argv.includes("--json");
+  try {
+    const at = commandIndex(argv);
+    const name = at >= 0 ? argv[at] : undefined;
+    const cmd = name !== undefined ? COMMANDS[name] : undefined;
+    if (name !== undefined && !cmd) {
+      throw new CliError("error", `모르는 명령: ${name}`, [
+        `product ${Object.keys(COMMANDS).join("|")} [--json] [--expect <버전>]`,
       ]);
     }
-    const result = { status: "ok", ...cmd(rest, { cwd }) };
+    const { values, positionals } = parseArgs({
+      args: at >= 0 ? [...argv.slice(0, at), ...argv.slice(at + 1)] : argv,
+      options: { ...GLOBAL_OPTIONS, ...cmd?.options },
+      allowPositionals: true,
+      strict: true,
+    });
+    checkExpect(values.expect);
+    if (!cmd) {
+      if (values.version === true) return { code: EXIT.ok, stdout: `${VERSION}\n`, stderr: "" };
+      throw new CliError("error", "명령이 없다", [
+        `product ${Object.keys(COMMANDS).join("|")} [--json] [--expect <버전>]`,
+      ]);
+    }
+    const result = { status: "ok", ...cmd.run(values as Values, positionals, { cwd }) };
     return {
       code: EXIT.ok,
       stdout: `${json ? JSON.stringify(result) : human(result)}\n`,
