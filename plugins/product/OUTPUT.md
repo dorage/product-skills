@@ -4,10 +4,10 @@ product 명령이 남기는 결과물과, 결과물끼리 무엇을 읽는지 �
 
 ## 어디에 남는가
 
-`/product:quick` 을 뺀 모든 결과물은 요청 하나당 보관 폴더 하나에 모인다. 경로를 정하는 규칙은 `references/spec-format.md` 「저장 위치」 한 곳에 있다.
+`/product:quick` 을 뺀 모든 결과물은 요청 하나당 기능 폴더 하나에 모인다. 기능 폴더는 `/product:setup` 으로 셋업한 product 폴더(`.product/`)의 `features/` 아래에 있다. 경로를 정하는 규칙은 `references/spec-format.md` 「저장 위치」 한 곳에 있다.
 
 ```text
-~/.sdd/{리포 폴더}/{YYYYmmddHHMMSS}_{요청내용}/
+{product 폴더}/features/{YYYYmmddHHMMSS}_{요청내용}/
   requirements.md          # 맨 끝 「참여자별 검토 기록」은 /product:persona-review 가 쓴다
   design.md
   flow.md

@@ -6,7 +6,7 @@
 /plugin install product --marketplace dorage/product-skills
 ```
 
-예전 이름은 `sdd` 다(0.10.0 에서 바꿈). `sdd@product-skills` 나 `sdd@dotfiles` 가 설치되어 있으면 `/plugin uninstall` 로 지운 뒤 위 명령으로 설치한다. 문서 보관 폴더 `~/.sdd/` 는 그대로 쓴다.
+예전 이름은 `sdd` 다(0.10.0 에서 바꿈). `sdd@product-skills` 나 `sdd@dotfiles` 가 설치되어 있으면 `/plugin uninstall` 로 지운 뒤 위 명령으로 설치한다. 0.11.0 부터 문서는 `~/.sdd/` 대신 `/product:setup` 으로 셋업한 product 폴더(`.product/`)에 쌓인다. 예전 `~/.sdd/` 문서는 옮기거나 지우지 않고, 경로를 주면 이어 쓴다.
 
 - `/product:draft` — 구현 전 요구사항 문서(requirements.md)
 - `/product:persona-review` — requirements.md 의 참여자마다 에이전트를 띄워 빠진 과정을 찾아 같은 문서에 보강. 참여자가 확정되면 draft 가 부른다
@@ -17,7 +17,7 @@
 - `/product:brief-nondev` — requirements.md 를 비개발자도 읽게 바꾼 기획 문서(brief-nondev.md)
 - `/product:quick` — 작은 작업의 스펙과 설계를 채팅 답 하나로
 - `/product:bdd` — requirements.md 경로를 주거나 requirements.md 만 있으면 정해진 인수 조건을 scenarios.md 의 gherkin 코드 블록으로(미결은 「미결 사항」에), 「완성」 design.md 도 있으면 E2E·통합 인수 조건을 Gherkin 시나리오(features/*.feature)
-- `/product:setup` — `~/.sdd/{리포지토리 이름}/` 보관 폴더와 윤문 플러그인(`humanize-korean@im-not-ai`) 준비
+- `/product:setup` — 리포지토리 외부 셋업(지금 폴더를 product 루트로 삼고 리포를 `repos/` 아래 submodule 로)과 내부 셋업(리포 안 `.product/` 를 커밋) 중 하나로 product 폴더를 만든다. product CLI(`npm i -g @dorage/product`)와 윤문 플러그인(`humanize-korean@im-not-ai`)도 준비한다
 
 문서를 쓰는 아홉 스킬이 함께 따르는 공용 포맷(결정·마커·답 반영·저장 위치·윤문)은 `references/spec-format.md` 한 곳에 있다. 단계마다 결과물 모양(절 구성·템플릿·완성 조건)은 `references/{스킬 이름}.md` (`draft`·`persona-review`·`design`·`flow`·`task`·`quick`·`bdd`)에 있고, 두 brief 스킬의 변환 규칙은 `references/brief-format.md` 에 있다. SKILL.md 에는 쓰는 과정만 둔다.
 
