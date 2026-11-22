@@ -4,6 +4,8 @@ import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { findProduct } from "./find.js";
 import { inspect as inspectDir } from "./inspect.js";
+import { type SetupResult, settingsOnly } from "./scaffold.js";
+import { setupInternal } from "./setupInternal.js";
 import { readSettings, SettingsError } from "./settings.js";
 import { atLeast } from "./version.js";
 
@@ -92,8 +94,44 @@ const inspect: Command = {
   },
 };
 
+const MODES = ["external", "internal"] as const;
+const PLACES = ["top", "here"] as const;
+
+function oneOf<T extends string>(name: string, value: unknown, allowed: readonly T[]): T | undefined {
+  if (value === undefined) return undefined;
+  if (typeof value === "string" && (allowed as readonly string[]).includes(value)) return value as T;
+  throw new CliError("error", `--${name} 는 ${allowed.join("·")} 중 하나다: ${String(value)}`);
+}
+
+const setup: Command = {
+  options: {
+    mode: { type: "string" },
+    at: { type: "string" },
+    "allow-nested": { type: "boolean" },
+    "settings-only": { type: "boolean" },
+  },
+  run(values, _positionals, ctx): SetupResult {
+    const mode = oneOf("mode", values.mode, MODES);
+    const at = oneOf("at", values.at, PLACES);
+    const allowNested = values["allow-nested"] === true;
+    if (mode === undefined) {
+      return {
+        status: "need",
+        mode: null,
+        productDir: null,
+        reason: "셋업 방식(--mode external|internal)이 없다",
+        need: ["mode"],
+        next: ["product setup --mode external --repo <리포 주소>", "product setup --mode internal"],
+      };
+    }
+    if (values["settings-only"] === true) return settingsOnly(ctx.cwd, mode);
+    if (mode === "internal") return setupInternal(ctx.cwd, { at, allowNested });
+    throw new CliError("error", "외부 셋업은 아직 없다");
+  },
+};
+
 // 하위 명령은 여기에 더한다
-const COMMANDS: Record<string, Command> = { root, inspect };
+const COMMANDS: Record<string, Command> = { root, inspect, setup };
 
 const human = (r: Result): string =>
   Object.entries(r)
@@ -151,8 +189,10 @@ export function run(argv: string[], cwd: string = process.cwd()): Output {
       ]);
     }
     const result = { status: "ok", ...cmd.run(values as Values, positionals, { cwd }) };
+    // 셋업 결과는 status 로 갈래를 알린다. done·already·ok 는 0, 나머지는 「오류 처리」 종료 코드
+    const code = (EXIT as Record<string, number>)[result.status] ?? EXIT.ok;
     return {
-      code: EXIT.ok,
+      code,
       stdout: `${json ? JSON.stringify(result) : human(result)}\n`,
       stderr: "",
     };
