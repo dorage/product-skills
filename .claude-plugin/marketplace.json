@@ -9,6 +9,11 @@
       "name": "product",
       "source": "./plugins/product",
       "description": "스펙 주도 개발 스킬 묶음 — /product:draft 요구사항, /product:persona-review 참여자별 검토, /product:design 설계, /product:flow 화면흐름, /product:task 구현 계획, /product:bdd Gherkin 시나리오, /product:brief-dev·/product:brief-nondev 기획 문서, /product:quick 채팅 스펙, /product:setup 준비"
+    },
+    {
+      "name": "report",
+      "source": "./plugins/report",
+      "description": "보고 자료 스킬 묶음 — /report:presentation 가로 16:9 발표 자료 PDF. 스킬이 따르는 원칙 문서는 플러그인 안 principles/ 에 있다"
     }
   ]
 }
