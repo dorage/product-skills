@@ -66,7 +66,7 @@ description: product:draft 의 요구사항 문서(requirements.md)를 받아, p
 - 노드마다 `:::asis`·`:::add`·`:::mod` 가 붙었는지, 흐름도마다 `classDef` 세 줄이 있는지 본다
 - mermaid-cli 로 문서를 그려 본다. 오류가 나면 고치고 다시 그린다
     - `npx -y -p @mermaid-js/mermaid-cli@11.4.2 mmdc -i {flow.md} -o {스크래치 폴더}/flow-check.md`. 버전을 고정한 것은 최신 버전이 브라우저(chrome-headless-shell)를 따로 깔아야 돌아가기 때문이다
-    - 만들어진 SVG 는 스크래치 폴더에만 두고 스펙 폴더에 남기지 않는다
+    - 만들어진 SVG 는 스크래치 폴더에만 두고 기능 폴더에 남기지 않는다
     - mermaid-cli 를 돌릴 수 없으면(네트워크, 브라우저 없음) 끝맺음에 "흐름도를 그려 보지 못했습니다" 한 줄을 붙인다
 
 ## 답 반영

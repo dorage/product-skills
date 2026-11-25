@@ -10,93 +10,32 @@
 
 ### 열린 결정
 
-#### S 배포와 버전
-
-- **S1. CLI 를 npm 에 낼 때 마스터가 손으로 낼지, 태그를 push 하면 자동으로 낼지** ->
-    - 예시: CLI 0.1.0 을 낼 때 a안은 마스터가 `packages/cli/` 에서 `npm publish --access public` 을 치고 2단계 인증 번호를 넣는다. b안은 `cli-v0.1.0` 태그를 push 하면 GitHub Actions 가 리포 비밀값 `NPM_TOKEN` 으로 낸다
-    - a. 손 배포 — 준비할 것이 없고 npm 토큰이 리포 밖에 있다. 내는 것을 잊으면 setup 이 E19 로 멈춘다
-    - b. 태그 배포 — 매번 같은 순서로 낸다. 워크플로 파일 1개와 npm 자동화 토큰이 필요하고, 토큰이 새면 다른 사람이 새 버전을 낼 수 있다
-    - 추천: @초안 a안 — CLI 는 `cli-version` 을 올릴 때만 내서 배포가 드물다. 한 달에 두 번을 넘으면 b안으로 바꾼다
-    - 걸린 곳: 안전망 단계 배포, 컴포넌트 설계 `packages/cli/` 패키지
-- *S2. CLI 코드는 이 리포 `packages/cli/` 에 둔다* ->
-    - 적용한 안: a. 같은 리포 — 플러그인과 CLI 를 PR 하나로 함께 고친다. 마켓플레이스 설치는 `plugins/product/` 만 복사하므로 CLI 코드는 플러그인 캐시에 들어가지 않는다
-    - 대안: b. CLI 전용 리포 — 배포 이력이 따로 남지만 기대 버전을 올릴 때 PR 이 두 리포로 나뉜다
-    - 걸린 곳: 컴포넌트 설계 `packages/cli/` 패키지, 리포 `.gitignore`
-- *S3. CLI 는 TypeScript 를 `tsc` 로 `dist/` 에 빌드한 JS 로 낸다* ->
-    - 적용한 안: a. 빌드한 JS — 설치한 컴퓨터에 tsx 가 없어도 돈다. node 는 `node_modules` 안의 `.ts` 를 직접 돌리지 않는다
-    - 대안: b. `.ts` 를 그대로 내고 tsx 를 의존성으로 둔다 — 빌드 단계가 없지만 설치가 무겁고 첫 실행이 느리다
-    - 걸린 곳: 컴포넌트 설계 `packages/cli/` 패키지
-- *S4. 기대 CLI 버전은 `plugins/product/cli-version` 파일 한 줄에 둔다* ->
-    - 적용한 안: a. 파일 한 줄 — 셸에서 `$(cat …)` 로 읽어서 스킬마다 숫자를 옮겨 적지 않는다
-    - 대안: b. spec-format 문장 안의 숫자 — 파일이 하나 줄지만 LLM 이 숫자를 옮겨 적다 틀릴 수 있다
-    - 걸린 곳: 컴포넌트 설계 `cli-version`, 데이터 흐름, 안전망 단계 배포
-- *S5. 플러그인 버전을 0.11.0 으로 올린다* ->
-    - 적용한 안: a. 둘째 자리 — 8개 스킬이 문서를 쓰는 자리가 모두 바뀌고, 평가가 전체 모드로 돌아 이전 버전과 나란히 비교한다
-    - 대안: b. 0.10.1 — 스킬을 더하거나 빼지 않았다는 CLAUDE.md 기준에는 맞지만 평가가 패치 모드로 돌아 이전 버전을 다시 돌리지 않는다
-    - 걸린 곳: 컴포넌트 설계 플러그인 정보, 테스트 전략 E2E
-
-#### T CLI 모양
-
-- **T1. CLI 하위 명령을 `inspect`·`setup`·`root` 셋으로 두고 종료 코드로 갈래를 알릴지** ->
-    - 예시: `~/work/other/` 에서 `product root --json` → a안은 종료 코드 3 과 `{"status":"not-found"}`, b안은 종료 코드 0 과 `{"found":false}`. 셋업 전 점검은 a안이 `product inspect`, b안이 `product setup --dry-run`
-    - a. 하위 명령 3개 + 종료 코드 8개 — 스킬은 종료 코드 하나로 갈래를 고른다. 터미널 사용자도 같은 명령을 쓴다
-    - b. 하위 명령 2개 + 늘 종료 코드 0, 결과는 JSON 필드 — 명령이 적지만 스킬이 JSON 을 읽어야 갈래가 정해지고, 셸에서 `&&` 로 잇기 어렵다
-    - 추천: @초안 a안 — 셋업 전에 물을 것(조상 product 폴더, 커밋 있는 리포)을 한 번에 받아 스킬이 질문을 고른다(H1). 하위 명령과 종료 코드는 npm 에 낸 뒤 사용자 셸 스크립트가 기댈 수 있어서 처음에 정한다
-    - 걸린 곳: 컴포넌트 설계 `cli.ts`·`inspect.ts`, 오류 처리 머리말과 E24, 시퀀스 다이어그램 세 그림
-- *T2. CLI 버전이 기대 버전 이상이면 통과로 본다* ->
-    - 적용한 안: a. 이상이면 통과 — 요구사항 5 인수 조건 8·11 의 "낮으면" 그대로다. CLI 는 컴퓨터에 하나라서, 플러그인 버전이 다른 두 리포를 오가도 다시 깔지 않는다. 대신 CLI 는 한 번 낸 옵션을 다음 버전에서 지우지 않는다 @가정 (요구사항 5 「설치」 표와 부딪힘)
-    - 대안: b. 같을 때만 통과 — 요구사항 5 「설치」 표의 "같아야 한다" 그대로다. 두 리포를 오가면 setup 을 부를 때마다 CLI 가 바뀐다
-    - 걸린 곳: 컴포넌트 설계 `version.ts`, 오류 처리 E17·E20·E22
-- *T3. 스킬은 전역 `product` 명령을 부른다* ->
-    - 적용한 안: a. 전역 명령 — H5 의 실행 명령 그대로이고 바로 뜬다
-    - 대안: b. `npx -y @dorage/product@{기대 버전}` — 리포마다 버전이 정확히 맞지만 처음 부를 때 내려받느라 인터넷과 몇 초가 든다
-    - 걸린 곳: 컴포넌트 설계 저장 위치, 시퀀스 다이어그램 draft
-- *T4. 기능 폴더 만들기와 고르기는 CLI 에 넣지 않고 spec-format 셸 명령에 남긴다* ->
-    - 적용한 안: a. 스킬 셸 명령 — CLI 는 product 폴더 찾기까지만 맡아 작게 남는다. 지금 규칙(시각 이름, 1초 뒤 다시 만들기)을 그대로 옮긴다
-    - 대안: b. `product feature new`·`product feature list` — 이름 규칙을 CLI 테스트로 지킬 수 있지만 하위 명령이 2개 늘어 T1 이 바뀐다
-    - 걸린 곳: 컴포넌트 설계 저장 위치, 데이터 흐름 기능 폴더
-- *T5. 설정 파일은 `yaml` 패키지로 읽고, 형식 번호 키는 두지 않는다* ->
-    - 적용한 안: a. `yaml` 패키지, 형식 번호 없음 — 템플릿 위치(H8)가 맵으로 들어와도 파서를 바꾸지 않는다. 형식 번호는 처음 형식을 바꿀 때 더하고, 없으면 첫 형식으로 본다
-    - 대안: b. 직접 만든 세 줄 파서 — 의존성이 0개지만 H8 작업 때 갈아야 한다
-    - 걸린 곳: 컴포넌트 설계 `settings.ts`, 데이터 흐름 `.product-settings`
-
-#### U 셋업 동작
-
-- *U1. npm 없는 셋업은 셸 스크립트 파일 `setup.sh` 하나로 두고 CLI 와 같은 통합 테스트를 돌린다* ->
-    - 적용한 안: a. 스크립트 파일 — CLI 와 결과가 어긋나면 테스트가 잡는다. 규칙 충돌: 전역 지시 "셸 스크립트는 tsx" 보다 마스터의 명시 지시 H2 를 따랐다. node 가 없는 컴퓨터에는 tsx 도 없다
-    - 대안: b. setup SKILL.md 안 명령 블록 — 지금 setup 모양과 같지만 테스트로 돌릴 수 없다
-    - 걸린 곳: 컴포넌트 설계 `setup.sh`, 테스트 전략 통합
-- *U2. 스킬이 부른 실행에서는 git 이 비밀번호나 키 암호를 묻지 않게 한다* ->
-    - 적용한 안: a. 표준 입력이 터미널이 아닐 때만 `GIT_TERMINAL_PROMPT=0` 과 `GIT_SSH_COMMAND="ssh -o BatchMode=yes"` — 스킬 실행은 묻는 창을 기다리며 멈추지 않고 E7 로 건너뛴다. 터미널에서 직접 부르면 비밀번호를 넣을 수 있다
-    - 대안: b. 늘 막는다 — 단순하지만 터미널 사용자도 인증을 미리 해 두어야 한다
-    - 걸린 곳: 컴포넌트 설계 `git.ts`, 오류 처리 E10
-- *U3. 내부 셋업 커밋은 두 파일을 경로로 지정해 커밋한다* ->
-    - 적용한 안: a. `git commit -m … -- .product/.gitignore .product-settings` — 미리 올려 둔 다른 변경은 커밋에 들어가지 않고 올라간 채 남는다 @사실 (scratchpad 실험, git 2.52.0)
-    - 대안: b. 다른 변경을 잠시 치웠다가(`git stash`) 되돌린다 — 되돌리다 충돌하면 사용자 변경이 꼬인다
-    - 걸린 곳: 컴포넌트 설계 `setupInternal.ts`, 시퀀스 다이어그램 내부 셋업
-
-#### V 스킬 바꾸기
-
-- *V1. product 폴더 찾기 절차는 spec-format 「저장 위치」 한 곳에 두고 8개 스킬은 가리키기만 한다* ->
-    - 적용한 안: a. 한 곳 — 8개 스킬이 이미 「저장 위치」를 가리키고 있어서 스킬 본문은 예시 경로만 바뀐다
-    - 대안: b. 스킬마다 절차 — 스킬별로 다르게 할 수 있지만 같은 규칙이 8곳에 생긴다
-    - 걸린 곳: 컴포넌트 설계 저장 위치, 8개 스킬의 「입력 찾기」
-- *V2. 경로를 받아도 `product root --from {경로}` 로 셋업 방식만 읽는다* ->
-    - 적용한 안: a. 셋업 방식만 읽기 — 쓰는 자리는 받은 경로 그대로이고, 결과의 `mode`·`inRepos` 로 요구사항 4 인수 조건 10·11·13 을 판단한다. 경로 위에 product 폴더가 없으면(예: 예전 `~/.sdd/` 경로) 셋업 방식이 없는 것으로 보고 세 조건을 적용하지 않는다
-    - 대안: b. 경로를 받으면 CLI 를 부르지 않는다 — 단순하지만 내부 셋업 문서에 경로로 쓸 때 개인 설정 거르기와 답한 사람 적기가 빠진다
-    - 걸린 곳: 컴포넌트 설계 저장 위치, 오류 처리 E15
-- *V3. 답한 사람은 답 원문 뒤에 ` — {user.name}` 으로 붙인다* ->
-    - 적용한 안: a. 답 원문 뒤 — 예: `"A1. a안." — 홍길동`. 결정 기록 표의 열이 셋업 방식마다 달라지지 않는다
-    - 대안: b. 결정 기록 표에 「답한 사람」 열 — 읽기 쉽지만 외부 셋업 문서와 표 모양이 달라진다
-    - 걸린 곳: 컴포넌트 설계 결정 기록 표
-- *V4. 윤문은 기능 폴더로 옮겨 가서 부르고, 끝나면 기능 폴더와 세션 폴더 두 곳에서 `_workspace/` 를 찾아 옮긴다* ->
-    - 적용한 안: a. 두 곳 찾기 — 세션을 연 폴더 밖으로는 `cd` 가 다음 명령에 이어지지 않아서, 외부 셋업에서 `repos/{리포 이름}/` 에 세션을 열면 `_workspace/` 가 실제 리포에 생길 수 있다. 그때도 끝나면 기능 폴더로 옮긴다 @가정 (Claude Code 의 Bash 폴더 이어짐 규칙, 문서로 확인하지 않았다)
-    - 대안: b. 기능 폴더 한 곳만 — 단순하지만 위 경우 실제 리포에 작업 파일이 남는다 (요구사항 2 인수 조건 9)
-    - 걸린 곳: 컴포넌트 설계 윤문 작업 파일 치우기
+없음
 
 ### 정해진 결정
 
-없음
+2026-11-23 마스터 답 "모두 추천안으로" 로 아래 결정을 모두 추천안(이탤릭은 적용한 안)으로 정했다.
+
+| ID | 정한 것 | 답 | 반영한 곳 |
+| --- | --- | --- | --- |
+| S1 | CLI 는 마스터가 손으로 npm 에 낸다 | @확정 (2026-11-23 "모두 추천안으로") | 안전망 단계 배포, 컴포넌트 설계 `packages/cli/` 패키지 |
+| S2 | CLI 코드는 이 리포 `packages/cli/` 에 둔다 | @확정 (2026-11-23 "모두 추천안으로") | 컴포넌트 설계 `packages/cli/` 패키지, 리포 `.gitignore` |
+| S3 | CLI 는 TypeScript 를 `tsc` 로 `dist/` 에 빌드한 JS 로 낸다 | @확정 (2026-11-23 "모두 추천안으로") | 컴포넌트 설계 `packages/cli/` 패키지 |
+| S4 | 기대 CLI 버전은 `plugins/product/cli-version` 파일 한 줄에 둔다 | @확정 (2026-11-23 "모두 추천안으로") | 컴포넌트 설계 `cli-version`, 데이터 흐름, 안전망 단계 배포 |
+| S5 | 플러그인 버전을 0.11.0 으로 올린다 | @확정 (2026-11-23 "모두 추천안으로") | 컴포넌트 설계 플러그인 정보, 테스트 전략 E2E |
+| T1 | CLI 하위 명령은 `inspect`·`setup`·`root` 셋이고 종료 코드로 갈래를 알린다 | @확정 (2026-11-23 "모두 추천안으로") | 컴포넌트 설계 `cli.ts`·`inspect.ts`, 오류 처리 머리말과 E24, 시퀀스 다이어그램 세 그림 |
+| T2 | CLI 버전이 기대 버전 이상이면 통과로 본다. CLI 는 한 번 낸 옵션을 다음 버전에서 지우지 않는다 | @확정 (2026-11-23 "모두 추천안으로") | 컴포넌트 설계 `version.ts`, 오류 처리 E17·E20·E22 |
+| T3 | 스킬은 전역 `product` 명령을 부른다 | @확정 (2026-11-23 "모두 추천안으로") | 컴포넌트 설계 저장 위치, 시퀀스 다이어그램 draft |
+| T4 | 기능 폴더 만들기와 고르기는 CLI 에 넣지 않고 spec-format 셸 명령에 남긴다 | @확정 (2026-11-23 "모두 추천안으로") | 컴포넌트 설계 저장 위치, 데이터 흐름 기능 폴더 |
+| T5 | 설정 파일은 `yaml` 패키지로 읽고, 형식 번호 키는 두지 않는다 | @확정 (2026-11-23 "모두 추천안으로") | 컴포넌트 설계 `settings.ts`, 데이터 흐름 `.product-settings` |
+| U1 | npm 없는 셋업은 셸 스크립트 파일 `setup.sh` 하나로 두고 CLI 와 같은 통합 테스트를 돌린다. 전역 지시 "셸 스크립트는 tsx" 보다 마스터의 명시 지시 H2 를 따른다 | @확정 (2026-11-23 "모두 추천안으로") | 컴포넌트 설계 `setup.sh`, 테스트 전략 통합 |
+| U2 | 표준 입력이 터미널이 아닐 때만 git 이 비밀번호나 키 암호를 묻지 않게 한다 | @확정 (2026-11-23 "모두 추천안으로") | 컴포넌트 설계 `git.ts`, 오류 처리 E10 |
+| U3 | 내부 셋업 커밋은 두 파일을 경로로 지정해 커밋한다 | @확정 (2026-11-23 "모두 추천안으로") | 컴포넌트 설계 `setupInternal.ts`, 시퀀스 다이어그램 내부 셋업 |
+| V1 | product 폴더 찾기 절차는 spec-format 「저장 위치」 한 곳에 두고 8개 스킬은 가리키기만 한다 | @확정 (2026-11-23 "모두 추천안으로") | 컴포넌트 설계 저장 위치, 8개 스킬의 「입력 찾기」 |
+| V2 | 경로를 받아도 `product root --from {경로}` 로 셋업 방식만 읽는다 | @확정 (2026-11-23 "모두 추천안으로") | 컴포넌트 설계 저장 위치, 오류 처리 E15 |
+| V3 | 답한 사람은 답 원문 뒤에 ` — {user.name}` 으로 붙인다 | @확정 (2026-11-23 "모두 추천안으로") | 컴포넌트 설계 결정 기록 표 |
+| V4 | 윤문은 기능 폴더로 옮겨 가서 부르고, 끝나면 기능 폴더와 세션 폴더 두 곳에서 `_workspace/` 를 찾아 옮긴다 | @확정 (2026-11-23 "모두 추천안으로") | 컴포넌트 설계 윤문 작업 파일 치우기 |
+| V5 | 경로를 받았는데 그 위 product 폴더의 설정 파일이 없거나 깨졌으면, 문제를 한 줄로 알리고 외부 셋업으로 보고 그 경로에 쓴다. 채팅에서는 "A1" 로 물었다 | @확정 (2026-11-23 "A1. a안.") | 오류 처리 E23, 안전망 비상 탈출구 |
 
 ## 시스템 아키텍처
 
@@ -139,28 +78,28 @@ flowchart LR
 
 | 컴포넌트 | 책임 | 인터페이스 | 의존 | 추적 | 표기 |
 | --- | --- | --- | --- | --- | --- |
-| `packages/cli/` 패키지 `@dorage/product` (새) | CLI 를 npm 배포 단위 하나로 묶는다 | `package.json` 의 `bin.product` → `dist/cli.js`, `engines.node` `>=20` | `yaml` | 요구사항 5 인수 조건 1·2, 요구사항 5 설치 | @확정 (H5, 2026-11-22) (이름), @초안 (S2, S3) |
-| `packages/cli/src/cli.ts` (새) | 명령 줄을 해석해 하위 명령에 넘기고 결과를 종료 코드와 출력으로 돌려준다 | `product inspect`, `product setup`, `product root`, `product --version`. 공통 옵션 `--json`, `--expect <버전>`. 종료 코드는 「오류 처리」 감지 칸 | 아래 모듈, `node:util` `parseArgs`, `node:readline/promises` | 요구사항 5 인수 조건 6·7 | @초안 (T1) |
+| `packages/cli/` 패키지 `@dorage/product` (새) | CLI 를 npm 배포 단위 하나로 묶는다 | `package.json` 의 `bin.product` → `dist/cli.js`, `engines.node` `>=20` | `yaml` | 요구사항 5 인수 조건 1·2, 요구사항 5 설치 | @확정 (H5, 2026-11-22) (이름), @확정 (S2, S3, 2026-11-23) |
+| `packages/cli/src/cli.ts` (새) | 명령 줄을 해석해 하위 명령에 넘기고 결과를 종료 코드와 출력으로 돌려준다 | `product inspect`, `product setup`, `product root`, `product --version`. 공통 옵션 `--json`, `--expect <버전>`. 종료 코드는 「오류 처리」 감지 칸 | 아래 모듈, `node:util` `parseArgs`, `node:readline/promises` | 요구사항 5 인수 조건 6·7 | @확정 (T1, 2026-11-23) |
 | `packages/cli/src/find.ts` (새) | 시작 폴더에서 파일 시스템 맨 위까지 올라가며 `.product/` 폴더가 있는 가장 가까운 폴더를 찾는다 | `findProduct(from: string): { productDir: string; settingsFile: string } \| null` | `node:fs` | 요구사항 4 인수 조건 2·7, 요구사항 1 인수 조건 4 | @확정 (A2, B4, 2026-11-22) |
-| `packages/cli/src/settings.ts` (새) | `.product-settings` 를 쓰고, 읽고, 키를 검사한다 | `writeSettings(rootDir: string, mode: "external" \| "internal"): string`, `readSettings(file: string): Settings` (실패하면 `SettingsError { file, reason }`) | `yaml` | 요구사항 6 인수 조건 1~6·8 | @초안 (T5) |
-| `packages/cli/src/inspect.ts` (새) | 셋업 전에 스킬이 물을 것을 정하도록 지금 폴더 상황을 알려 준다 | `inspect(cwd: string): Inspection` → `{ here: { productDir, settings: "ok" \| "missing" \| "invalid", mode } \| null, ancestor: string \| null, git: { inside, top, isTop, hasCommits } }` | `find.ts`, `settings.ts`, `git.ts` | 요구사항 1 인수 조건 3·4·7, 요구사항 2 인수 조건 6·7, 요구사항 3 인수 조건 2·3, 요구사항 6 인수 조건 7 | @초안 (T1) |
+| `packages/cli/src/settings.ts` (새) | `.product-settings` 를 쓰고, 읽고, 키를 검사한다 | `writeSettings(rootDir: string, mode: "external" \| "internal"): string`, `readSettings(file: string): Settings` (실패하면 `SettingsError { file, reason }`) | `yaml` | 요구사항 6 인수 조건 1~6·8 | @확정 (T5, 2026-11-23) |
+| `packages/cli/src/inspect.ts` (새) | 셋업 전에 스킬이 물을 것을 정하도록 지금 폴더 상황을 알려 준다 | `inspect(cwd: string): Inspection` → `{ here: { productDir, settings: "ok" \| "missing" \| "invalid", mode } \| null, ancestor: string \| null, git: { inside, top, isTop, hasCommits } }` | `find.ts`, `settings.ts`, `git.ts` | 요구사항 1 인수 조건 3·4·7, 요구사항 2 인수 조건 6·7, 요구사항 3 인수 조건 2·3, 요구사항 6 인수 조건 7 | @확정 (T1, 2026-11-23) |
 | `packages/cli/src/setupExternal.ts` (새) | 지금 폴더를 product 루트로 만들고 리포를 `repos/` 아래 submodule 로 더한다 | `setupExternal(cwd, { repos: string[], useExistingRepo: boolean, allowNested: boolean }): SetupResult` → `{ status, mode, productDir, added[], skipped[{ url, name, reason }], next[] }` | `git.ts`, `repoName.ts`, `settings.ts` | 요구사항 2 인수 조건 1~13 | @확정 (B1, F1, F2, E2, 2026-11-22) |
-| `packages/cli/src/setupInternal.ts` (새) | 리포 안에 `.product/` 를 만들고 두 파일만 담은 커밋 1개를 만든다 | `setupInternal(cwd, { at: "top" \| "here", allowNested: boolean }): SetupResult` → `{ status, mode, productDir, commit: string \| null, next[] }` | `git.ts`, `settings.ts` | 요구사항 3 인수 조건 1~9 | @확정 (B3, B5, B6, H7, 2026-11-22), @초안 (U3) |
+| `packages/cli/src/setupInternal.ts` (새) | 리포 안에 `.product/` 를 만들고 두 파일만 담은 커밋 1개를 만든다 | `setupInternal(cwd, { at: "top" \| "here", allowNested: boolean }): SetupResult` → `{ status, mode, productDir, commit: string \| null, next[] }` | `git.ts`, `settings.ts` | 요구사항 3 인수 조건 1~9 | @확정 (B3, B5, B6, H7, 2026-11-22), @확정 (U3, 2026-11-23) |
 | `packages/cli/src/repoName.ts` (새) | 리포 주소에서 `repos/` 아래 이름을 뽑는다 | `repoName(url: string): string` | — | 요구사항 2 인수 조건 3, 요구사항 2 리포 이름 | 요구사항 2 리포 이름 표의 표기를 따른다 |
-| `packages/cli/src/git.ts` (새) | git 을 실행한다. 표준 입력이 터미널이 아니면 비밀번호를 묻지 않는 환경으로 실행한다 | `git(args: string[], cwd: string): { code, stdout, stderr }` | `node:child_process`, git | 요구사항 2 인수 조건 8 | @초안 (U2) |
-| `packages/cli/src/version.ts` (새) | 지금 CLI 버전이 기대 버전 이상인지 판단한다 | `atLeast(have: string, want: string): boolean`. 자리마다 숫자로 비교한다 (0.10.0 > 0.9.0) | — | 요구사항 5 인수 조건 3·8·11 | @가정 (T2) |
+| `packages/cli/src/git.ts` (새) | git 을 실행한다. 표준 입력이 터미널이 아니면 비밀번호를 묻지 않는 환경으로 실행한다 | `git(args: string[], cwd: string): { code, stdout, stderr }` | `node:child_process`, git | 요구사항 2 인수 조건 8 | @확정 (U2, 2026-11-23) |
+| `packages/cli/src/version.ts` (새) | 지금 CLI 버전이 기대 버전 이상인지 판단한다 | `atLeast(have: string, want: string): boolean`. 자리마다 숫자로 비교한다 (0.10.0 > 0.9.0) | — | 요구사항 5 인수 조건 3·8·11 | @확정 (T2, 2026-11-23) |
 | `packages/cli/src/legacy.ts` (새) | 예전 보관 폴더 `~/.sdd/{리포 이름}/` 이 있으면 경로를 알려 준다. 읽기만 한다 | `legacyDir(cwd: string, home: string): string \| null`. 이름은 지금 setup 「이름 정하기」와 같은 순서로 정한다 | `git.ts`, `node:fs` | 요구사항 4 인수 조건 8·9 | @확정 (C1, 2026-11-22) |
-| `plugins/product/cli-version` (새) | 플러그인이 기대하는 CLI 버전을 한 곳에 둔다 | 버전 한 줄 (예: `0.1.0`) | — | 요구사항 5 인수 조건 3·8·11 | @초안 (S4) |
-| `plugins/product/skills/setup/setup.sh` (새) | npm 이 없는 컴퓨터에서 CLI 대신 같은 셋업을 한다 | `setup.sh inspect`, `setup.sh external <주소>...`, `setup.sh internal top\|here`, `setup.sh settings-only <방식>`. 상태 한 줄(`DONE`·`ALREADY`·`STOPPED`·`COMMIT_FAILED`)과 다음 명령을 찍는다 | git, `sh` | 요구사항 5 인수 조건 4 | @확정 (H2, 2026-11-22), @초안 (U1) |
+| `plugins/product/cli-version` (새) | 플러그인이 기대하는 CLI 버전을 한 곳에 둔다 | 버전 한 줄 (예: `0.1.0`) | — | 요구사항 5 인수 조건 3·8·11 | @확정 (S4, 2026-11-23) |
+| `plugins/product/skills/setup/setup.sh` (새) | npm 이 없는 컴퓨터에서 CLI 대신 같은 셋업을 한다 | `setup.sh inspect`, `setup.sh external <주소>...`, `setup.sh internal top\|here`, `setup.sh settings-only <방식>`. 상태 한 줄(`DONE`·`ALREADY`·`STOPPED`·`COMMIT_FAILED`)과 다음 명령을 찍는다 | git, `sh` | 요구사항 5 인수 조건 4 | @확정 (H2, 2026-11-22), @확정 (U1, 2026-11-23) |
 | setup 스킬 (기존, 바뀜) | 윤문 플러그인과 CLI 를 준비하고, 질문을 모아 CLI 에 넘기고, 결과를 알린다 | `/product:setup`. 「이름 정하기」와 `~/.sdd` 를 만드는 명령 절반을 지우고 「CLI 준비」「질문」「셋업 실행」「답하기」로 바꾼다. 윤문 플러그인 명령 절반은 그대로 둔다 | `product` 또는 `setup.sh`, `AskUserQuestion` | 요구사항 1 인수 조건 1~8, 요구사항 5 인수 조건 1~8 | @사실 (`plugins/product/skills/setup/SKILL.md`) |
-| 저장 위치 (기존, 바뀜) | 문서를 쓰는 스킬 8개가 쓸 자리를 정하는 절차를 한 곳에 둔다 | spec-format 「저장 위치」. 「경로」의 `~/.sdd/{리포 폴더}/` 를 「product 폴더 찾기」(`product root --json --expect $(cat cli-version)`)로, 「폴더 고르기」의 대상을 `{product 폴더}/features/` 로 바꾼다 | `product` | 요구사항 4 인수 조건 1~10, 요구사항 5 인수 조건 9~11, 요구사항 6 인수 조건 4·5 | @사실 (`plugins/product/references/spec-format.md`), @초안 (V1, V2) |
+| 저장 위치 (기존, 바뀜) | 문서를 쓰는 스킬 8개가 쓸 자리를 정하는 절차를 한 곳에 둔다 | spec-format 「저장 위치」. 「경로」의 `~/.sdd/{리포 폴더}/` 를 「product 폴더 찾기」(`product root --json --expect $(cat cli-version)`)로, 「폴더 고르기」의 대상을 `{product 폴더}/features/` 로 바꾼다 | `product` | 요구사항 4 인수 조건 1~10, 요구사항 5 인수 조건 9~11, 요구사항 6 인수 조건 4·5 | @사실 (`plugins/product/references/spec-format.md`), @확정 (V1, V2, 2026-11-23) |
 | 8개 스킬의 「입력 찾기」·「저장 경로 정하기」 (기존, 변경 없음) | spec-format 「저장 위치」를 가리킨다 | 변경 없음. 절차를 직접 적지 않고 가리키기만 해서 「저장 위치」만 고치면 따라온다 | spec-format | 요구사항 4 인수 조건 2~5 | @사실 (`plugins/product/skills/{draft,persona-review,design,flow,task,bdd,brief-dev,brief-nondev}/SKILL.md`) |
-| 윤문 작업 파일 치우기 (기존, 바뀜) | 윤문을 기능 폴더에서 부르고 작업 파일을 기능 폴더 `_humanize/` 로 모은다 | spec-format 「윤문」「부르는 법」 앞에 `cd {기능 폴더}`, 「작업 폴더 치우기」가 기능 폴더와 세션 폴더 두 곳의 `_workspace/` 를 본다 | humanize-korean | 요구사항 4 인수 조건 12, 요구사항 3 인수 조건 4 | @사실 (`plugins/product/references/spec-format.md`), @초안 (V4) |
-| 결정 기록 표 (기존, 바뀜) | 내부 셋업 문서의 답 옆에 답한 사람을 적는다 | spec-format 「정해진 결정」 답 모양과 `references/draft.md` 「결정 기록」 마스터 답 칸 | `git config user.name` | 요구사항 4 인수 조건 13·14 | @사실 (`plugins/product/references/spec-format.md`, `plugins/product/references/draft.md`), @초안 (V3) |
+| 윤문 작업 파일 치우기 (기존, 바뀜) | 윤문을 기능 폴더에서 부르고 작업 파일을 기능 폴더 `_humanize/` 로 모은다 | spec-format 「윤문」「부르는 법」 앞에 `cd {기능 폴더}`, 「작업 폴더 치우기」가 기능 폴더와 세션 폴더 두 곳의 `_workspace/` 를 본다 | humanize-korean | 요구사항 4 인수 조건 12, 요구사항 3 인수 조건 4 | @사실 (`plugins/product/references/spec-format.md`), @확정 (V4, 2026-11-23) |
+| 결정 기록 표 (기존, 바뀜) | 내부 셋업 문서의 답 옆에 답한 사람을 적는다 | spec-format 「정해진 결정」 답 모양과 `references/draft.md` 「결정 기록」 마스터 답 칸 | `git config user.name` | 요구사항 4 인수 조건 13·14 | @사실 (`plugins/product/references/spec-format.md`, `plugins/product/references/draft.md`), @확정 (V3, 2026-11-23) |
 | 내부 셋업 문서에 쓰지 않을 것 (기존 규칙에 더함) | 셋업 방식이 내부면 개인 설정과 이 컴퓨터 사실을 채팅에만 남긴다 | spec-format 「저장 위치」에 한 문단. 셋업 방식은 `product root` 결과의 `mode` 로 안다 | `product` | 요구사항 4 인수 조건 11 | @사실 (`plugins/product/references/spec-format.md` 에 해당 규칙이 없다) |
 | 문서 모양 (기존, 변경 없음) | 단계마다 결과물 모양을 정한다 | 변경 없음. 설정 파일의 `templates` 는 비워 둔다 | — | 요구사항 6 인수 조건 6 | @사실 (`plugins/product/references/*.md`), @확정 (H8, 2026-11-22) |
 | 스킬 안내 예시 경로 (기존, 바뀜) | 예시를 새 기능 폴더 모양으로 보여 준다 | `skills/draft/SKILL.md`·`skills/design/SKILL.md` 끝맺음 예시, `skills/task/SKILL.md`·`skills/bdd/SKILL.md` 「저장 위치」 예시, `references/flow.md` 입력 예시, `OUTPUT.md` 「어디에 남는가」, `WORKFLOW.md` setup 줄, `README.md` setup 줄과 보관 폴더 문장, setup `description` | — | 요구사항 4 인수 조건 1·4 | @사실 (`git grep '\.sdd' origin/main -- plugins`) |
-| 플러그인 정보 (기존, 바뀜) | 플러그인 버전과 설명을 새 동작에 맞춘다 | `plugins/product/.claude-plugin/plugin.json` `version` 0.10.0 → 0.11.0, `description` 의 `~/.sdd` 문장 | — | 요구사항 4 인수 조건 1 | @사실 (`plugins/product/.claude-plugin/plugin.json`), @초안 (S5) |
+| 플러그인 정보 (기존, 바뀜) | 플러그인 버전과 설명을 새 동작에 맞춘다 | `plugins/product/.claude-plugin/plugin.json` `version` 0.10.0 → 0.11.0, `description` 의 `~/.sdd` 문장 | — | 요구사항 4 인수 조건 1 | @사실 (`plugins/product/.claude-plugin/plugin.json`), @확정 (S5, 2026-11-23) |
 | 평가 (기존, 변경 없음) | 스킬 결과물이 포맷을 지키는지 본다 | 변경 없음. 모든 case 프롬프트가 `out/…` 경로를 주므로 「저장 위치」의 경로 갈래를 탄다 | `claude plugin eval` | 요구사항 4 인수 조건 6 | @사실 (`plugins/product/evals/*/*/case.yaml`) |
 | npm 패키지 자리 (기존 없음) | — | 리포에 `package.json` 이 없고, 스크립트는 `npx tsx` 로 돌리는 평가 스크립트뿐이다. CLI 테스트도 같은 `npx tsx --test` 를 쓴다 | — | 요구사항 5 인수 조건 1 | @사실 (`git ls-tree -r origin/main`, `plugins/product/evals/README.md`) |
 | 리포 `.gitignore` (기존, 바뀜) | CLI 빌드 결과와 의존성을 커밋에서 뺀다 | `node_modules/`, `packages/cli/dist/` 두 줄을 더한다 | — | 요구사항 5 인수 조건 1 | @사실 (`.gitignore`) |
@@ -171,8 +110,6 @@ flowchart LR
 
 - 「저장 위치」는 경로를 받아도 `product` 명령이 없으면 문서를 쓰지 않는다. @가정 (요구사항 5 인수 조건 10 문자 그대로. 요구사항 4 인수 조건 6 과 부딪힘)
     - 경로를 받으면 CLI 없이 쓰는 것으로 정해지면: CLI 확인을 경로 없는 갈래로 옮긴다. 요구사항 4 인수 조건 10·11·13 판단은 CLI 가 있을 때만 하고, 없으면 외부 셋업으로 본다. 평가 case 가 `product` 명령 없는 컴퓨터에서도 돈다
-- `version.ts` 는 기대 버전 이상이면 통과로 본다. 요구사항 5 인수 조건 8·11 과 요구사항 5 「설치」 표가 부딪히는 자리라 T2 에 근거와 대안을 둔다 @가정 (T2)
-    - 같은 버전만 통과로 정해지면: `atLeast` 가 `equals` 가 되고, 「오류 처리」 E20 이 "높을 때도 다시 설치한다"로 바뀐다
 - `.product/` 는 있는데 설정 파일이 없을 때 setup 은 설정 파일만 만들고 내부 셋업이어도 커밋하지 않는다. 직접 칠 커밋 명령을 보여 준다. @가정 (요구사항 6 인수 조건 7 에 커밋 이야기가 없다)
     - 커밋하는 것으로 정해지면: `setupInternal.ts` 의 커밋 단계를 `settings-only` 에도 태우고, 담는 파일은 `.product-settings` 하나다
 
@@ -271,7 +208,7 @@ draft 가 아닌 스킬은 5번 대신 `features/` 아래 폴더를 최신순 4�
     - 저장소: product 루트 폴더의 파일. 외부 셋업은 사용자가 커밋하고, 내부 셋업은 셋업 커밋에 들어간다
     - 읽는 곳: `product root`, `product inspect`. 스킬은 파일을 직접 읽지 않고 `product root --json` 결과만 쓴다
     - 보존: 사람이 지울 때까지 (요구사항 3 범위 밖, G2)
-    - 읽기 규칙: `mode` 가 `external`·`internal` 이 아니거나, `root` 가 문자열이 아니거나, `templates` 가 맵이 아니면 깨진 파일로 본다. 모르는 키는 무시한다 @초안 (T5)
+    - 읽기 규칙: `mode` 가 `external`·`internal` 이 아니거나, `root` 가 문자열이 아니거나, `templates` 가 맵이 아니면 깨진 파일로 본다. 모르는 키는 무시한다 @확정 (T5, 2026-11-23)
     - `root` 는 설정 파일이 있는 폴더를 기준으로 풀어서 절대 경로로 돌려준다. `root: .` 이면 설정 파일이 있는 폴더다
 - `.product/.gitignore`
     - 생성: 두 셋업이 `.product/` 를 만들 때 함께 만든다. 이미 있으면 덮어쓰지 않는다 @초안
@@ -315,7 +252,7 @@ draft 가 아닌 스킬은 5번 대신 `features/` 아래 폴더를 최신순 4�
 
 ## 오류 처리
 
-CLI 종료 코드는 0 성공, 1 그 밖의 실패, 2 답이 더 필요함, 3 product 폴더 없음, 4 설정 파일 문제, 5 CLI 버전이 낮음, 6 셋업을 멈춤, 7 커밋 실패다. `--json` 이면 실패해도 표준 출력에 `{ status, reason, next[] }` 를 남긴다. @초안 (T1)
+CLI 종료 코드는 0 성공, 1 그 밖의 실패, 2 답이 더 필요함, 3 product 폴더 없음, 4 설정 파일 문제, 5 CLI 버전이 낮음, 6 셋업을 멈춤, 7 커밋 실패다. `--json` 이면 실패해도 표준 출력에 `{ status, reason, next[] }` 를 남긴다. @확정 (T1, 2026-11-23)
 
 | ID | 발생 자리 | 감지 | 사용자에게 보이는 것 | 복구 | 실패 방향 | 추적 | 표기 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -328,21 +265,21 @@ CLI 종료 코드는 0 성공, 1 그 밖의 실패, 2 답이 더 필요함, 3 pr
 | E7 | 외부 셋업, `git submodule add` 실패 | 종료 코드가 0 이 아님. 이유는 표준 오류의 마지막 `fatal:` 줄 | 주소와 이유, 직접 칠 `git submodule add` 명령 | 그 리포만 건너뛴다. git 이 `repos/{이름}`·`.git/modules/repos/{이름}`·`.gitmodules` 를 되돌려 두므로 보여 준 명령을 그대로 칠 수 있다 @사실 (scratchpad 실험, git 2.52.0). 흔적이 남아 있으면 이번 실행이 만든 그 리포 폴더만 지운다 @초안 | 시끄러움 | 요구사항 2 인수 조건 8·12 | 요구사항 2 인수 조건 8 의 표기 |
 | E8 | 외부 셋업, 한 번의 셋업에서 리포 이름이 겹침 | `repoName` 결과가 앞 주소와 같음 | 두 번째 주소와 이름이 겹친다는 알림, 직접 칠 명령 | 두 번째 주소를 건너뛴다 | 시끄러움 | 요구사항 2 리포 이름, 요구사항 2 인수 조건 12 | 요구사항 2 리포 이름 표의 표기 |
 | E9 | 외부 셋업, 받은 리포가 0개 | `added` 가 빔 | 건너뛴 리포마다 명령, 커밋 명령 | `.product/` 와 설정 파일을 만들고 마친다 | 시끄러움 | 요구사항 2 인수 조건 11·12 | @확정 (F2, 2026-11-22) |
-| E10 | 외부 셋업을 스킬이 부른 실행에서, 비공개 리포가 비밀번호나 키 암호를 물음 | `GIT_TERMINAL_PROMPT=0` 과 ssh `BatchMode=yes` 로 git 이 묻지 않고 실패한다 | E7 과 같다 | E7 과 같다 | 시끄러움 (묻는 창을 기다리며 멈추는 대신) | 요구사항 2 인수 조건 8 | @초안 (U2) |
+| E10 | 외부 셋업을 스킬이 부른 실행에서, 비공개 리포가 비밀번호나 키 암호를 물음 | `GIT_TERMINAL_PROMPT=0` 과 ssh `BatchMode=yes` 로 git 이 묻지 않고 실패한다 | E7 과 같다 | E7 과 같다 | 시끄러움 (묻는 창을 기다리며 멈추는 대신) | 요구사항 2 인수 조건 8 | @확정 (U2, 2026-11-23) |
 | E11 | 내부 셋업, 지금 폴더가 리포 맨 위가 아님 | `inspect` 의 `git.isTop` 이 false, `--at` 없음. 종료 코드 2 | 리포 맨 위와 지금 폴더 중 고르기 | `--at top` 또는 `--at here` 로 다시 부른다 | 시끄러움 | 요구사항 3 인수 조건 2 | 요구사항 3 인수 조건 2 의 표기 |
 | E12 | 내부 셋업, 지금 폴더가 git 리포 밖 | `git.inside` 가 false. 종료 코드 6 | 멈춘다는 것과 외부 셋업 권유 | 없음 | 시끄러움 | 요구사항 3 인수 조건 3 | 요구사항 3 인수 조건 3 의 표기 |
 | E13 | 내부 셋업, `git commit` 실패 (리포 훅, 서명 설정, 커밋 메시지 규칙) | 종료 코드가 0 이 아님. 종료 코드 7 | 이유와 직접 칠 커밋 명령 | `.product/` 와 설정 파일을 남긴다. `--no-verify` 로 리포 규칙을 우회하지 않는다 | 시끄러움 | 요구사항 3 인수 조건 9 | 요구사항 3 인수 조건 9 의 표기 |
 | E14 | 문서를 쓰는 스킬, 위로 올라가도 product 폴더가 없음 | `product root` 종료 코드 3 | `/product:setup` 을 먼저 부르라는 안내 | 문서를 쓰지 않는다 | 시끄러움 | 요구사항 4 인수 조건 3 | @확정 (A3, 2026-11-22) |
 | E15 | 문서를 쓰는 스킬, 받은 경로가 외부 셋업 `repos/` 아래 | `product root --from {경로}` 의 `inRepos` 가 리포 이름 | 실제 리포 안이라 관리자에게 보일 수 있다는 한 줄 | 그 경로에 그대로 쓴다 | 시끄러움 | 요구사항 4 인수 조건 10 | @확정 (F4, 2026-11-22) |
 | E16 | 결정 기록, `git config user.name` 이 빔 | 명령 결과가 빈 줄 | 답 옆 "이름 없음", 끝맺음에 `git config --global user.name "{이름}"` | 없음 | 시끄러움 | 요구사항 4 인수 조건 14 | 요구사항 4 인수 조건 14 의 표기 |
-| E17 | setup, 맞는 버전의 CLI 가 이미 있음 | `product --version` 이 `cli-version` 이상 | 없음 | 설치를 건너뛴다 | 조용함 | 요구사항 5 인수 조건 3 | @확정 (H3, 2026-11-22), @가정 (T2) |
+| E17 | setup, 맞는 버전의 CLI 가 이미 있음 | `product --version` 이 `cli-version` 이상 | 없음 | 설치를 건너뛴다 | 조용함 | 요구사항 5 인수 조건 3 | @확정 (H3, 2026-11-22), @확정 (T2, 2026-11-23) |
 | E18 | setup, npm 이 없음 | `command -v npm` 실패 | 셋업 결과와 함께 "CLI 가 없어서 문서를 쓰는 스킬은 node 설치 뒤 쓸 수 있다" 한 줄 | `setup.sh` 로 셋업한다 | 시끄러움 | 요구사항 5 인수 조건 4 | @확정 (H2, 2026-11-22) |
 | E19 | setup, `npm i -g` 실패 (전역 폴더 권한) | npm 종료 코드가 0 이 아님 | 이유 한 줄과 `npm i -g @dorage/product@{기대 버전}` | 폴더 셋업은 하지 않고 멈춘다. 윤문 플러그인 확인은 한다 @가정 (요구사항 5 인수 조건 5 문자 그대로) | 시끄러움 | 요구사항 5 인수 조건 5 | 요구사항 5 인수 조건 5 의 표기 |
-| E20 | setup, 설치된 CLI 가 기대 버전보다 낮음 | `atLeast` 가 false | 바꾼 버전 한 줄 (예: 0.1.0 → 0.2.0) | `npm i -g @dorage/product@{기대 버전}` 로 다시 설치한다 | 시끄러움 | 요구사항 5 인수 조건 8 | @확정 (H3, 2026-11-22), @가정 (T2) |
+| E20 | setup, 설치된 CLI 가 기대 버전보다 낮음 | `atLeast` 가 false | 바꾼 버전 한 줄 (예: 0.1.0 → 0.2.0) | `npm i -g @dorage/product@{기대 버전}` 로 다시 설치한다 | 시끄러움 | 요구사항 5 인수 조건 8 | @확정 (H3, 2026-11-22), @확정 (T2, 2026-11-23) |
 | E21 | 문서를 쓰는 스킬, `product` 명령이 없음 | `command -v product` 실패 | CLI 가 없다는 것과 node 를 설치한 뒤 `/product:setup` 을 다시 부르라는 안내 | 문서를 쓰지 않는다 | 시끄러움 | 요구사항 5 인수 조건 10 | @확정 (H9, 2026-11-22) |
 | E22 | 문서를 쓰는 스킬, CLI 가 기대 버전보다 낮음 | `product root --expect` 종료 코드 5 | `/product:setup` 을 다시 부르라는 안내 | 문서를 쓰지 않는다 | 시끄러움 | 요구사항 5 인수 조건 11 | @확정 (H3, 2026-11-22) |
-| E23 | 문서를 쓰는 스킬, 찾은 product 폴더 옆 설정 파일이 없거나 깨짐 | `product root` 종료 코드 4, `reason` 에 파일 경로와 이유 (예: `mode: extrnal` 은 모르는 값) | 어느 파일이 왜 문제인지와 `/product:setup` | 문서를 쓰지 않는다 | 시끄러움 | 요구사항 6 인수 조건 5 | 요구사항 6 인수 조건 5 의 표기 |
-| E24 | CLI, 스킬이 부른 실행에서 옵션이 모자람 | 표준 입력이 터미널이 아니고 필요한 옵션이 없음. 종료 코드 2, `need` 에 빠진 옵션 | 없음 (스킬이 그 질문을 하고 다시 부른다) | 묻는 창을 띄우지 않고 바로 끝낸다 | 시끄러움 (기다리며 멈추는 대신) | 요구사항 5 인수 조건 6·7 | @초안 (T1) |
+| E23 | 문서를 쓰는 스킬, 찾은 product 폴더 옆 설정 파일이 없거나 깨짐 | `product root` 종료 코드 4, `reason` 에 파일 경로와 이유 (예: `mode: extrnal` 은 모르는 값) | 어느 파일이 왜 문제인지와 `/product:setup` | 문서를 쓰지 않는다. 경로를 받았으면 외부 셋업으로 보고 그 경로에 쓴다 @확정 (V5, 2026-11-23) | 시끄러움 | 요구사항 6 인수 조건 5 | 요구사항 6 인수 조건 5 의 표기 |
+| E24 | CLI, 스킬이 부른 실행에서 옵션이 모자람 | 표준 입력이 터미널이 아니고 필요한 옵션이 없음. 종료 코드 2, `need` 에 빠진 옵션 | 없음 (스킬이 그 질문을 하고 다시 부른다) | 묻는 창을 띄우지 않고 바로 끝낸다 | 시끄러움 (기다리며 멈추는 대신) | 요구사항 5 인수 조건 6·7 | @확정 (T1, 2026-11-23) |
 
 ## 안전망
 
@@ -357,7 +294,7 @@ CLI 종료 코드는 0 성공, 1 그 밖의 실패, 2 답이 더 필요함, 3 pr
     - 걸린 컴포넌트: `packages/cli/`, `cli-version`
     - 쓰는 때: 낸 버전에서 셋업이나 `product root` 가 틀리게 동작할 때
 - 단계 배포
-    - 장치: CLI 를 먼저 npm 에 내고, `npm view @dorage/product version` 이 새 버전을 보여 준 뒤에 `cli-version` 을 올린 플러그인을 머지한다. 이 리포는 지금 브랜치의 플러그인을 바로 쓰므로 마스터가 먼저 써 보고, 다른 리포는 `/plugin update` 를 할 때 받는다 @초안 (S1)
+    - 장치: CLI 를 먼저 npm 에 내고, `npm view @dorage/product version` 이 새 버전을 보여 준 뒤에 `cli-version` 을 올린 플러그인을 머지한다. 이 리포는 지금 브랜치의 플러그인을 바로 쓰므로 마스터가 먼저 써 보고, 다른 리포는 `/plugin update` 를 할 때 받는다 @확정 (S1, 2026-11-23)
     - 걸린 컴포넌트: `cli-version`, setup 스킬
     - 쓰는 때: CLI 버전을 올릴 때마다. 순서가 바뀌면 setup 이 아직 없는 버전을 설치하다 E19 로 멈춘다
 - 데이터 보호

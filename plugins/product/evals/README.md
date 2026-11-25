@@ -47,6 +47,18 @@ npx tsx plugins/product/evals/run.ts
 
 ## 돌리는 법
 
+### 준비 (리눅스)
+
+평가 case 는 셸 명령(Bash)을 허락한 채 돈다. `claude plugin eval` 은 셸 명령을 격리된 칸(sandbox) 안에서만 돌리고, 격리할 수 없으면 실행을 거부한다. 리눅스에서 격리에 쓰는 도구 두 개가 없으면 모든 case 가 `Sandbox required but unavailable` 로 멈추고 점수는 0 에 가깝게 나온다.
+
+```bash
+sudo apt install -y bubblewrap socat
+```
+
+- `bubblewrap`: 프로그램을 격리된 칸에 가둬 허락한 폴더만 쓰게 한다. 시험하는 플러그인이 실제 파일을 건드리지 못하게 하는 데 쓴다
+- `socat`: 두 통로 사이에서 데이터를 넘겨 주는 중계 도구다. 칸 안의 인터넷 연결을 바깥 중계 지점으로 넘겨 허락한 주소로만 나가게 하는 데 쓴다
+- 지울 때는 `sudo apt remove bubblewrap socat`
+
 ### 처음 한 번 (기준 만들기)
 
 - `npx tsx plugins/product/evals/run.ts --runs 1` 로 한 번 돌려 본다. 기준이 없어서 비교 없이 돌리기만 한다
