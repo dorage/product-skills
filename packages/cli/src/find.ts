@@ -1,6 +1,6 @@
 import { statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { DEFAULT_DIR, productDirName, SETTINGS_FILE } from "./settings.js";
+import { DEFAULT_PRODUCT_DIR_NAME, readProductDirName, SETTINGS_FILE } from "./settings.js";
 
 export interface FoundProduct {
   productDir: string;
@@ -24,11 +24,11 @@ const isFile = (p: string): boolean => {
 };
 
 // 폴더 하나가 product 루트인지 본다.
-// 설정 파일이 있으면 그 dir(없으면 .product)을 product 폴더로 본다. 설정 파일이 없으면 .product/ 가 있어야 한다
+// 설정 파일이 있으면 그 productDirName(없으면 .product)을 product 폴더로 본다. 설정 파일이 없으면 .product/ 가 있어야 한다
 export function productAt(dir: string): FoundProduct | null {
   const settingsFile = join(dir, SETTINGS_FILE);
-  if (isFile(settingsFile)) return { productDir: join(dir, productDirName(settingsFile)), settingsFile };
-  const productDir = join(dir, DEFAULT_DIR);
+  if (isFile(settingsFile)) return { productDir: join(dir, readProductDirName(settingsFile)), settingsFile };
+  const productDir = join(dir, DEFAULT_PRODUCT_DIR_NAME);
   return isDir(productDir) ? { productDir, settingsFile } : null;
 }
 

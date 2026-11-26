@@ -306,7 +306,7 @@ H4 답에서 마스터가 설정 파일을 두자고 해서 생긴 요구사항�
 | 셋업 방식 | `mode: external` | `mode: internal` | @결정 |
 | product 루트 | `root: .` (설정 파일이 있는 폴더, `~/work/cafe/`) | `root: .` (`~/work/shop/`) | @초안 |
 | 문서 템플릿 위치 | `templates: {}` | `templates: {}` | @확정 (H8, 2026-11-22) |
-| product 폴더 이름 | 적지 않음. 적으면 `dir: specs` 처럼 설정 파일 기준 상대 경로, 없으면 `.product` | 같음 | @결정 (2026-11-26 "settings에 명시되어 있지 않다면, 기본은 .product"), 경로 규칙은 @초안 |
+| product 폴더 이름 | 적지 않음. 적으면 `productDirName: specs` 처럼 설정 파일 옆 폴더 이름 하나, 없으면 `.product` | 같음 | 기본값은 @결정 (2026-11-26 "settings에 명시되어 있지 않다면, 기본은 .product"), 키 이름은 @확정 (A1, 2026-11-26 "A1. productDirName 으로 변경. directory가 아니라 이름이 중요한 경우라서."), 경로를 막는 규칙은 @해석 (A1) |
 
 **지금 동작** (@사실, origin/main 코드, 2026-11-22)
 - 셋업 방식이나 루트를 적어 두는 파일이 없다. 스킬마다 `~/.sdd/{리포 이름}/` 을 직접 정한다. → 인수 조건 1, 4

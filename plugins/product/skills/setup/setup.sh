@@ -39,10 +39,10 @@ in_dir() {
 
 last_line() { printf '%s\n' "$1" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e '/^$/d' | tail -n 1; }
 
-# 설정 파일의 dir 값. 따옴표는 벗기고, 따옴표 없는 값은 뒤의 # 주석을 뗀다. 없거나 값이 비면 빈 글자
-dir_value() {
+# 설정 파일의 productDirName 값. 따옴표는 벗기고, 따옴표 없는 값은 뒤의 # 주석을 뗀다. 없거나 값이 비면 빈 글자
+name_value() {
   [ -f "$1/.product-settings" ] || return 0
-  v=$(sed -n 's/^dir:[[:space:]]*//p' "$1/.product-settings" | head -n 1)
+  v=$(sed -n 's/^productDirName:[[:space:]]*//p' "$1/.product-settings" | head -n 1)
   case $v in
     \'*) printf '%s' "$v" | sed "s/^'\([^']*\)'.*/\1/" ;;
     \"*) printf '%s' "$v" | sed 's/^"\([^"]*\)".*/\1/' ;;
@@ -50,18 +50,18 @@ dir_value() {
   esac
 }
 
-# dir 값이 설정 파일 기준 상대 경로이고 그 폴더 밖을 가리키지 않으면 0 (CLI settings.ts 와 같은 규칙)
-dir_ok() {
+# productDirName 이 폴더 이름 하나면 0 (CLI settings.ts 와 같은 규칙). / 나 \ 가 든 경로, . 과 .. 은 안 된다
+name_ok() {
   case $1 in
-    '' | /* | . | ./ | .. | ../* | */.. | */../*) return 1 ;;
+    '' | . | .. | */* | *\\*) return 1 ;;
   esac
   return 0
 }
 
-# product 폴더 이름. 설정 파일에 쓸 수 있는 dir 이 있으면 그 값, 아니면 .product
+# product 폴더 이름. 설정 파일에 쓸 수 있는 productDirName 이 있으면 그 값, 아니면 .product
 product_name() {
-  n=$(dir_value "$1")
-  if [ -n "$n" ] && dir_ok "$n"; then printf '%s' "$n"; else printf '.product'; fi
+  n=$(name_value "$1")
+  if [ -n "$n" ] && name_ok "$n"; then printf '%s' "$n"; else printf '.product'; fi
 }
 
 # 폴더 하나가 product 루트인지. 설정 파일이 있거나, 없으면 .product/ 가 있어야 한다
@@ -70,12 +70,12 @@ is_product_root() { [ -f "$1/.product-settings" ] || [ -d "$1/.product" ]; }
 # none | missing | invalid | ok
 settings_state() {
   [ -f "$1/.product-settings" ] || { [ -d "$1/.product" ] && echo missing || echo none; return; }
-  n=$(dir_value "$1")
+  n=$(name_value "$1")
   if grep -Eq '^mode: (external|internal)[[:space:]]*$' "$1/.product-settings" &&
     grep -Eq '^root: ' "$1/.product-settings" &&
     grep -Eq '^templates:' "$1/.product-settings" &&
-    ! grep -Eq "^dir:[[:space:]]*(''|\"\")" "$1/.product-settings" &&
-    { [ -z "$n" ] || dir_ok "$n"; }; then
+    ! grep -Eq "^productDirName:[[:space:]]*(''|\"\")" "$1/.product-settings" &&
+    { [ -z "$n" ] || name_ok "$n"; }; then
     echo ok
   else
     echo invalid
