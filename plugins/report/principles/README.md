@@ -29,6 +29,8 @@ report 플러그인의 글과 자료를 만드는 스킬들이 함께 쓰는 원
 - `verify-with-numbers.md` 다 만든 뒤 숫자로 검사한다
 - `price-the-claim.md` 주장에 값을 매긴다
 - `label-estimates.md` 추정은 추정이라고 적고 어떻게 구했는지 댄다
+- `progress-not-activity.md` 활동량이 아니라 진척을 보인다
+- `readers-words.md` 읽는 사람의 말로 쓴다
 
 쪽 모양에 관한 원칙
 
@@ -36,7 +38,9 @@ report 플러그인의 글과 자료를 만드는 스킬들이 함께 쓰는 원
 - `three-colors.md` 색은 세 가지만 쓴다
 - `highlight-limit.md` 하이라이트는 한 쪽에 세 문장까지만 쓴다
 - `highlight-only-readable.md` 하이라이트만 읽어도 전체가 이해된다
+- `chart-shows-signal.md` 차트는 한눈에 보여야 할 신호가 있을 때만 넣는다
 
 ## 쓰는 스킬
 
-- `report:presentation`: 위 15개 모두
+- `report:presentation`: `progress-not-activity.md`, `readers-words.md`, `chart-shows-signal.md` 를 뺀 15개
+- `report:progress`: `written-vs-spoken.md` 를 뺀 17개. `decidable-ask.md` 는 정해 주실 것이 있을 때만
