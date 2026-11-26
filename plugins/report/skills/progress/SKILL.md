@@ -56,14 +56,15 @@ npx tsx "${CLAUDE_PLUGIN_ROOT}/skills/progress/scripts/collect.ts" {리포 또�
 npx tsx "${CLAUDE_PLUGIN_ROOT}/skills/progress/scripts/collect.ts" {리포} --range origin/main..origin/{브랜치} [--author ...]
 ```
 
-- 스크립트는 리포마다 범위 안 커밋, 같은 제목을 뺀 수(다른 브랜치로 옮긴 같은 커밋), 커밋이 든 원격 브랜치와 그 브랜치의 PR 을 뽑는다. `tsx` 를 받을 수 없으면 `node` 로 돌린다 (Node 24 이상)
+- 스크립트는 리포마다 범위 안 커밋, 같은 제목을 뺀 수(다른 브랜치로 옮긴 같은 커밋), 커밋이 든 원격 브랜치와 그 브랜치의 PR, 브랜치로 못 찾은 PR(커밋 SHA 로 검색)을 뽑는다. 폴더 안에 `repos/` 가 있으면(product 외부 셋업) 그 안의 리포를 쓴다. `tsx` 를 받을 수 없으면 `node` 로 돌린다 (Node 24 이상)
+- 머지 커밋으로만 들어온 PR(여러 작업을 하나로 합친 PR)은 스크립트가 못 찾는다. 기간 범위면 `gh pr list --author @me --state merged --search "merged:>={시작일}"` 로 한 번 더 찾는다
 - 기능 범위를 PR 번호로 받았으면 스크립트 없이 그 PR 들을 바로 읽는다
 - 찾은 PR 은 모두 본문까지 읽는다: `gh pr view {번호} --json title,body,state,mergedAt,additions,deletions`. 지표는 대부분 PR 본문에 있다
     - 작업 목록 체크박스 → 계획 대비 완료
     - 검증·테스트 항목 → 통과한 검사 수. 어디서 돌린 결과인지(공용 자동 검사인지 담당자 컴퓨터인지) 함께 적는다
     - 비용·시간 추정 → 줄어든 값. `label-estimates.md` 대로 추정이라고 적는다
     - 배포 순서·남은 일 → 다음 액션과 출시 단계
-- product 기능 폴더(`requirements.md`, `tasks.md`)가 있으면 `tasks.md` 의 완료·미완료 작업 수를 계획 대비 완료로 쓰고, `requirements.md` 의 목적을 배경으로 쓴다
+- product 기능 폴더(`requirements.md`, `tasks.md`)가 있으면 `tasks.md` 맨 위 mermaid 의 `class … done` 줄과 `class … todo` 줄에 든 작업 ID 수를 계획 대비 완료로 쓰고, `requirements.md` 의 목적을 배경으로 쓴다
 - 커밋 수와 날짜별 건수는 자료가 빠지지 않았는지 보는 데만 쓴다. 보고서 지표로 쓰지 않는다
 
 PR 에 묶이지 않은 커밋은 제목끼리 묶어 "작업 묶음"을 직접 만들고, 뼈대의 "LLM 이 채운 문장"에 그렇게 묶었다고 적는다.

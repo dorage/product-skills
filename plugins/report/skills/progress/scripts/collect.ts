@@ -33,10 +33,11 @@ const run = (cwd: string, cmd: string, a: string[]) => {
 };
 const isRepo = (p: string) => existsSync(join(p, ".git"));
 
-// 폴더를 주면 바로 아래 리포들을 쓴다
+// 폴더를 주면 바로 아래 리포들을 쓴다. repos/ 가 있으면(product 외부 셋업) 그 안을 쓴다
 const repos = paths.flatMap((p) => {
-  const abs = resolve(p);
-  if (isRepo(abs)) return [abs];
+  let abs = resolve(p);
+  if (existsSync(join(abs, "repos")) && statSync(join(abs, "repos")).isDirectory()) abs = join(abs, "repos");
+  else if (isRepo(abs)) return [abs];
   return readdirSync(abs)
     .map((n) => join(abs, n))
     .filter((d) => statSync(d).isDirectory() && isRepo(d));
@@ -71,7 +72,7 @@ for (const repo of repos) {
     run(repo, "git", ["branch", "-r", "--contains", c.sha])
       .split("\n")
       .map((b) => b.trim().replace(/^origin\//, ""))
-      .filter((b) => b && !b.includes("->") && !/^(main|master|HEAD)$/.test(b))
+      .filter((b) => b && !b.includes("->") && !/^(main|master|HEAD|develop|dev|stag|staging|production|prod)$|^release\//.test(b))
       .forEach((b) => branches.add(b));
   }
 
@@ -81,13 +82,31 @@ for (const repo of repos) {
   console.log("\n### 커밋\n");
   commits.forEach((c) => console.log(`- ${c.sha} ${c.date} ${c.subject}`));
 
+  const prQ = '.[] | "#\\(.number) \\(.state) \\(.title)"';
+  const found = new Set<string>();
   if (branches.size) {
     console.log("\n### 커밋이 든 브랜치와 PR\n");
     for (const b of branches) {
-      const pr = flag("--no-pr")
-        ? ""
-        : run(repo, "gh", ["pr", "list", "--head", b, "--state", "all", "--json", "number,title,state", "-q", '.[] | "#\\(.number) \\(.state) \\(.title)"']);
+      const pr = flag("--no-pr") ? "" : run(repo, "gh", ["pr", "list", "--head", b, "--state", "all", "--json", "number,title,state", "-q", prQ]);
+      pr.split("\n").filter(Boolean).forEach((l) => found.add(l.split(" ")[0]));
       console.log(`- ${b}${pr ? ` → ${pr.split("\n").join(" / ")}` : ""}`);
+    }
+  }
+
+  // 브랜치가 지워졌거나 squash 머지된 PR: 커밋 SHA 로 PR 을 찾는다 (같은 제목은 한 번만, 최대 40건)
+  if (!flag("--no-pr")) {
+    const extra = new Map<string, string>();
+    const seen = new Set<string>();
+    for (const c of commits) {
+      if (seen.has(c.subject) || seen.size >= 40) continue;
+      seen.add(c.subject);
+      run(repo, "gh", ["pr", "list", "--search", c.sha, "--state", "all", "--json", "number,title,state", "-q", prQ])
+        .split("\n").filter(Boolean)
+        .forEach((l) => { const n = l.split(" ")[0]; if (!found.has(n)) extra.set(n, l); });
+    }
+    if (extra.size) {
+      console.log("\n### 커밋 SHA 로 찾은 PR (브랜치로 못 찾은 것)\n");
+      extra.forEach((l) => console.log(`- ${l}`));
     }
   }
   console.log("");
