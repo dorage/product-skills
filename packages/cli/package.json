@@ -1,6 +1,6 @@
 {
   "name": "@dorage/product",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "product 플러그인의 셋업과 product 폴더 찾기를 맡는 CLI",
   "type": "module",
   "bin": {
