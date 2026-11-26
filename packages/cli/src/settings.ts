@@ -9,6 +9,8 @@ export interface Settings {
   // 설정 파일이 있는 폴더를 기준으로 푼 절대 경로
   root: string;
   templates: Record<string, unknown>;
+  // product 폴더 이름. 설정 파일이 있는 폴더 바로 아래 폴더 하나. 설정 파일에 없으면 DEFAULT_PRODUCT_DIR_NAME
+  productDirName: string;
 }
 
 export class SettingsError extends Error {
@@ -21,6 +23,18 @@ export class SettingsError extends Error {
 }
 
 export const SETTINGS_FILE = ".product-settings";
+export const DEFAULT_PRODUCT_DIR_NAME = ".product";
+
+// productDirName 이 폴더 이름 하나인지 본다. 쓸 수 있으면 null, 아니면 이유.
+// 경로가 아니라 이름이라 / 나 \ 를 넣을 수 없고, 설정 파일이 있는 폴더 자체(.)나 위 폴더(..)도 안 된다
+function nameProblem(name: unknown): string | null {
+  if (typeof name !== "string") return "productDirName 이 문자열이 아니다";
+  const t = name.trim();
+  if (t === "") return "productDirName 이 비었다";
+  if (/[\\/]/.test(t)) return `productDirName: ${t} 은 경로다. 폴더 이름 하나만 쓴다`;
+  if (t === "." || t === "..") return `productDirName: ${t} 은 폴더 이름으로 쓸 수 없다`;
+  return null;
+}
 
 // 요구사항 6 「설정 파일 내용」. root 는 상대 경로, templates 는 비워 둔다
 export function writeSettings(rootDir: string, mode: Mode): string {
@@ -47,7 +61,7 @@ export function readSettings(file: string): Settings {
     throw new SettingsError(file, `YAML 로 읽을 수 없다 (${(e as Error).message.split("\n")[0]})`);
   }
   if (!isMap(data)) throw new SettingsError(file, "YAML 맵이 아니다");
-  const { mode, root, templates } = data;
+  const { mode, root, templates, productDirName } = data;
   if (mode !== "external" && mode !== "internal") {
     throw new SettingsError(
       file,
@@ -60,5 +74,27 @@ export function readSettings(file: string): Settings {
   if (!isMap(templates)) {
     throw new SettingsError(file, templates === undefined ? "templates 가 없다" : "templates 가 맵이 아니다");
   }
-  return { mode, root: resolve(dirname(file), root), templates };
+  if (productDirName !== undefined && productDirName !== null) {
+    const problem = nameProblem(productDirName);
+    if (problem) throw new SettingsError(file, problem);
+  }
+  return {
+    mode,
+    root: resolve(dirname(file), root),
+    templates,
+    productDirName: typeof productDirName === "string" ? productDirName.trim() : DEFAULT_PRODUCT_DIR_NAME,
+  };
+}
+
+// product 폴더 이름만 너그럽게 읽는다. 설정 파일이 깨졌거나 productDirName 이 쓸 수 없는 값이면 기본 이름.
+// 깨진 설정 파일도 어느 폴더의 것인지는 알려야 해서 readSettings 와 따로 둔다
+export function readProductDirName(file: string): string {
+  try {
+    const data: unknown = parse(readFileSync(file, "utf8"));
+    const name = isMap(data) ? data.productDirName : undefined;
+    if (typeof name === "string" && nameProblem(name) === null) return name.trim();
+  } catch {
+    // 아래 기본값
+  }
+  return DEFAULT_PRODUCT_DIR_NAME;
 }
