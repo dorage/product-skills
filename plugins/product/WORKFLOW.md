@@ -23,6 +23,7 @@ flowchart LR
     draft -. 설계 전 .-> bddp["/product:bdd<br/>scenarios.md"]
     design -- 「완성」 --> task["/product:task"]
     design -- 「완성」 --> bdd["/product:bdd<br/>features/"]
+    task --> kick["/product:kickstart<br/>새 세션"]
 ```
 
 화살표는 "앞 명령이 끝나야 뒤 명령을 쓸 수 있다" 는 뜻이다. `task` 와 `bdd` 는 같은 설계를 받아 나란히 쓸 수 있다. 점선의 `bdd` 는 requirements.md 경로로, 또는 design.md 가 없는 폴더로 부른 같은 명령이다.
@@ -36,7 +37,9 @@ flowchart LR
 - 설계 문서가 「완성」 이 될 때까지 결정에 답한다 (아래 「결정에 답하기」)
 - `/product:task {폴더}`: 어떤 순서로 만드는지 작업 DAG 로 쓴다
 - `/product:bdd {폴더}`: 설계 문서가 E2E·통합으로 정한 인수 조건을 Gherkin 시나리오(`features/*.feature`)로 쓴다
-- 구현은 마스터가 요청할 때 tasks.md 를 보고 시작한다
+- `/product:kickstart {폴더}`: 구현에 착수한다. 세 문서와 지금 세션의 맥락을 인수인계 문서(`kickstart.md`)로 묶고, fable 모델의 새 세션을 백그라운드로 띄운다
+    - 새 세션은 지시와 검수만 하고, 코드 수정과 커밋은 서브에이전트에 맡긴다. 역할 규칙은 `references/kickstart.md` 「역할 규칙」에 있다
+    - 띄운 세션은 `claude attach {잡 id}` 로 본다. 지금 세션에서 바로 구현하려면 kickstart 없이 tasks.md 를 보고 시작한다
 
 ## 곁가지
 

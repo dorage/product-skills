@@ -14,6 +14,7 @@ product 명령이 남기는 결과물과, 결과물끼리 무엇을 읽는지 �
   tasks.md
   brief-dev.md
   brief-nondev.md
+  kickstart.md             # /product:kickstart 의 인수인계 문서. 커밋하지 않는다
   scenarios.md             # requirements.md 경로로, 또는 design.md 없는 폴더로 /product:bdd
   features/{도메인}/<actor>-<flow>.feature   # design.md 가 있을 때 /product:bdd
   _humanize/{run_id}/        # 윤문 작업 파일. 01_input.txt 가 윤문 전 원문
@@ -21,7 +22,7 @@ product 명령이 남기는 결과물과, 결과물끼리 무엇을 읽는지 �
 
 `/product:quick` 은 채팅 답이라 파일을 남기지 않는다.
 
-features/ 와 scenarios.md 를 뺀 마크다운 결과물은 다 쓴 뒤 `humanize-korean` 윤문을 거친다. 언제·어떻게 거치는지는 `references/spec-format.md` 「윤문」 한 곳에 있다.
+features/, scenarios.md, kickstart.md 를 뺀 마크다운 결과물은 다 쓴 뒤 `humanize-korean` 윤문을 거친다. 언제·어떻게 거치는지는 `references/spec-format.md` 「윤문」 한 곳에 있다.
 
 ## 의존관계
 
@@ -46,6 +47,10 @@ flowchart LR
     req --> bnon
     des -- 「완성」 --> tsk
     des -- 「완성」 --> fea
+    kck["kickstart.md<br/>/product:kickstart"]
+    req --> kck
+    des --> kck
+    tsk --> kck
 ```
 
 화살표는 "뒤 문서가 앞 문서를 읽는다" 는 뜻이다. 「완성」 이 붙은 화살표는 앞 문서가 `references/design.md` 「완성」 조건을 채워야 뒤 문서를 쓸 수 있다는 뜻이다.
@@ -59,6 +64,7 @@ flowchart LR
 - design.md: requirements.md 가 없으면 쓰지 않고 `/product:draft` 를 안내한다. requirements.md 에 열린 결정이 남아 있어도 쓴다
 - tasks.md: 둘 중 하나라도 없으면 쓰지 않고 빠진 문서를 만드는 명령을 안내한다. design.md 가 「완성」 이 아니면 남은 결정을 알려 준다
 - features/, scenarios.md: requirements.md 가 없으면 쓰지 않고 `/product:draft` 를 안내한다. requirements.md 경로를 받거나 폴더에 design.md 가 없으면 scenarios.md 를 쓴다. 열린 결정이 남아 있어도 멈추지 않고, 정해지지 않은 인수 조건은 scenarios.md 「미결 사항」에 남긴다. 그 밖에는 features/ 를 쓰고, design.md 가 「완성」 이 아니면 남은 결정을 알려 준다
+- kickstart.md: 세 문서 중 하나라도 없으면 쓰지 않고 빠진 문서를 만드는 명령을 안내한다. tasks.md 에 남은 작업이 없으면 새 세션을 띄우지 않는다
 - flow.md: requirements.md 가 없으면 쓰지 않고 `/product:draft` 를 안내한다. design.md 는 없어도 쓴다. requirements.md 에 열린 결정이 남아 있어도 추천안으로 그린다
 - brief-dev.md, brief-nondev.md: requirements.md 가 없으면 쓰지 않고 `/product:draft` 를 안내한다
 
@@ -69,4 +75,5 @@ flowchart LR
 - requirements.md 를 고쳤다 → `/product:design` 으로 설계에 반영한 뒤, 아래 design.md 줄을 따른다. brief 를 썼다면 `/product:brief-dev`·`/product:brief-nondev`, 화면흐름을 썼다면 `/product:flow`, scenarios.md 를 썼다면 `/product:bdd {requirements.md 경로}` 도 다시 부른다
 - design.md 를 고쳤다 → `/product:task`, `/product:bdd` 를 다시 부른다
     - tasks.md 는 이미 끝난(`done`) 작업을 그대로 두고 고친다
-- tasks.md, features/, scenarios.md, flow.md, brief 문서는 다른 문서가 읽지 않는다. 고쳐도 다시 부를 명령이 없다
+- features/, scenarios.md, flow.md, brief 문서는 다른 문서가 읽지 않는다. 고쳐도 다시 부를 명령이 없다
+- tasks.md 를 고쳤다 → 이미 띄운 지휘 세션은 tasks.md 를 다시 읽으면 된다. kickstart.md 는 tasks.md 를 가리키기만 해서 다시 쓸 것이 없다
