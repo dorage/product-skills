@@ -39,13 +39,43 @@ in_dir() {
 
 last_line() { printf '%s\n' "$1" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e '/^$/d' | tail -n 1; }
 
+# 설정 파일의 productDirName 값. 따옴표는 벗기고, 따옴표 없는 값은 뒤의 # 주석을 뗀다. 없거나 값이 비면 빈 글자
+name_value() {
+  [ -f "$1/.product-settings" ] || return 0
+  v=$(sed -n 's/^productDirName:[[:space:]]*//p' "$1/.product-settings" | head -n 1)
+  case $v in
+    \'*) printf '%s' "$v" | sed "s/^'\([^']*\)'.*/\1/" ;;
+    \"*) printf '%s' "$v" | sed 's/^"\([^"]*\)".*/\1/' ;;
+    *) printf '%s' "$v" | sed -e 's/^#.*$//' -e 's/[[:space:]]#.*$//' -e 's/[[:space:]]*$//' ;;
+  esac
+}
+
+# productDirName 이 폴더 이름 하나면 0 (CLI settings.ts 와 같은 규칙). / 나 \ 가 든 경로, . 과 .. 은 안 된다
+name_ok() {
+  case $1 in
+    '' | . | .. | */* | *\\*) return 1 ;;
+  esac
+  return 0
+}
+
+# product 폴더 이름. 설정 파일에 쓸 수 있는 productDirName 이 있으면 그 값, 아니면 .product
+product_name() {
+  n=$(name_value "$1")
+  if [ -n "$n" ] && name_ok "$n"; then printf '%s' "$n"; else printf '.product'; fi
+}
+
+# 폴더 하나가 product 루트인지. 설정 파일이 있거나, 없으면 .product/ 가 있어야 한다
+is_product_root() { [ -f "$1/.product-settings" ] || [ -d "$1/.product" ]; }
+
 # none | missing | invalid | ok
 settings_state() {
-  [ -d "$1/.product" ] || { echo none; return; }
-  [ -f "$1/.product-settings" ] || { echo missing; return; }
+  [ -f "$1/.product-settings" ] || { [ -d "$1/.product" ] && echo missing || echo none; return; }
+  n=$(name_value "$1")
   if grep -Eq '^mode: (external|internal)[[:space:]]*$' "$1/.product-settings" &&
     grep -Eq '^root: ' "$1/.product-settings" &&
-    grep -Eq '^templates:' "$1/.product-settings"; then
+    grep -Eq '^templates:' "$1/.product-settings" &&
+    ! grep -Eq "^productDirName:[[:space:]]*(''|\"\")" "$1/.product-settings" &&
+    { [ -z "$n" ] || name_ok "$n"; }; then
     echo ok
   else
     echo invalid
@@ -67,7 +97,7 @@ make_product() {
 ancestor() {
   d=$(dirname "$1")
   while :; do
-    if [ -d "$d/.product" ]; then echo "$d/.product"; return; fi
+    if is_product_root "$d"; then echo "$d/$(product_name "$d")"; return; fi
     [ "$d" = / ] && return
     d=$(dirname "$d")
   done
@@ -85,7 +115,7 @@ already() {
     ok)
       echo ALREADY
       echo "mode: $(settings_mode "$1")"
-      echo "productDir: $1/.product"
+      echo "productDir: $1/$(product_name "$1")"
       return 0
       ;;
     invalid)
@@ -100,7 +130,7 @@ already() {
 
 # E2: .product/ 만 있을 때 설정 파일만 만든다. 커밋하지 않고 직접 칠 커밋 명령을 보여 준다
 settings_only() {
-  if [ ! -d "$1/.product" ]; then
+  if ! is_product_root "$1"; then
     echo "$1 에 .product/ 가 없다" >&2
     exit 1
   fi
@@ -114,7 +144,7 @@ settings_only() {
 
 cmd_inspect() {
   state=$(settings_state "$HERE")
-  if [ "$state" = none ]; then echo "here: none"; else echo "here: $HERE/.product"; fi
+  if [ "$state" = none ]; then echo "here: none"; else echo "here: $HERE/$(product_name "$HERE")"; fi
   echo "settings: $state"
   if [ "$state" = ok ]; then echo "mode: $(settings_mode "$HERE")"; else echo "mode: none"; fi
   a=$(ancestor "$HERE")
@@ -144,7 +174,7 @@ cmd_internal() {
   fi
   top=$(git_top)
   if [ "$top" = "$HERE" ] || [ "$1" = here ]; then target=$HERE; else target=$top; fi
-  if [ -d "$target/.product" ]; then
+  if is_product_root "$target"; then
     already "$target" && return
     settings_only "$target" internal
     return
@@ -174,7 +204,7 @@ cmd_internal() {
 
 cmd_external() {
   if [ $# -eq 0 ]; then echo "사용법: setup.sh external <리포 주소>..." >&2; exit 1; fi
-  if [ -d "$HERE/.product" ]; then
+  if is_product_root "$HERE"; then
     already "$HERE" && return
     settings_only "$HERE" external
     return

@@ -19,7 +19,7 @@ for (const mode of ["external", "internal"] as const) {
     const file = writeSettings(dir, mode);
     assert.equal(file, join(dir, ".product-settings"));
     assert.deepEqual(parse(readFileSync(file, "utf8")), { mode, root: ".", templates: {} });
-    assert.deepEqual(readSettings(file), { mode, root: dir, templates: {} });
+    assert.deepEqual(readSettings(file), { mode, root: dir, templates: {}, productDirName: ".product" });
   });
 }
 
@@ -34,7 +34,7 @@ test("모르는 키는 무시한다", () => {
   const dir = tmp();
   const file = join(dir, ".product-settings");
   writeFileSync(file, "mode: internal\nroot: .\ntemplates: {}\nextra: 1\n");
-  assert.deepEqual(readSettings(file), { mode: "internal", root: dir, templates: {} });
+  assert.deepEqual(readSettings(file), { mode: "internal", root: dir, templates: {}, productDirName: ".product" });
 });
 
 const broken: [string, string | null, RegExp][] = [

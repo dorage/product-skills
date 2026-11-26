@@ -80,7 +80,7 @@ const root: Command = {
       if (from !== undefined) {
         return { productDir: null, mode: null, root: null, inRepos: null, legacyDir: legacy };
       }
-      throw new CliError("notFound", `${ctx.cwd} 에서 위로 올라가도 .product/ 가 없다`, [
+      throw new CliError("notFound", `${ctx.cwd} 에서 위로 올라가도 product 폴더(.product/ 또는 .product-settings)가 없다`, [
         "/product:setup",
       ]);
     }
