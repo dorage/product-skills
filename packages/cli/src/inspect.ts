@@ -1,8 +1,8 @@
 import { realpathSync, statSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
-import { findProduct } from "./find.js";
+import { dirname, resolve } from "node:path";
+import { findProduct, productAt } from "./find.js";
 import { git } from "./git.js";
-import { type Mode, readSettings, SETTINGS_FILE, SettingsError } from "./settings.js";
+import { type Mode, readSettings, SettingsError } from "./settings.js";
 
 export interface Here {
   productDir: string;
@@ -24,14 +24,6 @@ export interface Inspection {
   git: GitState;
 }
 
-const isDir = (p: string): boolean => {
-  try {
-    return statSync(p).isDirectory();
-  } catch {
-    return false;
-  }
-};
-
 const real = (p: string): string => {
   try {
     return realpathSync(p);
@@ -40,19 +32,20 @@ const real = (p: string): string => {
   }
 };
 
-// 폴더 하나에 .product/ 와 설정 파일이 있는지 본다 (E1·E2)
+// 폴더 하나에 product 폴더와 설정 파일이 있는지 본다 (E1·E2)
 export function productHere(dir: string): Here | null {
-  const productDir = join(dir, ".product");
-  if (!isDir(productDir)) return null;
+  const found = productAt(dir);
+  if (!found) return null;
+  const { productDir, settingsFile } = found;
   try {
-    const s = readSettings(join(dir, SETTINGS_FILE));
+    const s = readSettings(settingsFile);
     return { productDir, settings: "ok", mode: s.mode };
   } catch (e) {
     if (!(e instanceof SettingsError)) throw e;
     // readSettings 는 파일이 없을 때와 깨졌을 때를 같은 오류로 낸다. 파일 유무로 나눈다
     let exists = true;
     try {
-      statSync(join(dir, SETTINGS_FILE));
+      statSync(settingsFile);
     } catch {
       exists = false;
     }
