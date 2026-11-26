@@ -94,6 +94,8 @@
 
 `product:draft`·`product:persona-review`·`product:design`·`product:flow`·`product:brief-dev`·`product:brief-nondev`·`product:task`·`product:bdd` 가 문서를 쓰는 자리다. 문서는 `/product:setup` 으로 셋업한 product 폴더(`.product/`) 안 기능 폴더에 모은다. 어느 폴더에서 스킬을 불러도 위로 가장 가까운 product 폴더 한 곳에 한 기능의 문서가 쌓이게 하려는 것이다.
 
+product 폴더 이름은 설정 파일(`.product-settings`)의 `dir` 로 바꿀 수 있다. 없으면 `.product` 다. 스킬은 이름을 짐작하지 않고 아래 명령이 돌려준 `productDir` 만 쓴다. 아래 예시의 `.product/` 도 그 자리에 `productDir` 이 들어간다.
+
 ### product 폴더 찾기
 
 문서를 쓰기 전에 아래 명령을 그대로 실행한다. 경로를 받았을 때도 실행한다(「폴더 고르기」).
