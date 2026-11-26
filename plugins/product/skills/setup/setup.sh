@@ -39,11 +39,15 @@ in_dir() {
 
 last_line() { printf '%s\n' "$1" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e '/^$/d' | tail -n 1; }
 
-# 설정 파일의 dir 값. 따옴표는 벗긴다. 없으면 빈 글자
+# 설정 파일의 dir 값. 따옴표는 벗기고, 따옴표 없는 값은 뒤의 # 주석을 뗀다. 없거나 값이 비면 빈 글자
 dir_value() {
   [ -f "$1/.product-settings" ] || return 0
-  sed -n 's/^dir:[[:space:]]*//p' "$1/.product-settings" | head -n 1 |
-    sed -e 's/[[:space:]]*$//' -e "s/^'\(.*\)'$/\1/" -e 's/^"\(.*\)"$/\1/'
+  v=$(sed -n 's/^dir:[[:space:]]*//p' "$1/.product-settings" | head -n 1)
+  case $v in
+    \'*) printf '%s' "$v" | sed "s/^'\([^']*\)'.*/\1/" ;;
+    \"*) printf '%s' "$v" | sed 's/^"\([^"]*\)".*/\1/' ;;
+    *) printf '%s' "$v" | sed -e 's/^#.*$//' -e 's/[[:space:]]#.*$//' -e 's/[[:space:]]*$//' ;;
+  esac
 }
 
 # dir 값이 설정 파일 기준 상대 경로이고 그 폴더 밖을 가리키지 않으면 0 (CLI settings.ts 와 같은 규칙)
@@ -70,7 +74,8 @@ settings_state() {
   if grep -Eq '^mode: (external|internal)[[:space:]]*$' "$1/.product-settings" &&
     grep -Eq '^root: ' "$1/.product-settings" &&
     grep -Eq '^templates:' "$1/.product-settings" &&
-    { ! grep -Eq '^dir:' "$1/.product-settings" || dir_ok "$n"; }; then
+    ! grep -Eq "^dir:[[:space:]]*(''|\"\")" "$1/.product-settings" &&
+    { [ -z "$n" ] || dir_ok "$n"; }; then
     echo ok
   else
     echo invalid

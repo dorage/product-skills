@@ -144,3 +144,28 @@ test("setup.sh inspect 도 dir 로 바꾼 폴더를 알리고, 쓸 수 없는 di
   assert.match(r.stdout, /^settings: invalid$/m);
   assert.equal(inspect(root).here?.settings, "invalid");
 });
+
+// setup.sh 는 YAML 파서 없이 sed 로 읽는다. 자주 쓸 모양에서 CLI 와 같은 판단을 하는지 본다
+for (const [raw, want] of [
+  ["", ".product"],
+  ["specs # 주석", "specs"],
+  ["'my specs' # 주석", "my specs"],
+  ["''", null],
+  ["../x", null],
+] as const) {
+  test(`setup.sh 와 CLI 가 dir: ${raw || "(빈 값)"} 을 같게 읽는다`, () => {
+    const root = tmp();
+    writeFileSync(join(root, ".product-settings"), settings("internal", raw));
+    const here = inspect(root).here;
+    const r = runSh(root, "inspect");
+    if (want === null) {
+      assert.equal(here?.settings, "invalid");
+      assert.match(r.stdout, /^settings: invalid$/m);
+    } else {
+      assert.equal(here?.settings, "ok", here?.reason);
+      assert.equal(here?.productDir, join(root, want));
+      assert.match(r.stdout, /^settings: ok$/m);
+      assert.match(r.stdout, new RegExp(`^here: ${root}/${want}$`, "m"));
+    }
+  });
+}
