@@ -41,8 +41,7 @@ flowchart LR
     req --> tsk
     req --> fea
     req -- design.md 없을 때 --> scn
-    req --> bdev
-    req --> bnon
+    req --> brief
     des -- 「완성」 --> tsk
     des -- 「완성」 --> fea
     kck["kickstart.md<br/>/product:kickstart"]
