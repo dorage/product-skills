@@ -13,7 +13,7 @@
     {
       "name": "report",
       "source": "./plugins/report",
-      "description": "보고 자료 스킬 묶음 — /report:presentation 가로 16:9 발표 자료 PDF. 스킬이 따르는 원칙 문서는 플러그인 안 principles/ 에 있다"
+      "description": "보고 자료 스킬 묶음 — /report:presentation 가로 16:9 발표 자료 PDF, /report:progress 기간·기능 단위 진행 보고 PDF. 스킬이 따르는 원칙 문서는 플러그인 안 principles/ 에 있다"
     }
   ]
 }

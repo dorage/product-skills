@@ -7,6 +7,7 @@
 ```
 
 - `/report:presentation` — 자료와 주장을 받아 가로 16:9 발표 자료 PDF 로 만든다. 쪽별 하이라이트 뼈대를 먼저 승인받고, HTML 로 쓰고, PDF 로 뽑아 숫자로 검사한다
+- `/report:progress` — 기간(이번 주 등) 또는 기능(PR·브랜치·기능 폴더) 범위의 커밋과 PR 본문으로 배경 → 성과 → 다음 액션 진행 보고 PDF 를 만든다. 진척 지표와 차트 후보를 뼈대에 담아 승인받고, presentation 의 검사 스크립트로 검사한다
 
 ## 원칙 문서
 
@@ -16,7 +17,8 @@
 
 - Google Chrome: HTML 을 PDF 로 뽑는다 (macOS 경로 기준)
 - `pdfinfo`, `pdftotext` (poppler): 검사 스크립트가 쪽 수, 쪽 크기, 넣지 않을 말을 센다
-- `npx tsx` 또는 Node 24 이상: 검사 스크립트를 돌린다
+- `npx tsx` 또는 Node 24 이상: 검사·자료 모으기 스크립트를 돌린다
+- `git`, `gh` (GitHub CLI): progress 가 커밋과 PR 본문을 읽는다
 
 ## 고친 뒤 반영하기
 

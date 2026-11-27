@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>{보고서 이름}</title>
+<style>
+  /* 색은 이 세 값만 바꾼다. 다른 곳에 색 값을 직접 적지 않는다. */
+  :root {
+    --bg: #FFFFFF;   /* 배경색 */
+    --ink: #1A1A1A;  /* 글자색 */
+    --hl: #4F76C4;   /* 하이라이트 = hsl(220 50% 54%) */
+  }
+  @page { size: 1280px 720px; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); }
+  body {
+    font-family: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+    color: var(--ink);
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    word-break: keep-all;
+  }
+  .page {
+    width: 1280px; height: 720px; padding: 72px 86px 56px;
+    background: var(--bg); position: relative; overflow: hidden;
+    page-break-after: always; break-after: page;
+    display: flex; flex-direction: column;
+  }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+  .hl { color: var(--hl); }
+  .dim { opacity: .62; }
+  .eyebrow { font-size: 16px; font-weight: 700; letter-spacing: .12em; opacity: .62; margin-bottom: 12px; }
+  h1 { font-size: 36px; line-height: 1.34; font-weight: 800; letter-spacing: -.01em; }
+  .rule { height: 1px; background: var(--ink); opacity: .22; margin: 22px 0 24px; }
+  .body { flex: 1; display: flex; flex-direction: column; }
+  .src { font-size: 14px; opacity: .58; margin-top: auto; padding-top: 14px; }
+  .pno { position: absolute; right: 86px; bottom: 30px; font-size: 13px; opacity: .45; }
+  p.lead { font-size: 21px; line-height: 1.6; font-weight: 500; }
+  b, strong { font-weight: 800; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 19px; line-height: 1.5; }
+  th, td { text-align: left; vertical-align: top; padding: 12px 16px; border-bottom: 1px solid color-mix(in srgb, var(--ink) 20%, transparent); }
+  thead th { font-weight: 800; border-bottom: 2px solid var(--ink); font-size: 18px; }
+  tbody th { font-weight: 700; width: 220px; opacity: .75; }
+
+  .cols { display: grid; gap: 32px; }
+  .c2 { grid-template-columns: 1fr 1fr; }
+  .c4 { grid-template-columns: repeat(4, 1fr); }
+  .box { border-top: 2px solid var(--ink); padding-top: 14px; }
+  .box h3 { font-size: 21px; font-weight: 800; margin-bottom: 10px; }
+  .box p, .box li { font-size: 18px; line-height: 1.58; }
+  .box ul { list-style: none; }
+  .box li { padding-left: 14px; position: relative; margin-bottom: 6px; }
+  .box li::before { content: "·"; position: absolute; left: 0; font-weight: 800; }
+  .tag { font-size: 14px; font-weight: 700; letter-spacing: .08em; opacity: .6; margin-bottom: 6px; }
+  .big { font-size: 52px; font-weight: 800; line-height: 1.05; letter-spacing: -.02em; }
+  .kpi p { font-size: 16px; line-height: 1.45; margin-top: 8px; opacity: .75; }
+
+  /* 차트: 계획 대비 진행 막대 */
+  .prog { display: grid; grid-template-columns: 170px 1fr 150px; column-gap: 18px; align-items: center; margin-bottom: 16px; }
+  .prog .nm { font-size: 18px; font-weight: 700; }
+  .prog .track { height: 18px; position: relative; }
+  .prog .track::before { content: ""; position: absolute; inset: 0; background: var(--ink); opacity: .1; }
+  .prog .fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--ink); }
+  .prog .v { font-size: 18px; font-weight: 800; text-align: right; }
+  .prog .v small { font-weight: 500; opacity: .6; font-size: 14px; }
+
+  /* 차트: 전후 비교 막대 */
+  .vbar { display: flex; align-items: flex-end; gap: 44px; height: 300px; padding-left: 10px; border-bottom: 2px solid var(--ink); position: relative; }
+  .vbar .col { width: 120px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .vbar .amt { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
+  .vbar .bar { width: 100%; background: var(--ink); }
+  .vbar .bar.ghost { opacity: .25; }
+  .vbar .save { position: absolute; left: 186px; top: 6px; font-size: 22px; font-weight: 800; }
+  .vlab { display: flex; gap: 44px; padding-left: 10px; margin-top: 10px; }
+  .vlab div { width: 120px; text-align: center; font-size: 15px; opacity: .7; }
+
+  /* 차트: 출시 단계 막대 */
+  .stages { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .stage .seg { height: 22px; background: var(--ink); }
+  .stage.todo .seg { opacity: .14; }
+  .stage .d { font-size: 18px; font-weight: 800; margin-top: 12px; }
+  .stage .t { font-size: 14px; line-height: 1.45; margin-top: 4px; opacity: .72; }
+  .stage.todo .d { opacity: .62; }
+  .now { font-size: 16px; font-weight: 800; margin-bottom: 10px; }
+
+  .flow { display: grid; position: relative; }
+  .flow::before { content: ""; position: absolute; left: 0; right: 0; top: 7px; height: 2px; background: var(--ink); opacity: .3; }
+  .step { position: relative; padding: 26px 18px 0 0; }
+  .step::before { content: ""; position: absolute; left: 0; top: 0; width: 14px; height: 14px; border-radius: 50%; background: var(--ink); }
+  .step .d { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+  .step .t { font-size: 17px; line-height: 1.5; }
+
+  .cover { justify-content: flex-end; padding-bottom: 96px; }
+  .cover h1 { font-size: 52px; line-height: 1.28; }
+  .cover .who { font-size: 19px; opacity: .65; margin-top: 30px; }
+
+  .concl { display: grid; grid-template-columns: 50px 1fr 110px; column-gap: 12px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid color-mix(in srgb, var(--ink) 20%, transparent); }
+  .concl .n { font-size: 32px; font-weight: 800; }
+  .concl .s { font-size: 25px; line-height: 1.42; font-weight: 800; }
+  .concl .to { font-size: 15px; opacity: .6; text-align: right; }
+</style>
+</head>
+<body>
+<!--
+  진행 보고 템플릿. 쪽 견본을 골라 뼈대 표대로 채우고, 쓰지 않는 견본은 지운다.
+  {…} 는 모두 바꿔 넣는다. 색은 :root 의 세 값만 바꾼다. 하이라이트는 class="hl" 하나로만 건다.
+  막대 길이는 style 의 width / height 를 실제 숫자 비율로 계산해 넣는다.
+-->
+
+<!-- 견본: 표지 -->
+<section class="page cover">
+  <div class="eyebrow">{팀·범위} · {주간 보고 | 기능 보고}</div>
+  <h1 class="hl">{이 기간(기능)에 무엇이 되었는지 한 문장}</h1>
+  <div class="who">{기간 또는 기능 이름} · {작성자 역할}</div>
+</section>
+
+<!-- 견본: 결론 + 계획 대비 진행 막대 + 지표 칸 -->
+<section class="page">
+  <div class="eyebrow">먼저 결론</div>
+  <h1>세 문장으로 말씀드립니다</h1>
+  <div class="rule" style="margin:18px 0 4px"></div>
+  <div class="body">
+    <div class="concl"><div class="n">1</div><div class="s hl">{묶음 가의 결론 문장}</div><div class="to">3 ~ 4쪽</div></div>
+    <div class="concl"><div class="n">2</div><div class="s hl">{묶음 나의 결론 문장}</div><div class="to">5쪽</div></div>
+    <div class="concl"><div class="n">3</div><div class="s hl">{묶음 다의 결론 문장}</div><div class="to">6쪽</div></div>
+    <div class="cols" style="grid-template-columns:2.1fr 1fr; gap:48px; margin-top:26px">
+      <div>
+        <div class="tag" style="margin-bottom:14px">계획 대비 완료</div>
+        <div class="prog"><div class="nm">{묶음 가}</div><div class="track"><div class="fill" style="width:100%"></div></div><div class="v">{12} / {12} <small>100%</small></div></div>
+        <div class="prog"><div class="nm">{묶음 나}</div><div class="track"><div class="fill" style="width:75%"></div></div><div class="v">{6} / {8} <small>75%</small></div></div>
+        <div class="prog"><div class="nm">{묶음 다}</div><div class="track"><div class="fill" style="width:50%"></div></div><div class="v">{2} / {4} <small>50%</small></div></div>
+      </div>
+      <div class="cols c2" style="gap:24px">
+        <div class="box kpi"><div class="big" style="font-size:44px">{000건}</div><p>{지표 설명}</p></div>
+        <div class="box kpi"><div class="big" style="font-size:44px">{00개}</div><p>{지표 설명}</p></div>
+      </div>
+    </div>
+    <div class="src">출처: {작업 묶음 번호와 본문 항목}. {직접 확인하지 못한 숫자는 어디서 왔는지}</div>
+  </div>
+  <div class="pno">2</div>
+</section>
+
+<!-- 견본: 배경 (흐름 그림. 칸 수는 grid-template-columns 의 숫자로 맞춘다) -->
+<section class="page">
+  <div class="eyebrow">가. {묶음 이름} · 배경</div>
+  <h1 class="hl">{왜 이 일을 했는지 한 문장}</h1>
+  <div class="rule"></div>
+  <div class="body">
+    <div class="flow" style="grid-template-columns:repeat(4,1fr)">
+      <div class="step"><div class="d">{단계}</div><div class="t">{설명}</div></div>
+      <div class="step"><div class="d">{단계}</div><div class="t">{설명}</div></div>
+      <div class="step"><div class="d">{단계}</div><div class="t">{설명}</div></div>
+      <div class="step"><div class="d">{단계}</div><div class="t">{설명}</div></div>
+    </div>
+    <p class="lead" style="margin-top:52px">{흐름에서 꼭 짚을 한 문장}</p>
+    <div class="src">출처: {작업 묶음 번호와 본문 항목} (요지)</div>
+  </div>
+  <div class="pno">3</div>
+</section>
+
+<!-- 견본: 성과 (이제 되는 것 표) -->
+<section class="page">
+  <div class="eyebrow">가. {묶음 이름} · 성과</div>
+  <h1 class="hl">{이제 무엇이 되는지 한 문장}</h1>
+  <div class="rule" style="margin-bottom:6px"></div>
+  <div class="body">
+    <table>
+      <thead><tr><th style="width:220px">구분</th><th>이제 되는 것</th></tr></thead>
+      <tbody>
+        <tr><th>{구분}</th><td>{읽는 사람의 말로 쓴 결과}</td></tr>
+        <tr><th>{구분}</th><td>{읽는 사람의 말로 쓴 결과}</td></tr>
+        <tr><th>{구분}</th><td>{읽는 사람의 말로 쓴 결과}</td></tr>
+      </tbody>
+    </table>
+    <p class="lead" style="margin-top:22px"><b>계획 {12}개 중 {12}개 완료</b> · {두 번째 지표}</p>
+    <div class="src">출처: {작업 묶음 번호와 본문 항목}</div>
+  </div>
+  <div class="pno">4</div>
+</section>
+
+<!-- 견본: 배경과 성과 두 칸 (한 쪽으로 충분한 묶음) -->
+<section class="page">
+  <div class="eyebrow">나. {묶음 이름}</div>
+  <h1 class="hl">{이제 무엇이 되는지 한 문장}</h1>
+  <div class="rule"></div>
+  <div class="body">
+    <div class="cols c2">
+      <div class="box">
+        <div class="tag">배경</div>
+        <h3>{고치지 않았다면 생길 문제}</h3>
+        <ul><li>{문제}</li><li>{문제}</li><li>{문제}</li></ul>
+      </div>
+      <div class="box">
+        <div class="tag">성과</div>
+        <h3>계획 {6}개 중 {6}개 완료</h3>
+        <ul><li>{결과}</li><li>{결과}</li><li>{지표} <b>{000건}</b></li></ul>
+      </div>
+    </div>
+    <div class="src">출처: {작업 묶음 번호와 본문 항목}. {숫자를 어떻게 구했는지}</div>
+  </div>
+  <div class="pno">5</div>
+</section>
+
+<!-- 견본: 표 + 전후 비교 막대 (막대 높이 = 240px × 값 ÷ 큰 값) -->
+<section class="page">
+  <div class="eyebrow">다. {묶음 이름}</div>
+  <h1 class="hl">{줄어든 비용·시간을 담은 한 문장}</h1>
+  <div class="rule" style="margin-bottom:6px"></div>
+  <div class="body">
+    <div class="cols" style="grid-template-columns:1.55fr 1fr; gap:56px">
+      <table style="font-size:17px">
+        <thead><tr><th style="width:170px">작업</th><th>한 일과 지표</th></tr></thead>
+        <tbody>
+          <tr><th>{작업}</th><td>{한 일}. <b>{지표}</b></td></tr>
+          <tr><th>{작업}</th><td>{한 일}. <b>{지표}</b></td></tr>
+        </tbody>
+      </table>
+      <div>
+        <div class="tag" style="margin-bottom:10px">{무엇의} 월 비용 (추정)</div>
+        <div class="vbar">
+          <div class="col"><div class="amt">{$200}</div><div class="bar" style="height:240px"></div></div>
+          <div class="col"><div class="amt">{$140}</div><div class="bar" style="height:168px"></div></div>
+          <div class="save hl">월 {$60}({30}%) 줄어듭니다</div>
+        </div>
+        <div class="vlab"><div>지금</div><div>바꾼 뒤</div></div>
+        <p style="font-size:15px; margin-top:12px; opacity:.7">{1년 환산 값}</p>
+      </div>
+    </div>
+    <div class="src">출처: {작업 묶음 번호}. {추정이면 추정이라고, 계산식}</div>
+  </div>
+  <div class="pno">6</div>
+</section>
+
+<!-- 견본: 다음 액션 + 출시 단계 막대 (남은 단계는 class="stage todo", 칸 수는 .stages 의 repeat 숫자) -->
+<section class="page">
+  <div class="eyebrow">다음 액션</div>
+  <h1 class="hl">{다음에 무엇을 어떤 순서로 하는지 한 문장}</h1>
+  <div class="rule"></div>
+  <div class="body">
+    <div class="now hl">출시까지 {7}단계 중 {3}단계 완료</div>
+    <div class="stages">
+      <div class="stage"><div class="seg"></div><div class="d">기획</div><div class="t">{근거}</div></div>
+      <div class="stage"><div class="seg"></div><div class="d">개발</div><div class="t">{근거}</div></div>
+      <div class="stage"><div class="seg"></div><div class="d">검사</div><div class="t">{근거}</div></div>
+      <div class="stage todo"><div class="seg"></div><div class="d">합치기</div><div class="t">{할 일}</div></div>
+      <div class="stage todo"><div class="seg"></div><div class="d">시험 서버 확인</div><div class="t">{할 일}</div></div>
+      <div class="stage todo"><div class="seg"></div><div class="d">운영 배포</div><div class="t">{할 일}</div></div>
+      <div class="stage todo"><div class="seg"></div><div class="d">공개</div><div class="t">{할 일}</div></div>
+    </div>
+    <div class="box" style="margin-top:40px">
+      <h3>함께 처리할 것</h3>
+      <ul><li>{아직 안 된 것, 숨기지 않고}</li><li>{문제가 생기면 되돌리는 방법}</li></ul>
+    </div>
+    <div class="src">출처: {작업 묶음 번호와 본문 항목}</div>
+  </div>
+  <div class="pno">7</div>
+</section>
+
+</body>
+</html>
