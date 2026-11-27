@@ -158,30 +158,37 @@ test("design 규칙이 -> 없는 결정 제목과 6번째 결정을 잡는다", 
 test("brief 의 줄 수 규칙이 골든 요구사항 문서의 번호 줄·헤딩 수와 같다", () => {
   // brief 는 「참여자별 검토 기록」 절을 옮기지 않는다 (references/brief-format.md 「변환 원칙」)
   const text = golden("requirements.md").replace(/\n+## 참여자별 검토 기록\n[\s\S]*$/, "\n");
-  for (const skill of ["brief-dev", "brief-nondev"]) {
-    for (const g of graderSet(skill).filter((g) => g.match?.startsWith("count:"))) {
-      assert.ok(check(g, text), `${skill} ${g.name}: 골든 문서와 수가 다릅니다`);
-    }
-  }
+  const gs = graderSet("brief");
+  assert.ok(check(gs.find((g) => g.name === "regex-numbered-count-same")!, text), "번호 줄 수가 골든 문서와 다릅니다");
+  // brief 가 더하는 헤딩 (references/brief-format.md 「더하는 줄」): LLM 맥락용, 구현 전에 확인할 것, 정해진 원칙, 지금 동작, 요구사항마다 지금 동작
+  const headings = (text.match(/^#{1,6} /gm) ?? []).length;
+  const blocks = ["정해진 원칙", "구현 전에 확인할 것"].filter((b) => text.includes(`**${b}**`)).length;
+  const now = (text.match(/^\*\*지금 동작\*\*/gm) ?? []).length;
+  const added = 1 + blocks + (now > 0 ? 1 + now : 0);
+  const count = gs.find((g) => g.name === "regex-heading-count")!;
+  assert.equal(count.match, `count:${headings + added}`, "헤딩 수 규칙이 골든 문서와 다릅니다");
 });
 
 test("brief 규칙은 골든 요구사항 문서(마커가 있는 원본)를 떨어뜨린다", () => {
   const text = golden("requirements.md");
-  const dev = graderSet("brief-dev");
-  assert.ok(!check(dev.find((g) => g.name === "regex-no-markers")!, text));
-  assert.ok(!check(dev.find((g) => g.name === "regex-no-marker-column")!, text));
-  // 원본은 「필요한 결정」이 맨 위이고 `---` 가 없어 brief 절 순서를 떨어진다
-  assert.ok(!check(dev.find((g) => g.name === "regex-section-order")!, text));
-  const nondev = graderSet("brief-nondev");
-  assert.ok(!check(nondev.find((g) => g.name === "regex-section-order")!, text));
-  // 요구사항 문서는 경로를 적지 않는다 (references/draft.md 「이 문서의 수준」). 경로가 섞인 글로 규칙을 확인한다
-  const path = nondev.find((g) => g.name === "regex-no-code-path")!;
-  assert.ok(check(path, text), "골든 요구사항 문서에 코드 경로가 남아 있습니다");
-  assert.ok(!check(path, text + "\n- 결제는 `src/order/checkout.ts` 에서 계산한다\n"));
-  const inline = nondev.find((g) => g.name === "regex-no-inline-code")!;
-  assert.ok(check(inline, text), "골든 요구사항 문서에 코드 조각이 남아 있습니다");
-  assert.ok(!check(inline, text + "\n- 결제는 `checkout()` 에서 계산한다\n"));
-  assert.ok(check(nondev.find((g) => g.name === "regex-no-inline-code")!, "```mermaid\nflowchart LR\n```\n"));
+  const gs = graderSet("brief");
+  assert.ok(!check(gs.find((g) => g.name === "regex-no-markers")!, text));
+  assert.ok(!check(gs.find((g) => g.name === "regex-no-marker-column")!, text));
+  // 원본은 「필요한 결정」이 맨 위이고 `---` 와 `# LLM 맥락용` 이 없어 brief 절 순서를 떨어진다
+  assert.ok(!check(gs.find((g) => g.name === "regex-section-order")!, text));
+  assert.ok(!check(gs.find((g) => g.name === "regex-llm-heading-once")!, text));
+});
+
+test("brief 규칙은 LLM 맥락용 블록이 앞쪽에 남은 글과 읽기 안내 줄을 잡는다", () => {
+  const gs = graderSet("brief");
+  const below = gs.find((g) => g.name === "regex-llm-blocks-below-line")!;
+  const good = "## 요구사항\n\n---\n\n# LLM 맥락용\n\n## 지금 동작\n\n**지금 동작** (origin/main 코드)\n";
+  assert.ok(check(below, good));
+  assert.ok(!check(below, "## 요구사항\n\n**지금 동작** (origin/main 코드)\n\n---\n\n# LLM 맥락용\n"));
+  assert.ok(!check(below, "## 결정 기록 (2026-11-02)\n\n---\n\n# LLM 맥락용\n"));
+  const guide = gs.find((g) => g.name === "regex-no-reading-guide")!;
+  assert.ok(check(guide, good));
+  assert.ok(!check(guide, "**여기까지 사람이 읽습니다.**\n"));
 });
 
 test("bdd 규칙이 올바른 feature 를 통과시키고 태그 없는 시나리오를 잡는다", () => {
