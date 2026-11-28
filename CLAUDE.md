@@ -30,7 +30,7 @@
 ## 플러그인을 더할 때
 
 - `plugins/{이름}/.claude-plugin/plugin.json` 과 `skills/` 를 만든다
-- `plugins/{이름}/principles/` 와 `plugins/{이름}/PRINCIPLE.md` 를 만든다 (「스킬이 지키는 원칙」)
+- `plugins/{이름}/PRINCIPLE.md` 를 만든다. `principles/` 는 첫 원칙 파일을 쓸 때 함께 생긴다 (「스킬이 지키는 원칙」)
 - `.claude-plugin/marketplace.json` 의 `plugins` 에 `"source": "./plugins/{이름}"` 으로 한 줄 더한다
 - 루트 [README.md](README.md) 「플러그인」 표에 한 줄 더한다
 - `.claude/settings.json` 의 `enabledPlugins` 에 `"{이름}@product-skills": true` 를 더한다. 이 리포에서 그 플러그인을 바로 쓰기 위해서다
@@ -41,7 +41,7 @@
 모든 스킬은 자기가 지켜야 할 원칙을 `SKILL.md` 에 풀어 쓰지 않고, 자기 플러그인의 `principles/` 에 정리한다. 원칙이 스킬 문서마다 흩어지면 어떤 원칙이 있는지 한눈에 볼 수 없고, 같은 원칙을 여러 곳에서 고쳐야 한다.
 
 - 원칙의 내용은 `plugins/{플러그인}/principles/` 에만 쓴다. 원칙 하나가 파일 하나이고, 파일 이름은 원칙을 줄인 영어 소문자와 `-` 로 짓는다 (예: `conclusion-first.md`)
-- 어떤 원칙이 있는지는 `plugins/{플러그인}/PRINCIPLE.md` 에 적는다. 원칙마다 파일 이름과 한 문장 요약을 한 줄로 쓰고, 그 원칙을 쓰는 스킬도 함께 적는다
+- 어떤 원칙이 있는지는 `plugins/{플러그인}/PRINCIPLE.md` 에 적는다. 원칙마다 파일 이름과 한 문장 요약을 한 줄로 쓴다
 - `PRINCIPLE.md` 에는 목록만 둔다. 원칙의 설명과 예시는 원칙 파일에 있다
 - 스킬은 `SKILL.md` 에 자기가 지키는 원칙을 파일 이름으로 가리키기만 하고, 내용을 다시 쓰지 않는다
 - 원칙을 더하거나 빼거나 이름을 바꾸면 같은 커밋에서 `PRINCIPLE.md` 의 줄도 고친다. `principles/` 의 파일과 `PRINCIPLE.md` 의 줄은 하나씩 짝이 맞아야 한다
