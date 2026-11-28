@@ -1,1 +1,1 @@
-../../../principles/polish-tool.md
+../../shared/principles/polish-tool.md
