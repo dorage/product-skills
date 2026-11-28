@@ -1,7 +1,7 @@
 {
   "name": "report",
-  "description": "보고 자료를 만드는 스킬 묶음. /report:presentation 은 자료와 주장을 받아 가로 16:9 발표 자료 PDF 로 만든다(쪽별 하이라이트 뼈대를 먼저 승인받고, HTML 로 쓰고, PDF 로 뽑아 숫자로 검사한다). /report:progress 는 기간·기능 단위로 커밋과 PR 본문을 모아 배경 → 성과 → 다음 액션 진행 보고 PDF 를 만든다. 스킬이 따르는 원칙(결론 먼저, 색 세 가지, 하이라이트는 한 쪽에 세 문장까지 등)은 principles/ 에 원칙 하나가 문서 하나로 있고, 스킬은 자기에게 맞는 문서만 골라 읽는다.",
-  "version": "0.2.0",
+  "description": "보고 자료를 만드는 스킬 묶음. /report:presentation 은 자료와 주장을 받아 가로 16:9 발표 자료 PDF 로 만든다(쪽별 하이라이트 뼈대를 먼저 승인받고, HTML 로 쓰고, PDF 로 뽑아 숫자로 검사한다). /report:progress 는 기간·기능 단위로 커밋과 PR 본문을 모아 배경 → 성과 → 다음 액션 진행 보고 PDF 를 만든다. 스킬이 따르는 원칙(결론 먼저, 색 세 가지, 하이라이트는 한 쪽에 세 문장까지, 문장은 윤문하되 윤문 기록은 자료에 적지 않기 등)은 principles/ 에 원칙 하나가 문서 하나로 있고, 스킬은 자기에게 맞는 문서만 골라 읽는다.",
+  "version": "0.2.1",
   "author": {
     "name": "dorage",
     "email": "baloonflower554@gmail.com"
