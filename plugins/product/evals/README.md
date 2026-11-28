@@ -102,6 +102,7 @@ npx tsx --test plugins/product/evals/*.test.ts
 - 첫 `baseline` 채점은 빈 자리 trace(`{"type":"placeholder"}`)와 비교하므로 뜻이 없다. 판정에서 빠지니 무시하고 `--save-baseline` 뒤부터 본다
 - 기준 trace 크기: `baseline` 채점기는 10MB 넘는 기준 파일을 읽지 못한다. `--save-baseline` 은 넘는 trace 를 저장하지 않고 경고만 찍는다
 - regex 규칙과 실제 결과물: 골든 문서로만 검증했다. regex·file 채점기는 한 번만 떨어져도 회귀라서, 엉뚱하게 떨어지면 규칙을 고친다. 먼저 볼 것
+    - `regex-header-line`(draft·design·flow·task·brief): 제목 다음 줄이 `{날짜} · @{저자} · 윤문 안 함` 또는 `· 윤문 {도구 이름} {버전}` 이 아니면 떨어진다 (spec-format 「문서 머리말」). 프롬프트가 윤문을 건너뛰라고 하므로 결과물은 `윤문 안 함` 이다
     - draft `regex-recommendation-shape`: 추천안을 `@초안 a안 —` 이 아닌 다른 모양으로 쓰면 떨어진다
     - design `regex-decision-has-arrow`: 볼드·이탤릭 D 결정 줄에 `->` 도 `@확정` 도 없으면 떨어진다. 정해진 결정을 다른 모양으로 쓰면 틀리게 잡을 수 있다
     - bdd `regex-korean-keywords`·`regex-no-english-blocks`: `references/bdd.md` 는 영어 문법 규칙과 한국어 키워드 예시(`# language: ko`)를 함께 둔다. 모델이 영어 키워드로 쓰면 둘 다 떨어진다

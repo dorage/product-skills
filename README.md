@@ -40,14 +40,15 @@ curl -fsSL https://raw.githubusercontent.com/dorage/product-skills/main/scripts/
 ```
 product-skills/
 ├── .claude-plugin/marketplace.json   ← 플러그인 목록
+├── PRINCIPLE.md                      ← 이 리포를 고칠 때 지키는 규칙 목록
+├── principles/                       ← 그 규칙의 내용
 ├── scripts/update.ts                 ← 플러그인·스킬·CLI 를 한 번에 올리는 스크립트
-├── principles/                       ← 여러 플러그인이 함께 쓰는 원칙의 원본
-├── shared/                           ← 여러 플러그인이 함께 쓰는 파일 (필요해지면 만든다)
 └── plugins/
+    ├── shared/                       ← 여러 플러그인이 함께 쓰는 파일 (필요해지면 만든다)
     └── {플러그인}/
         ├── .claude-plugin/plugin.json
         ├── skills/
         └── references/
 ```
 
-플러그인을 더하는 규칙은 [CLAUDE.md](CLAUDE.md) 에 있다.
+리포를 고칠 때 지키는 규칙은 [CLAUDE.md](CLAUDE.md) 에 요약이, [PRINCIPLE.md](PRINCIPLE.md) 에 목록이, `principles/` 에 내용이 있다.

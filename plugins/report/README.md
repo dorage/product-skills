@@ -11,7 +11,7 @@
 
 ## 원칙 문서
 
-스킬이 따르는 원칙은 `principles/` 에 원칙 하나가 문서 하나로 있다. 스킬은 자기에게 맞는 문서만 골라 `SKILL.md` 의 「적용하는 원칙」 표에 적고, 원칙의 내용은 다시 쓰지 않는다. 문서 모양과 목록은 [principles/README.md](principles/README.md) 에 있다.
+스킬이 따르는 원칙은 `principles/` 에 원칙 하나가 문서 하나로 있다. 스킬은 자기에게 맞는 문서만 골라 `SKILL.md` 의 「적용하는 원칙」 표에 적고, 원칙의 내용은 다시 쓰지 않는다. 목록은 [PRINCIPLE.md](PRINCIPLE.md) 에 있다.
 
 ## 필요한 도구
 

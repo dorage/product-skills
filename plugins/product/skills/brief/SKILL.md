@@ -33,8 +33,9 @@ description: product:draft 가 쓴 요구사항 문서(requirements.md)를 받�
 
 - 입력을 끝까지 읽는다. 앞부분만 보고 쓰지 않는다
 - 원본 윤문 확인: `requirements.md` 가 윤문을 거쳤는지 본다. `product:draft` 가 다 쓴 뒤 윤문하므로 보통은 거친 문서다
-    - 거쳤다고 보는 때: `{입력 폴더}/_humanize/requirements.md.before` 가 있다 (`principles/polish-keeps-content.md` 「윤문한 흔적」)
-    - 없으면 거치지 않은 문서다(윤문 도구가 없어 건너뛰었거나 손으로 쓴 문서). brief 를 쓰기 전에 `${CLAUDE_PLUGIN_ROOT}/principles/polish-keeps-content.md` 를 읽고 `requirements.md` 를 그대로 윤문한다. 덮어썼으면 입력을 다시 읽는다
+    - 먼저 머리말 줄의 윤문 표기를 본다 (spec-format 「문서 머리말」). `윤문 {도구 이름} {버전}` 이면 거친 문서고, `윤문 안 함` 이면 거치지 않은 문서다
+    - 머리말 줄에 윤문 표기가 없는 옛 문서만 흔적 파일로 가린다. `{입력 폴더}/_humanize/requirements.md.before` 가 있으면 거친 문서다 (`principles/polish-keeps-content.md` 「윤문한 흔적」)
+    - 거치지 않은 문서면(윤문 도구가 없어 건너뛰었거나 손으로 쓴 문서) brief 를 쓰기 전에 `${CLAUDE_PLUGIN_ROOT}/principles/polish-keeps-content.md` 를 읽고 `requirements.md` 를 그대로 윤문한다. 덮어썼으면 입력을 다시 읽는다
     - 윤문 도구가 준비되지 않았거나 「덮어쓰기 전 검사」가 `DIFF` 여서 원본이 그대로면, 멈추지 않고 그 원본으로 brief 를 쓴다. 끝맺음에 원칙 문서가 정한 한 줄을 붙인다
     - 입력이 공유 문서면 이 단계를 건너뛴다
 - 「한 장으로 묶기」의 「바깥 참조 찾기」로 바깥 참조를 찾는다. 링크한 용어 파일, 문서 지도, 출처 문서의 `brief.md`(없으면 `requirements.md`)를 읽는다. 바깥 참조가 없으면 이 단계를 건너뛴다
