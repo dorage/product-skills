@@ -2,7 +2,9 @@
 // YAML 라이브러리를 쓰지 않으려고, 이 폴더 case.yaml 의 고정된 모양(2칸 들여쓴 "- type:" 블록)만 읽는다.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { listCases } from "./run.ts";
@@ -236,4 +238,75 @@ test("flow 결정 문자 규칙이 다른 문서의 결정 문자를 잡는다",
   const g = graderSet("flow").find((g) => g.name === "regex-decision-letters")!;
   assert.ok(!check(g, "- **S1. 정산 탭을 어디에 둘지** ->"));
   assert.ok(check(g, "- **M1. 정산 탭을 어디에 둘지** ->"));
+});
+
+const headerSkills = ["draft", "design", "flow", "task", "brief"];
+const headerRule = (skill: string) => graderSet(skill).find((g) => g.name === "regex-header-line")!;
+
+test("머리말 줄 규칙이 문서를 쓰는 다섯 case 에 같은 모양으로 있다", () => {
+  const patterns = headerSkills.map((s) => {
+    const g = headerRule(s);
+    assert.ok(g, `${s} 에 regex-header-line 이 없습니다`);
+    assert.equal(g.flags, undefined, `${s}: m 을 붙이면 제목 아래가 아닌 자리도 통과합니다`);
+    return g.pattern;
+  });
+  assert.equal(new Set(patterns).size, 1);
+});
+
+test("머리말 줄 규칙이 두 윤문 표기를 받고 틀린 줄을 잡는다 (spec-format 「문서 머리말」)", () => {
+  const g = headerRule("draft");
+  const doc = (line: string) => `# 제휴카페 임직원 할인 기획 초안\n\n${line}\n\n## 필요한 결정\n`;
+  assert.ok(check(g, doc("2026-11-25 · @kanghyunlee · 윤문 안 함")));
+  assert.ok(check(g, doc("2026-11-25 · @kanghyunlee · 윤문 humanize-korean@im-not-ai 2.4.6")));
+  assert.ok(check(g, doc("2026-11-25 · @Lee Kang Hyun · 윤문 안 함")), "이름에 빈칸이 있는 저자를 떨어뜨렸습니다");
+  assert.ok(!check(g, doc("2026-11-25 · @kanghyunlee")), "윤문 표기 없는 옛 줄을 통과시켰습니다");
+  assert.ok(!check(g, doc("2026-11-25 · @kanghyunlee · 윤문 humanize-korean@im-not-ai")), "버전 없는 도구 표기를 통과시켰습니다");
+  assert.ok(!check(g, doc("2026-11-25 · @kanghyunlee · 윤문함")));
+  assert.ok(!check(g, doc("- 기준 날짜: 2026-11-25")));
+  assert.ok(!check(g, "# 제목\n\n## 필요한 결정\n\n2026-11-25 · @kanghyunlee · 윤문 안 함\n"), "제목 아래가 아닌 줄을 통과시켰습니다");
+});
+
+test("윤문 도구 표기의 @ 가 마커 규칙에 걸리지 않는다", () => {
+  const line = "# 제목\n\n2026-11-25 · @kanghyunlee · 윤문 humanize-korean@im-not-ai 2.4.6\n";
+  assert.ok(check(graderSet("brief").find((g) => g.name === "regex-no-markers")!, line));
+  assert.ok(check(graderSet("task").find((g) => g.name === "regex-no-decision-markers")!, line));
+});
+
+test("표기 바꾸는 명령(spec-format)과 덮어쓰기 전 검사(polish-keeps-content)가 머리말 줄과 부딪히지 않는다", () => {
+  const spec = readFileSync(join(pluginDir, "references", "spec-format.md"), "utf8");
+  const perl = /^perl -pi -e '(.+)' "\{표기\}" \{파일\}$/m.exec(spec);
+  assert.ok(perl, "spec-format 에 표기 바꾸는 명령이 없습니다");
+  const keep = /^keep\(\) \{\n[\s\S]*?\n\}$/m.exec(readFileSync(join(pluginDir, "principles", "polish-keeps-content.md"), "utf8"));
+  assert.ok(keep, "polish-keeps-content 에 keep() 이 없습니다");
+  const dir = mkdtempSync(join(tmpdir(), "header-"));
+  const mark = (file: string, m: string) => execFileSync("perl", ["-pi", "-e", perl[1], m, file]);
+  const first = (file: string) => readFileSync(file, "utf8").split("\n")[2];
+  const same = (a: string, b: string) =>
+    execFileSync("bash", ["-c", `${keep[0]}\ndiff <(keep "$1") <(keep "$2") >/dev/null && echo SAME || echo DIFF`, "bash", a, b], { encoding: "utf8" }).trim();
+  try {
+    // 윤문 전 원본과 윤문본은 둘 다 `윤문 안 함` 이라 SAME, 덮어쓴 뒤 표기를 바꾼다
+    const before = join(dir, "before.md");
+    const after = join(dir, "after.md");
+    writeFileSync(before, golden("requirements.md"));
+    writeFileSync(after, golden("requirements.md"));
+    assert.equal(same(before, after), "SAME");
+    mark(after, "humanize-korean@im-not-ai 2.4.6");
+    assert.equal(first(after), "2026-11-02 · @마스터 · 윤문 humanize-korean@im-not-ai 2.4.6");
+    // 표기를 덮어쓰기 전에 바꿨다면 버전 숫자 때문에 DIFF 가 된다. 그래서 순서를 지킨다
+    assert.equal(same(before, after), "DIFF");
+    // 다시 고쳐 쓸 때 되돌린다. 머리말 줄 말고는 바뀌지 않는다
+    mark(after, "안 함");
+    assert.equal(readFileSync(after, "utf8"), golden("requirements.md"));
+    // 윤문 표기가 없는 옛 줄에는 붙고, 머리말 줄이 없는 옛 문서는 그대로다
+    const old = join(dir, "old.md");
+    writeFileSync(old, "# 제목\n\n2026-11-02 · @Lee Kang Hyun\n\n본문 2026-11-03 · @다른줄\n");
+    mark(old, "안 함");
+    assert.equal(readFileSync(old, "utf8"), "# 제목\n\n2026-11-02 · @Lee Kang Hyun · 윤문 안 함\n\n본문 2026-11-03 · @다른줄\n");
+    const bullets = "# 제목\n\n- 기준 날짜: 2026-11-02\n";
+    writeFileSync(old, bullets);
+    mark(old, "안 함");
+    assert.equal(readFileSync(old, "utf8"), bullets);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });

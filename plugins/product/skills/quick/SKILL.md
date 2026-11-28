@@ -7,7 +7,7 @@ description: 채팅으로 바로 시작하는 작업의 스펙을 크기와 상�
 
 마스터가 채팅에 쓴 설명 하나로 바로 스펙을 시작한다. 정리된 다른 문서(회의록, 기획서, wiki)가 없어도 된다. 그런 문서에서 넘어온 내용으로 요구사항 문서를 세우는 일은 `product:draft` 가 맡는다. 결과는 새 기능 폴더의 `requirements.md` 한 파일이고, 요구사항과 설계 절을 함께 담는다. 코드는 바꾸지 않는다.
 
-먼저 `${CLAUDE_PLUGIN_ROOT}/references/spec-format.md` 와 `${CLAUDE_PLUGIN_ROOT}/references/quick.md` 를 읽고, 뒤 문서가 가리키는 `references/draft.md` 「요구사항 템플릿」과 `references/design.md` 도 읽는다. 결정·마커·답 반영·저장 위치·윤문은 spec-format 을, 문서의 모양은 `references/quick.md` 를 따른다. 이 스킬은 "언제 쓰고 어떤 순서로 쓰는가" 만 정한다.
+먼저 `${CLAUDE_PLUGIN_ROOT}/references/spec-format.md` 와 `${CLAUDE_PLUGIN_ROOT}/references/quick.md` 를 읽고, 뒤 문서가 가리키는 `references/draft.md` 「요구사항 템플릿」과 `references/design.md` 도 읽는다. 결정·마커·답 반영·저장 위치는 spec-format 을, 윤문은 `principles/polish-keeps-content.md` 를, 문서의 모양은 `references/quick.md` 를 따른다. 이 스킬은 "언제 쓰고 어떤 순서로 쓰는가" 만 정한다.
 
 ## 크기
 
@@ -27,7 +27,7 @@ spec-format 「저장 위치」를 따른다. 파일 이름은 `requirements.md`
 
 - 「조사」를 한다
 - Write 로 `requirements.md` 를 한 번에 쓴다. 문서가 짧아서 뼈대를 먼저 만들지 않는다
-- spec-format 「윤문」을 거친다
+- `${CLAUDE_PLUGIN_ROOT}/principles/polish-keeps-content.md` 를 읽고 그대로 윤문한다
 
 ## 조사
 
@@ -36,7 +36,7 @@ spec-format 「저장 위치」를 따른다. 파일 이름은 `requirements.md`
 
 ## 답 반영
 
-마스터가 "A1. a" 처럼 답하면 spec-format 「답 반영」대로 같은 `requirements.md` 를 고친다. 새 문서를 만들지 않는다. 고친 뒤 spec-format 「윤문」을 다시 거친다.
+마스터가 "A1. a" 처럼 답하면 spec-format 「답 반영」대로 같은 `requirements.md` 를 고친다. 새 문서를 만들지 않는다. 고친 뒤 같은 원칙 문서대로 다시 윤문한다.
 
 
 ## 끝맺음

@@ -52,7 +52,7 @@ spec-format 「저장 위치」를 따른다. 파일 이름은 `requirements.md`
 - 「필요한 결정」은 마지막에 채운다. 다른 절을 쓰면서 드러난 빈 곳이 모여야 쓸 수 있다
 - 다 쓰면 `(작성 중)` 이 남았는지 검색해 없앤다
 - 「참여자별 검토」를 한다
-- spec-format 「윤문」을 거친다
+- `${CLAUDE_PLUGIN_ROOT}/principles/polish-keeps-content.md` 를 읽고 그대로 윤문한다
 
 ## 참여자별 검토
 
@@ -83,7 +83,7 @@ spec-format 「저장 위치」를 따른다. 파일 이름은 `requirements.md`
 
 ## 답 반영
 
-spec-format 「답 반영」대로 같은 문서를 고친다. 새 문서를 만들지 않는다. 고친 뒤 spec-format 「윤문」을 다시 거친다.
+spec-format 「답 반영」대로 같은 문서를 고친다. 새 문서를 만들지 않는다. 고친 뒤 같은 원칙 문서대로 다시 윤문한다.
 
 - 참여자 목록 결정에 답이 와서 참여자가 모두 @확정 또는 @결정 이 되면, 윤문 전에 「참여자별 검토」대로 `product:persona-review` 를 부른다
 - 이미 「참여자별 검토 기록」이 있는 문서에 참여자를 더했으면, persona-review 가 더한 참여자만 검토한다

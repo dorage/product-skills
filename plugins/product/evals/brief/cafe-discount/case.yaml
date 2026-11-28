@@ -11,7 +11,7 @@ execution:
     평가용 실행이라 아래를 지킨다.
     - 이 폴더에는 코드가 없다. 조사는 하지 않는다.
     - 나에게 묻지 않는다. 열린 결정은 열린 채로 추천안을 적어 두고 끝까지 쓴다.
-    - 윤문(humanize-korean) 단계는 건너뛴다.
+    - 윤문 단계는 건너뛴다.
     - 같은 이름의 파일이 이미 있으면 묻지 말고 새로 쓴다.
   max_turns: 40
   timeout_seconds: 900
@@ -27,6 +27,11 @@ graders:
     min: 0
     max: 0
     arm: both
+  - type: regex
+    name: regex-header-line
+    target: {source: file, path: out/brief.md}
+    pattern: '^# .+\n\n\d{4}-\d{2}-\d{2} · @.+ · 윤문 (안 함|\S+ \d+(\.\d+)+\S*)\n'
+    match: contains
   - type: regex
     name: regex-no-markers
     target: {source: file, path: out/brief.md}

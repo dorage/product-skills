@@ -1,6 +1,6 @@
 # Gherkin 시나리오 (*.feature, scenarios.md)
 
-`product:bdd` 가 쓰는 Gherkin 시나리오의 모양이다. 설계 경로는 `*.feature` 파일로, 기획 경로는 마크다운 문서(`scenarios.md`)의 코드 블록으로 쓴다. 두 경로를 고르는 법은 `skills/bdd/SKILL.md` 「입력 찾기」에 있다. 「Files and organization」은 설계 경로에만, 「마크다운 문서 (기획 경로)」는 기획 경로에만 쓰고, 나머지 절은 두 경로에 함께 쓴다. 마커 태그는 `references/spec-format.md` 를 따른다. 영어 본문은 AutomationPanda 의 gherkin-guidelines-for-ai (https://github.com/AutomationPanda/gherkin-guidelines-for-ai) 를 옮겨 고친 것이다.
+`product:bdd` 가 쓰는 Gherkin 시나리오의 모양이다. 설계 경로는 `*.feature` 파일로, 기획 경로는 마크다운 문서(`scenarios.md`)의 코드 블록으로 쓴다. 두 경로를 고르는 법은 `skills/bdd/SKILL.md` 「입력 찾기」에 있다. 「Files and organization」은 설계 경로에만, 「마크다운 문서 (기획 경로)」는 기획 경로에만 쓰고, 나머지 절은 두 경로에 함께 쓴다. 마커 태그는 `references/spec-format.md` 를 따른다. 머리말 줄(spec-format 「문서 머리말」)은 두 경로 모두 두지 않는다. 영어 본문은 AutomationPanda 의 gherkin-guidelines-for-ai (https://github.com/AutomationPanda/gherkin-guidelines-for-ai) 를 옮겨 고친 것이다.
 
 ## Files and organization
 

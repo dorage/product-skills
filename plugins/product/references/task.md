@@ -21,6 +21,7 @@
 ### 제목과 기준
 
 - 제목: `# {기능} 구현 계획`. 기능 이름은 요구사항 문서 제목에서 가져온다
+- 다음 줄: 머리말 줄 (spec-format 「문서 머리말」)
 - 기준 줄: `기준: \`requirements.md\`, \`design.md\` (origin/main {짧은 커밋})`
 
 ### 작업 DAG
@@ -52,6 +53,8 @@
 
 ````markdown
 # {기능} 구현 계획
+
+2026-11-08 · @마스터 · 윤문 안 함
 
 기준: `requirements.md`, `design.md` (origin/main {짧은 커밋})
 

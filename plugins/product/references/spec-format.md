@@ -1,6 +1,6 @@
 # 스펙 포맷
 
-문서를 쓰는 모든 단계(`product:draft`·`product:persona-review`·`product:design`·`product:flow`·`product:task`·`product:brief`·`product:quick`·`product:bdd`)가 함께 따르는 공용 포맷이다. 결정·마커·답 반영·저장 위치·윤문의 모양은 이 문서 한 곳에 있다.
+문서를 쓰는 모든 단계(`product:draft`·`product:persona-review`·`product:design`·`product:flow`·`product:task`·`product:brief`·`product:quick`·`product:bdd`)가 함께 따르는 공용 포맷이다. 결정·마커·답 반영·저장 위치·문서 머리말의 모양은 이 문서 한 곳에 있다. 윤문은 원칙 문서 `principles/polish-keeps-content.md` 에 있다.
 
 단계마다 결과물 모양(절 구성, 템플릿, 단계 전용 표기, 완성 조건)은 `references/{스킬 이름}.md` 에 있다. brief 스킬은 `references/brief-format.md` 를 쓴다. 단계 문서가 이 문서의 일부를 따르지 않으면, 단계 문서 맨 위에 예외를 적는다.
 
@@ -163,52 +163,38 @@ d=$(find "{productDir}/features" -mindepth 1 -maxdepth 1 -type d ! -name '.*' -e
 
 리포 안 코드 경로와 리포 안에서 돌린 명령 결과는 팀원도 다시 확인할 수 있어서 문서에 써도 된다.
 
-## 윤문
+「문서 머리말」의 머리말 줄은 예외다. 저자 이름과 윤문 도구의 이름·버전은 그 문서가 어떻게 쓰였는지를 남기는 기록이라, 머리말 줄 한 곳에는 적는다.
 
-문서를 다 쓴 뒤 `humanize-korean@im-not-ai` 플러그인으로 문장을 사람이 쓴 글처럼 다듬는다. 플러그인 설치는 `product:setup` 이 맡는다. 다듬는 것은 문장뿐이고, 내용과 구조는 그대로 둔다.
+## 문서 머리말
 
-### 대상과 때
+문서 제목 바로 아래 한 줄에 작성일자, 저자, 윤문 여부를 적는다. 문서만 열어도 누가 언제 썼고 문장을 어떤 도구로 다듬었는지 알 수 있게 하려는 것이다. `product:brief` 는 이 줄을 보고 원본이 윤문을 거쳤는지 가린다.
 
-- 대상: `requirements.md`·`design.md`·`flow.md`·`tasks.md`
-- 거치지 않는 것: `brief.md`(입력의 문장을 한 글자도 바꾸지 않는 사본이다. `product:brief` 는 원본 `requirements.md` 가 윤문을 거치지 않았을 때 원본을 윤문한 뒤 쓴다. `references/brief-format.md` 「내용은 바꾸지 않는다」), `features/*.feature`·`scenarios.md`(Gherkin 키워드와 단계 문장이 깨진다), 공유 문서 경로(로컬 파일이 아니다)
-- 때: 스킬이 파일을 다 쓰고 자기 검증(`(작성 중)` 검색, 마커·구조 검증)을 마친 직후. 「답 반영」으로 고친 뒤와 `product:persona-review` 가 고친 뒤에도 다시 거친다
-- 플러그인이 없으면(`claude plugin list` 에 `humanize-korean@im-not-ai` 가 없으면) 건너뛰고, 끝맺음에 "윤문을 건너뛰었습니다. `/product:setup` 을 실행하세요" 한 줄을 붙인다. 문서 작성은 막지 않는다
+```markdown
+# {제목}
 
-### 부르는 법
-
-- `cd {기능 폴더}` 로 기능 폴더로 옮겨 간다. humanize-korean 은 지금 폴더 아래에 작업 파일을 만들기 때문에, 작업 파일이 product 폴더 안에만 생기게 하려는 것이다
-- `cp {파일} {기능 폴더}/.{파일 이름}.before` 로 원본을 남긴다
-- `Skill(skill="humanize-korean:humanize-korean")` 를 부르고, args 에 아래를 넘긴다
-    - 입력 파일 경로
-    - 강도 "가볍게". 스펙은 고칠 곳이 적은 글이라 과윤문을 막는 가벼운 경로가 맞다
-    - 장르 `report`
-    - 건드리지 않을 것: 헤딩 줄, `@` 마커와 괄호 속 출처, 결정 ID(`A1`·`S2`)와 요구사항 번호, EARS 키워드(`THE System`·`SHALL`·`WHEN`·`WHILE`·`IF`·`THEN`), 표의 행과 열, 코드 블록과 mermaid, 백틱 안 글자, 경로, 숫자와 날짜, 체크박스
-- humanize-korean 이 `Agent` 로 부르는 에이전트(`humanize-korean:humanize-monolith`·`humanize-diagnostician`·`humanize-finalizer`)는 모두 `model: "sonnet"`, `effort: "low"` 를 넘겨 부른다. 에이전트 정의의 모델 대신 이 값을 쓴다. 문장만 다듬는 가벼운 일이라 sonnet low 로 충분하고, haiku 는 이 계정에서 꺼 두었다
-- 결과 `final.md` 에서 요약 블록과 끝의 빈 줄을 지운다. 이 명령으로 `final.md` 자체를 고친다. `{작업 폴더}` 는 「작업 폴더 치우기」에서 `_workspace/{run_id}/` 를 찾은 폴더다
-    - `perl -0pi -e 's/\n*<!-- HUMANIZE-SUMMARY.*?-->\s*/\n/s' {작업 폴더}/_workspace/{run_id}/final.md`
-
-### 덮어쓰기 전 검사
-
-윤문본이 지켜야 할 것을 원본과 윤문본에서 뽑아 비교한다. 같을 때만 덮어쓴다.
-
-```bash
-keep() {
-  grep -E '^#' "$1"
-  awk '/^```/{f=!f; print; next} f' "$1"
-  grep -c '^|' "$1"
-  grep -oE '@(결정|해석|초안|미정|사실|가정|확정)|[A-Z][0-9]+|[0-9][0-9,.:+-]*|`[^`]+`|THE System|SHALL|WHEN|WHILE|IF|THEN' "$1" | sort
-}
-diff <(keep {원본}) <(keep {윤문본}) && echo SAME || echo DIFF
+{작성일자} · @{저자} · 윤문 {도구 이름} {버전}
 ```
 
-- `SAME`: 윤문본으로 원래 파일을 덮어쓰고 `.{파일 이름}.before` 를 지운다
-- `DIFF`: 원래 파일을 그대로 두고, 끝맺음에 "윤문이 {diff 첫 줄}을 바꿔서 원본을 유지했습니다" 한 줄을 붙인다
+- 자리: 제목 줄에서 빈 줄 하나를 띄운 다음 줄. 단계 문서가 정한 기준 줄(기준 코드, 입력 경로 같은 것)은 이 줄에서 빈 줄 하나를 띄우고 그 아래에 둔다
+- `{작성일자}`: 문서를 처음 쓴 날. `YYYY-MM-DD` 로 쓰고, 고쳐 써도 바꾸지 않는다
+- `{저자}`: 그 문서를 쓰게 한 사람. 마스터가 설명에 이름을 주었으면 그 이름, 아니면 `git config user.name` 의 결과, 결과가 비면 컴퓨터 계정 이름(`whoami`)
+- 윤문 표기는 둘 중 하나다
+    - 거쳤다: `윤문 {도구 이름} {버전}`. 도구 이름과 버전은 `principles/polish-tool.md` 「도구 이름과 버전」에서 읽는다. 예: `2026-11-25 · @kanghyunlee · 윤문 some-tool@market 1.2.3`
+    - 거치지 않았다: `윤문 안 함`. 예: `2026-11-25 · @kanghyunlee · 윤문 안 함`
+- 표기는 지금 문서의 문장이 실제로 거친 결과와 같아야 한다
+    - 문서를 새로 쓸 때는 `윤문 안 함` 으로 쓴다
+    - 문장을 고치면(「답 반영」, `product:persona-review` 의 보강) `윤문 안 함` 으로 되돌린다. 고친 문장은 아직 다듬지 않은 문장이기 때문이다. 윤문에 들어서면 가장 먼저 이 일을 한다 (`principles/polish-keeps-content.md` 「순서」)
+    - 도구 표기로 바꾸는 자리는 한 곳뿐이다. `principles/polish-keeps-content.md` 「덮어쓰기 전 검사」가 `SAME` 이어서 윤문본으로 덮어쓴 뒤다. 윤문을 건너뛰었거나 `DIFF` 로 원본을 유지했으면 `윤문 안 함` 그대로 둔다
+    - 여러 번 거쳤으면 마지막으로 거친 도구와 버전을 적는다
+- 표기는 아래 명령으로 바꾼다. `{표기}` 자리에 `안 함` 또는 `{도구 이름} {버전}` 을 넣는다
 
-### 작업 폴더 치우기
+```bash
+perl -pi -e 'BEGIN { $m = shift } if (!$d && /^\d{4}-\d{2}-\d{2} · @/) { s/^(.*? · @.*?)( · .*)?$/$1 · 윤문 $m/; $d = 1 }' "{표기}" {파일}
+```
 
-humanize-korean 은 지금 폴더 아래 `_workspace/{run_id}/` 에 작업 파일을 남긴다. `cd` 가 다음 명령까지 이어지지 않으면 세션 폴더(Claude Code 를 연 폴더)에 생긴다. 리포를 더럽히지 않도록 끝나면 기능 폴더로 모은다.
-
-- `{작업 폴더}`: `{기능 폴더}/_workspace/{run_id}/` 가 있으면 기능 폴더, 없으면 세션 폴더다. 두 곳 다 없으면 옮기지 않고 끝맺음에 "윤문 작업 파일을 찾지 못했습니다" 한 줄을 붙인다
-- `mv {작업 폴더}/_workspace/{run_id} {기능 폴더}/_humanize/{run_id}` 로 옮긴다. `01_input.txt` 가 윤문 전 원문으로 남는다
-- `{작업 폴더}/_workspace/` 가 비었으면 `rmdir {작업 폴더}/_workspace` 로 지운다. 다른 run 이 남아 있으면 그대로 둔다
-- 「부르는 법」에서 옮겨 간 지금 폴더가 남아 있을 수 있으니 `cd {세션 폴더}` 로 돌아온다
+- 이 명령은 문서에서 처음 나오는 머리말 줄 하나만 고친다. 날짜와 저자는 그대로 두고 그 뒤를 표기로 바꾼다
+    - 윤문 표기가 없는 옛 문서의 `{날짜} · @{저자}` 줄에는 표기가 붙는다
+    - 머리말 줄이 아예 없는 옛 문서는 아무것도 바뀌지 않는다. 줄을 새로 만들지 않는다. 작성일자와 저자를 지어내게 되기 때문이다
+- 두는 문서: `principles/polish-keeps-content.md` 「대상과 때」의 대상 문서
+- `brief.md`: 원본 `requirements.md` 의 머리말 줄을 그대로 옮긴다. brief 의 문장은 원본의 문장이라 원본의 표기가 그대로 맞다
+- 두지 않는 것: `features/*.feature`·`scenarios.md`, `kickstart.md`, 공유 문서 경로로 쓴 문서. 윤문을 거칠 일이 없는 결과물이고, 저마다 맨 위 모양(Gherkin 머리, 읽을 문서 목록, 공유 문서 도구의 날짜·작성자 줄)이 따로 있다
