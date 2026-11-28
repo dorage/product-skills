@@ -1,9 +1,11 @@
 # 여러 플러그인이 함께 쓰는 파일은 원본 하나와 링크로 둔다
 
-설치하면 플러그인 폴더만 복사되므로, 스킬이 `../../shared/...` 처럼 플러그인 밖 파일을 가리키면 설치한 뒤에 깨진다.
+설치하면 플러그인 폴더만 복사되므로, 스킬이 `../shared/...` 처럼 플러그인 밖 파일을 가리키면 설치한 뒤에 깨진다.
 
-- 원본은 `shared/` 에 하나만 둔다
-- 쓰는 플러그인 안에 원본을 가리키는 심볼릭 링크를 둔다 (예: `plugins/pm/references/spec-format.md -> ../../../shared/spec-format.md`)
+- 원본은 `plugins/shared/` 에 하나만 둔다. 스킬을 쓰는 쪽이 읽는 파일이라 `plugins/` 아래에 둔다. 맨 위 `principles/` 는 이 리포를 고칠 때 지키는 규칙만 담는다 ([[one-rule-one-file]])
+- 함께 쓰는 원칙 문서의 원본은 `plugins/shared/principles/` 에 둔다
+- `plugins/shared/` 는 플러그인이 아니다. `.claude-plugin/marketplace.json` 에 올리지 않는다
+- 쓰는 플러그인 안에 원본을 가리키는 심볼릭 링크를 둔다 (예: `plugins/product/principles/polish-tool.md -> ../../shared/principles/polish-tool.md`)
 - 스킬은 플러그인 밖 경로가 아니라 플러그인 안의 링크를 가리킨다
 
 ## 처음 쓸 때 확인

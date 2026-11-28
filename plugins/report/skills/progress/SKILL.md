@@ -11,32 +11,34 @@ description: '커밋과 PR 본문을 근거로 개발 진행 보고서를 가로
 
 원칙의 내용은 `${CLAUDE_PLUGIN_ROOT}/principles/` 의 문서에만 있다. 일을 시작하기 전에 아래 문서를 모두 읽고, 이 문서에는 원칙의 내용을 다시 쓰지 않는다.
 
+`[[이름]]` 은 `${CLAUDE_PLUGIN_ROOT}/principles/{이름}.md` 를 가리킨다. 다른 폴더에서 같은 이름의 파일을 찾지 않는다.
+
 이 문서의 `${CLAUDE_PLUGIN_ROOT}` 가 경로로 바뀌지 않고 글자 그대로 보이면, 이 스킬 폴더(`SKILL.md` 가 든 폴더)의 두 단계 위 폴더 경로로 바꿔 넣는다. 아래 템플릿과 스크립트 경로도 같다.
 
 | 원칙 문서 | 적용하는 단계 |
 | --- | --- |
-| `progress-not-activity.md` | 자료 모으기, 뼈대 |
-| `readers-words.md` | 뼈대, 검사 |
-| `chart-shows-signal.md` | 뼈대, 만들기 |
-| `conclusion-first.md` | 뼈대 |
-| `non-overlapping-evidence.md` | 뼈대 |
-| `evidence-reader-trusts.md` | 뼈대 |
-| `price-the-claim.md` | 뼈대 |
-| `label-estimates.md` | 뼈대, 만들기 |
-| `title-is-claim.md` | 뼈대, 만들기 |
-| `details-below.md` | 만들기 |
-| `three-colors.md` | 만들기 |
-| `highlight-limit.md` | 만들기 |
-| `highlight-only-readable.md` | 뼈대, 검사 |
-| `cite-source-and-page.md` | 만들기, 검사 |
-| `facts-not-judgment.md` | 만들기 |
-| `verify-with-numbers.md` | 검사, 끝맺음 |
-| `polish-without-mark.md` | 뼈대, 만들기, 검사, 끝맺음 |
-| `decidable-ask.md` | 뼈대 (정해 주실 것이 있을 때만) |
+| [[progress-not-activity]] | 자료 모으기, 뼈대 |
+| [[readers-words]] | 뼈대, 검사 |
+| [[chart-shows-signal]] | 뼈대, 만들기 |
+| [[conclusion-first]] | 뼈대 |
+| [[non-overlapping-evidence]] | 뼈대 |
+| [[evidence-reader-trusts]] | 뼈대 |
+| [[price-the-claim]] | 뼈대 |
+| [[label-estimates]] | 뼈대, 만들기 |
+| [[title-is-claim]] | 뼈대, 만들기 |
+| [[details-below]] | 만들기 |
+| [[three-colors]] | 만들기 |
+| [[highlight-limit]] | 만들기 |
+| [[highlight-only-readable]] | 뼈대, 검사 |
+| [[cite-source-and-page]] | 만들기, 검사 |
+| [[facts-not-judgment]] | 만들기 |
+| [[verify-with-numbers]] | 검사, 끝맺음 |
+| [[polish-without-mark]] | 뼈대, 만들기, 검사, 끝맺음 |
+| [[decidable-ask]] | 뼈대 (정해 주실 것이 있을 때만) |
 
 `${CLAUDE_PLUGIN_ROOT}/principles/` 에 이 표에 없는 문서가 있어도 읽지 않는다.
 
-`conclusion-first.md` 는 마지막 쪽을 "정해야 할 것"으로 끝내라고 한다. 진행 보고에서는 마지막 쪽이 다음 액션이다. 읽는 사람이 정해 줄 것이 있으면 다음 액션 쪽 아래에 `decidable-ask.md` 모양으로 세 항목까지 붙인다.
+[[conclusion-first]] 는 마지막 쪽을 "정해야 할 것"으로 끝내라고 한다. 진행 보고에서는 마지막 쪽이 다음 액션이다. 읽는 사람이 정해 줄 것이 있으면 다음 액션 쪽 아래에 [[decidable-ask]] 모양으로 세 항목까지 붙인다.
 
 ## 착수 전 확인
 
@@ -45,7 +47,7 @@ description: '커밋과 PR 본문을 근거로 개발 진행 보고서를 가로
 - 범위: 기간(시작일, 끝일) 또는 기능(PR 번호, 브랜치, product 기능 폴더). "이번 주"는 이번 주 월요일부터 오늘까지로 풀어 뼈대에 날짜로 적는다
 - 리포: 어느 폴더의 리포들인가. 기본은 지금 폴더(리포가 아니면 바로 아래 리포들)
 - 작성자: 누구의 커밋인가. 기본은 `git config user.name` 과 `user.email` 의 아이디
-- 읽는 사람과 목적: 누가 읽고 무엇을 확인하려는가. 개발자가 아닌 윗선이면 `readers-words.md` 를 엄격히 적용한다
+- 읽는 사람과 목적: 누가 읽고 무엇을 확인하려는가. 개발자가 아닌 윗선이면 [[readers-words]] 를 엄격히 적용한다
 - 마스터만 보는 메모가 필요한가
 
 ## 자료 모으기
@@ -63,7 +65,7 @@ npx tsx "${CLAUDE_PLUGIN_ROOT}/skills/progress/scripts/collect.ts" {리포} --ra
 - 찾은 PR 은 모두 본문까지 읽는다: `gh pr view {번호} --json title,body,state,mergedAt,additions,deletions`. 지표는 대부분 PR 본문에 있다
     - 작업 목록 체크박스 → 계획 대비 완료
     - 검증·테스트 항목 → 통과한 검사 수. 어디서 돌린 결과인지(공용 자동 검사인지 담당자 컴퓨터인지) 함께 적는다
-    - 비용·시간 추정 → 줄어든 값. `label-estimates.md` 대로 추정이라고 적는다
+    - 비용·시간 추정 → 줄어든 값. [[label-estimates]] 대로 추정이라고 적는다
     - 배포 순서·남은 일 → 다음 액션과 출시 단계
 - product 기능 폴더(`requirements.md`, `tasks.md`)가 있으면 `tasks.md` 맨 위 mermaid 의 `class … done` 줄과 `class … todo` 줄에 든 작업 ID 수를 계획 대비 완료로 쓰고, `requirements.md` 의 목적을 배경으로 쓴다
 - 커밋 수와 날짜별 건수는 자료가 빠지지 않았는지 보는 데만 쓴다. 보고서 지표로 쓰지 않는다
@@ -72,7 +74,7 @@ PR 에 묶이지 않은 커밋은 제목끼리 묶어 "작업 묶음"을 직접 
 
 ## 뼈대 먼저
 
-파일을 만들기 전에 아래를 채팅으로 보여 주고 승인을 받는다. 뼈대의 문장은 보여 주기 전에 `polish-without-mark.md` 대로 윤문한다. 하이라이트 문장은 이 표에 적힌 것이 전부다.
+파일을 만들기 전에 아래를 채팅으로 보여 주고 승인을 받는다. 뼈대의 문장은 보여 주기 전에 [[polish-without-mark]] 대로 윤문한다. 하이라이트 문장은 이 표에 적힌 것이 전부다.
 
 | 쪽 | 층 | 하이라이트 문장 | 아래에 두는 세부 | 지표 | 근거 출처 |
 | --- | --- | --- | --- | --- | --- |
@@ -89,9 +91,9 @@ PR 에 묶이지 않은 커밋은 제목끼리 묶어 "작업 묶음"을 직접 
 
 표 아래에 아래를 이어 적는다.
 
-- **차트 후보**: `chart-shows-signal.md` 대로 넣을 차트(쪽, 모양, 보여 주는 신호, 데이터)와 넣지 않을 차트(이유)를 나눠 적는다
+- **차트 후보**: [[chart-shows-signal]] 대로 넣을 차트(쪽, 모양, 보여 주는 신호, 데이터)와 넣지 않을 차트(이유)를 나눠 적는다
 - **자료에 넣을 숫자**: "숫자, 어떻게 구했나(출처·계산식·가정), 쓰는 쪽" 표. 마스터가 확인한 숫자만 넣는다
-- **말 바꾸기**: `readers-words.md` 의 "만든 사람의 말 → 읽는 사람의 말" 표
+- **말 바꾸기**: [[readers-words]] 의 "만든 사람의 말 → 읽는 사람의 말" 표
 - **넣지 않을 말**: 바꾼 개발 용어, 사람·계정 이름, 서버 주소, 호스트 이름
 - **색 세 가지**: 기본은 템플릿 값(배경 `#FFFFFF`, 글자 `#1A1A1A`, 하이라이트 `#4F76C4`)이다. 하이라이트 색은 채도가 높으면 본문보다 튀므로 채도 50% 안팎으로 고른다
 - **LLM 이 채운 문장**: 마스터가 말하지 않았고 PR 본문에도 없어서 LLM 이 짐작한 문장(기능의 목적, "다음 주" 같은 시점, 직접 만든 작업 묶음)

@@ -11,26 +11,28 @@ description: '마스터가 준 자료와 주장을 가로 16:9 발표 자료 PDF
 
 원칙의 내용은 `${CLAUDE_PLUGIN_ROOT}/principles/` 의 문서에만 있다. 일을 시작하기 전에 아래 문서를 모두 읽고, 이 문서에는 원칙의 내용을 다시 쓰지 않는다.
 
+`[[이름]]` 은 `${CLAUDE_PLUGIN_ROOT}/principles/{이름}.md` 를 가리킨다. 다른 폴더에서 같은 이름의 파일을 찾지 않는다.
+
 이 문서의 `${CLAUDE_PLUGIN_ROOT}` 가 경로로 바뀌지 않고 글자 그대로 보이면, 이 스킬 폴더(`SKILL.md` 가 든 폴더)의 두 단계 위 폴더 경로로 바꿔 넣는다. 아래 템플릿과 검사 스크립트 경로도 같다.
 
 | 원칙 문서 | 적용하는 단계 |
 | --- | --- |
-| `conclusion-first.md` | 뼈대 |
-| `non-overlapping-evidence.md` | 뼈대 |
-| `decidable-ask.md` | 뼈대 |
-| `written-vs-spoken.md` | 착수 전 확인, 뼈대 |
-| `evidence-reader-trusts.md` | 뼈대 |
-| `price-the-claim.md` | 뼈대 |
-| `label-estimates.md` | 뼈대, 만들기 |
-| `title-is-claim.md` | 뼈대, 만들기 |
-| `details-below.md` | 만들기 |
-| `three-colors.md` | 만들기 |
-| `highlight-limit.md` | 만들기 |
-| `highlight-only-readable.md` | 뼈대, 검사 |
-| `cite-source-and-page.md` | 만들기, 검사 |
-| `facts-not-judgment.md` | 만들기 |
-| `verify-with-numbers.md` | 검사, 끝맺음 |
-| `polish-without-mark.md` | 뼈대, 만들기, 검사, 끝맺음 |
+| [[conclusion-first]] | 뼈대 |
+| [[non-overlapping-evidence]] | 뼈대 |
+| [[decidable-ask]] | 뼈대 |
+| [[written-vs-spoken]] | 착수 전 확인, 뼈대 |
+| [[evidence-reader-trusts]] | 뼈대 |
+| [[price-the-claim]] | 뼈대 |
+| [[label-estimates]] | 뼈대, 만들기 |
+| [[title-is-claim]] | 뼈대, 만들기 |
+| [[details-below]] | 만들기 |
+| [[three-colors]] | 만들기 |
+| [[highlight-limit]] | 만들기 |
+| [[highlight-only-readable]] | 뼈대, 검사 |
+| [[cite-source-and-page]] | 만들기, 검사 |
+| [[facts-not-judgment]] | 만들기 |
+| [[verify-with-numbers]] | 검사, 끝맺음 |
+| [[polish-without-mark]] | 뼈대, 만들기, 검사, 끝맺음 |
 
 `${CLAUDE_PLUGIN_ROOT}/principles/` 에 이 표에 없는 문서가 있어도 읽지 않는다. 다른 스킬이 쓰는 원칙이다.
 
@@ -47,7 +49,7 @@ description: '마스터가 준 자료와 주장을 가로 16:9 발표 자료 PDF
 
 ## 뼈대 먼저
 
-파일을 만들기 전에 아래 표를 채팅으로 보여 주고 승인을 받는다. 뼈대의 문장은 보여 주기 전에 `polish-without-mark.md` 대로 윤문한다. 이 표가 발표 자료의 설계도이고, 하이라이트 문장은 이 표에 적힌 것이 전부다.
+파일을 만들기 전에 아래 표를 채팅으로 보여 주고 승인을 받는다. 뼈대의 문장은 보여 주기 전에 [[polish-without-mark]] 대로 윤문한다. 이 표가 발표 자료의 설계도이고, 하이라이트 문장은 이 표에 적힌 것이 전부다.
 
 | 쪽 | 층 | 하이라이트 문장 | 아래에 두는 세부 | 근거 출처 |
 | --- | --- | --- | --- | --- |

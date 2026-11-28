@@ -27,8 +27,10 @@
 ```
 product-skills/
 ├── .claude-plugin/marketplace.json   ← 플러그인 목록
-├── shared/                           ← 여러 플러그인이 함께 쓰는 파일 (필요해지면 만든다)
+├── PRINCIPLE.md                      ← 이 리포를 고칠 때 지키는 규칙 목록
+├── principles/                       ← 그 규칙의 내용
 └── plugins/
+    ├── shared/                       ← 여러 플러그인이 함께 쓰는 파일 (필요해지면 만든다)
     └── {플러그인}/
         ├── .claude-plugin/plugin.json
         ├── skills/
