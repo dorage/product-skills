@@ -11,7 +11,6 @@
     - `brief.md`: 입력의 문장을 한 글자도 바꾸지 않는 사본이다. `product:brief` 는 원본 `requirements.md` 가 윤문을 거치지 않았을 때 원본을 윤문한 뒤 쓴다 (`references/brief-format.md` 「내용은 바꾸지 않는다」)
     - `features/*.feature`·`scenarios.md`: Gherkin 키워드와 단계 문장이 깨진다
     - `kickstart.md`: 마스터의 원문 인용이 바뀌면 안 된다
-    - `product:quick`: 파일이 없는 채팅 답이다
     - 공유 문서 경로: 로컬 파일이 아니다
 - 때: 스킬이 파일을 다 쓰고 자기 검증(`(작성 중)` 검색, 마커·구조 검증)을 마친 직후. 「답 반영」으로 고친 뒤와 `product:persona-review` 가 고친 뒤에도 다시 거친다
 - `polish-tool.md` 「준비 확인」이 `NOT_READY` 면 건너뛰고, 끝맺음에 "윤문을 건너뛰었습니다. `/product:setup` 을 실행하세요" 한 줄을 붙인다. 문서 작성은 막지 않는다

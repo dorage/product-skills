@@ -30,6 +30,7 @@ description: '마스터가 준 자료와 주장을 가로 16:9 발표 자료 PDF
 | `cite-source-and-page.md` | 만들기, 검사 |
 | `facts-not-judgment.md` | 만들기 |
 | `verify-with-numbers.md` | 검사, 끝맺음 |
+| `polish-without-mark.md` | 뼈대, 만들기, 검사, 끝맺음 |
 
 `${CLAUDE_PLUGIN_ROOT}/principles/` 에 이 표에 없는 문서가 있어도 읽지 않는다. 다른 스킬이 쓰는 원칙이다.
 
@@ -46,7 +47,7 @@ description: '마스터가 준 자료와 주장을 가로 16:9 발표 자료 PDF
 
 ## 뼈대 먼저
 
-파일을 만들기 전에 아래 표를 채팅으로 보여 주고 승인을 받는다. 이 표가 발표 자료의 설계도이고, 하이라이트 문장은 이 표에 적힌 것이 전부다.
+파일을 만들기 전에 아래 표를 채팅으로 보여 주고 승인을 받는다. 뼈대의 문장은 보여 주기 전에 `polish-without-mark.md` 대로 윤문한다. 이 표가 발표 자료의 설계도이고, 하이라이트 문장은 이 표에 적힌 것이 전부다.
 
 | 쪽 | 층 | 하이라이트 문장 | 아래에 두는 세부 | 근거 출처 |
 | --- | --- | --- | --- | --- |
@@ -80,6 +81,7 @@ PDF 로 바꾼다.
 npx tsx "${CLAUDE_PLUGIN_ROOT}/skills/presentation/scripts/check.ts" "{발표 자료 이름}.html" "{발표 자료 이름}.pdf" --ban "넣지,않을,말"
 ```
 
+- `--ban` 에는 뼈대의 "자료에 넣지 않을 말"과 `humanize` 를 넣는다
 - 스크립트는 쪽 수, 쪽 크기, 색 개수, 쪽별 하이라이트 개수, 넣지 않을 말의 검색 건수를 세고, 하이라이트 문장을 쪽 순서대로 뽑아 보여 준다. 하나라도 어긋나면 끝 코드 1 로 끝난다
 - `tsx` 를 받을 수 없으면 `node "${CLAUDE_PLUGIN_ROOT}/skills/presentation/scripts/check.ts" …` 로 돌린다 (Node 24 이상)
 - 스크립트가 못 하는 검사 세 가지는 직접 한다: 뽑힌 하이라이트만 읽어 보기, 인용문과 쪽 번호를 원문과 대조하기, PDF 전 쪽을 그림으로 열어 보기
@@ -101,5 +103,6 @@ npx tsx "${CLAUDE_PLUGIN_ROOT}/skills/presentation/scripts/check.ts" "{발표 �
 - 첫 줄: PDF 의 전체 경로와 먼저 볼 쪽
 - 검사 결과를 숫자로 적는다
 - 뼈대와 달라진 곳이 있으면 전과 후를 나란히 적는다
+- 윤문을 했는지 건너뛰었는지 한 줄로 적는다. 자료에는 적지 않는다
 - LLM 이 채운 문장과, 직접 확인하지 못한 근거를 적는다
 - 마지막 줄: 마스터가 확인할 것 하나

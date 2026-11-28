@@ -4,18 +4,18 @@
 
 ## 첫 갈림길
 
-- 작은 작업 → `/product:quick {설명}`
-    - 스펙과 작은 설계를 채팅 답 하나로 받는다. 파일을 만들지 않는다
-    - "작은 작업" 의 기준은 `skills/quick/SKILL.md` 「규모 확인」에 있다. 기준을 넘으면 quick 이 `/product:draft` 를 권한다
-- 그 밖의 작업 → 아래 「기본 흐름」
+- 채팅으로 바로 시작하는 작업 → `/product:quick {설명}`
+    - 스펙과 설계 절을 새 기능 폴더의 `requirements.md` 한 장으로 받는다. 크기는 따지지 않는다
+    - 설계가 크면 quick 이 `/product:design` 을 권한다. 그 뒤는 아래 「기본 흐름」의 design 부터 같다
+- 다른 문서(회의록·기획서·wiki)에서 넘어온 내용으로 시작하는 작업 → 아래 「기본 흐름」
 
 ```mermaid
 flowchart LR
-    start([설명 한 덩어리]) --> size{작은 작업인가}
-    size -- 예 --> quick["/product:quick<br/>채팅 답"]
-    size -- 아니오 --> draft["/product:draft"]
+    start([설명 한 덩어리]) --> size{넘겨받은 문서가 있는가}
+    size -- 아니오 --> quick["/product:quick<br/>requirements.md"]
+    size -- 예 --> draft["/product:draft"]
     draft -. 참여자 확정 시 자동 .-> review["/product:persona-review"]
-    quick -. 규모 초과 .-> draft
+    quick -. 설계가 클 때 .-> design
     draft --> design["/product:design"]
     draft --> flow["/product:flow"]
     draft --> brief["/product:brief"]
@@ -30,7 +30,7 @@ flowchart LR
 ## 기본 흐름
 
 - `/product:setup`: 처음 한 번, 문서를 쓰기 전에 부른다. 리포지토리 외부 셋업과 내부 셋업 중 하나를 골라 product 폴더(`.product/`)를 만든다. 셋업하지 않으면 문서를 쓰는 스킬이 쓰지 않고 setup 을 안내한다
-- `/product:draft {설명}`: 무엇을 만드는지 요구사항 문서로 쓴다. 이 흐름의 시작점이고, 요청 하나에 기능 폴더 하나를 만든다
+- `/product:draft {설명}`: 넘겨받은 문서와 설명을 바탕으로 무엇을 만드는지 요구사항 문서로 쓴다. 이 흐름의 시작점이고, 요청 하나에 기능 폴더 하나를 만든다
     - 설명에 참여자를 나열하면 draft 가 문서를 다 쓴 뒤 `product:persona-review` 를 불러 참여자별로 빠진 과정을 채운다. 나열하지 않으면 참여자 목록 결정에 답한 뒤 부른다
 - `/product:design {폴더}`: 어떻게 만드는지 설계 문서로 쓴다. 요구사항 문서에 열린 결정이 남아 있어도 쓸 수 있다
 - 설계 문서가 「완성」 이 될 때까지 결정에 답한다 (아래 「결정에 답하기」)
@@ -57,7 +57,7 @@ flowchart LR
 
 모든 단계에서 같은 방식으로 답한다.
 
-- 문서나 채팅 답의 「필요한 결정」 에서 ID 와 옵션을 고른다. 예: `A1. a`, `S2. b`
+- 문서의 「필요한 결정」 에서 ID 와 옵션을 고른다. 예: `A1. a`, `S2. b`
 - 답하면 LLM 이 같은 문서를 고친다. 새 문서를 만들지 않는다
 - 앞 단계 문서의 결정이 바뀌면 뒤 단계 문서를 다시 부른다. 무엇을 다시 불러야 하는지는 [OUTPUT.md](OUTPUT.md) 「앞 문서가 바뀌었을 때」 에 있다
 
