@@ -54,6 +54,8 @@
 ````markdown
 # {기능} 구현 계획
 
+2026-11-08 · @마스터 · 윤문 안 함
+
 기준: `requirements.md`, `design.md` (origin/main {짧은 커밋})
 
 ## 작업 DAG
