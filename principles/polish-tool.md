@@ -76,4 +76,4 @@ fi
 
 - 「준비 확인」부터 「작업 파일 치우기」까지 다섯 절과 맨 위 "지금 도구" 한 줄을 새 도구에 맞게 다시 쓴다
 - 「부르는 쪽과의 약속」과 결과 값(`READY`·`NOT_READY`·`TOOL_EXISTS`·`TOOL_INSTALLED`·`TOOL_FAILED`)은 그대로 둔다. 다른 문서가 이 값에 기대고 있다
-- 원본은 `shared/principles/polish-tool.md` 하나다. 플러그인 안의 같은 이름 파일은 원본을 가리키는 링크라 따로 고치지 않는다
+- 원본은 리포 맨 위 `principles/polish-tool.md` 하나다. 플러그인 안의 같은 이름 파일은 원본을 가리키는 링크라 따로 고치지 않는다
