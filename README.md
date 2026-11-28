@@ -35,4 +35,4 @@ product-skills/
         └── references/
 ```
 
-플러그인을 더하는 규칙은 [CLAUDE.md](CLAUDE.md) 에 있다.
+리포를 고칠 때 지키는 규칙은 [CLAUDE.md](CLAUDE.md) 에 요약이, [PRINCIPLE.md](PRINCIPLE.md) 에 목록이, `principles/` 에 내용이 있다.
