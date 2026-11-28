@@ -11,7 +11,8 @@
 
 ## 적용하는 곳
 
-- `CLAUDE.md`, `PRINCIPLE.md`, `principles/` 안의 모든 문서
+- `CLAUDE.md`, 맨 위 `PRINCIPLE.md`, 맨 위 `principles/` 안의 모든 문서
+- 플러그인 폴더 안의 `PRINCIPLE.md`, `principles/`, `SKILL.md` 는 이 규칙의 대상이 아니다. 거기서는 [[skill-principles-in-plugin]] 대로 파일 이름으로 가리킨다
 - 원칙 문서가 아닌 파일(`README.md`, `.claude/settings.json` 등)은 링크로 걸지 않고 백틱으로 감싼 경로로 적는다. 같은 이름의 파일이 여러 폴더에 있어서 이름만으로는 하나로 정해지지 않기 때문이다
 - 리포 밖 주소는 주소를 그대로 적는다
 

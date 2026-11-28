@@ -4,14 +4,14 @@
 
 ## 디렉터리
 
-- `PRINCIPLE.md` - 이 리포에서 지켜야 할 규칙의 목록
+- `PRINCIPLE.md` - 이 리포에서 지켜야 할 규칙의 목록 [[one-rule-one-file]]
 - `principles/` - 그 규칙의 내용. 규칙 하나가 문서 하나다
 - `.claude-plugin/marketplace.json` - 이 리포가 내놓는 플러그인 목록
 - `plugins/{플러그인}/` - 플러그인 하나. 다른 리포에서 설치할 때 이 폴더만 캐시로 복사된다
-- `plugins/{플러그인}/principles/` - 그 플러그인의 스킬이 지키는 원칙. 원칙 하나가 파일 하나다
+- `plugins/{플러그인}/principles/` - 그 플러그인의 스킬이 지키는 원칙. 원칙 하나가 파일 하나다 [[skill-principles-in-plugin]]
 - `plugins/{플러그인}/PRINCIPLE.md` - 그 플러그인에 어떤 원칙이 있는지 적은 목록
 - `shared/` - 여러 플러그인이 함께 쓰는 파일. 처음 필요해질 때 만든다
-- `.claude/settings.json` - 이 리포 안에서 지금 브랜치의 플러그인을 쓰게 하는 설정
+- `.claude/settings.json` - 이 리포 안에서 지금 브랜치의 플러그인을 쓰게 하는 설정 [[use-branch-plugins]]
 
 ## 원칙 문서
 
@@ -23,7 +23,7 @@
 - **MUST** 원칙을 더하거나 빼거나 이름을 바꾸면 같은 커밋에서 `PRINCIPLE.md` 와 이 문서의 줄도 고친다 [[one-rule-one-file]]
 - **MUST** 원칙의 내용을 고치기 전에 `grep -rn '\[\[{이름}\]\]' .` 로 그 원칙을 가리키는 문서를 찾아 함께 본다 [[one-rule-one-file]]
 - **MUST** 원칙 문서를 가리킬 때는 항상 위키 링크(`[[이름]]`)를 쓴다 [[wiki-link-only]]
-- **MUST NOT** `CLAUDE.md`, `PRINCIPLE.md`, `principles/` 에 `[글자]` 뒤에 `(경로)` 를 붙이는 마크다운 링크를 쓰지 않는다 [[wiki-link-only]]
+- **MUST NOT** `CLAUDE.md`, 맨 위 `PRINCIPLE.md`, 맨 위 `principles/` 에 `[글자]` 뒤에 `(경로)` 를 붙이는 마크다운 링크 사용 [[wiki-link-only]]
 - **MUST** 원칙 문서가 아닌 파일은 백틱으로 감싼 경로로 적는다 [[wiki-link-only]]
 - **MUST** 원칙 파일 이름은 영어 소문자와 `-` 로 짓고, 리포 전체에서 겹치지 않게 한다 [[wiki-link-only]]
 
@@ -38,7 +38,8 @@
 ## 플러그인을 나누고 더하기
 
 - **MUST** 플러그인은 쓰는 사람의 역할(pm, design, dev)로 나눈다. 한 사람이 필요 없는 스킬까지 설치하게 되면 나눈다 [[split-plugin-by-role]]
-- **MUST NOT** product 플러그인은 새 역할 스킬이 생겼다는 이유만으로 쪼개지 않는다. 쪼갤지는 그때 따로 정한다 [[split-plugin-by-role]]
+- **MUST** 새 역할 스킬이 생기면 그 역할 플러그인을 새로 만든다 [[split-plugin-by-role]]
+- **MUST NOT** 새 역할 스킬이 생겼다는 이유만으로 product 플러그인 쪼개기. 쪼갤지는 그때 따로 정한다 [[split-plugin-by-role]]
 - **MUST** 플러그인을 더할 때는 `plugin.json`, `skills/`, `PRINCIPLE.md` 를 만들고 `marketplace.json`, 맨 위 `README.md` 표, `.claude/settings.json` 에 한 줄씩 더한다 [[add-plugin-checklist]]
 - **MUST** 플러그인을 더한 뒤 `claude plugin validate .` 으로 확인한다 [[add-plugin-checklist]]
 
@@ -46,11 +47,11 @@
 
 - **MUST** 스킬이 지키는 원칙의 내용은 `plugins/{플러그인}/principles/` 에만 쓰고, 원칙 하나를 파일 하나로 둔다 [[skill-principles-in-plugin]]
 - **MUST** 어떤 원칙이 있는지는 `plugins/{플러그인}/PRINCIPLE.md` 에 파일 이름과 한 문장 요약으로 한 줄씩 적는다 [[skill-principles-in-plugin]]
-- **MUST NOT** `SKILL.md` 에 원칙의 내용을 다시 쓰지 않는다. 파일 이름으로 가리키기만 한다 [[skill-principles-in-plugin]]
+- **MUST NOT** `SKILL.md` 에 원칙의 내용 다시 쓰기. 파일 이름으로 가리키기만 한다 [[skill-principles-in-plugin]]
 - **MUST** 원칙을 더하거나 빼거나 이름을 바꾸면 같은 커밋에서 그 플러그인의 `PRINCIPLE.md` 줄도 고친다 [[skill-principles-in-plugin]]
 
 ## 여러 플러그인이 함께 쓰는 파일
 
-- **MUST NOT** 스킬이 `../../shared/...` 처럼 플러그인 밖 파일을 가리키지 않는다. 설치하면 플러그인 폴더만 복사되어 깨진다 [[shared-file-by-symlink]]
+- **MUST NOT** 스킬이 `../../shared/...` 처럼 플러그인 밖 파일 가리키기. 설치하면 플러그인 폴더만 복사되어 깨진다 [[shared-file-by-symlink]]
 - **MUST** 원본은 `shared/` 에 하나만 두고, 쓰는 플러그인 안에 원본을 가리키는 심볼릭 링크를 둔다 [[shared-file-by-symlink]]
 - **MUST** 처음 쓸 때 다른 리포에서 실제로 설치해 캐시에 링크가 아닌 실제 파일로 들어왔는지 확인한다 [[shared-file-by-symlink]]
