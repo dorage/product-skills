@@ -8,7 +8,7 @@
     {
       "name": "product",
       "source": "./plugins/product",
-      "description": "스펙 주도 개발 스킬 묶음 — /product:draft 요구사항, /product:persona-review 참여자별 검토, /product:design 설계, /product:flow 화면흐름, /product:task 구현 계획, /product:bdd Gherkin 시나리오, /product:brief 기획 문서, /product:quick 채팅으로 바로 시작하는 작은 스펙, /product:kickstart 새 세션으로 구현 착수, /product:setup 준비"
+      "description": "스펙 주도 개발 스킬 묶음 — /product:draft 요구사항, /product:persona-review 참여자별 검토, /product:design 설계, /product:flow 화면흐름, /product:task 구현 계획, /product:bdd Gherkin 시나리오, /product:brief 기획 문서, /product:quick 채팅으로 바로 시작하는 스펙, /product:kickstart 새 세션으로 구현 착수, /product:setup 준비"
     },
     {
       "name": "report",

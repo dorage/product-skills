@@ -1,6 +1,6 @@
 schema_version: "1"
 name: quick-receipt-line
-description: product:quick 이 채팅으로 바로 시작한 작은 작업의 스펙을 requirements.md 한 장에 spec-format·quick 규칙대로 쓰는지 본다.
+description: product:quick 이 채팅으로 바로 시작한 작업의 스펙을 requirements.md 한 장에 spec-format·quick 규칙대로 쓰는지 본다.
 tags: [product, quick]
 context:
   scaffold_script: scaffold.sh

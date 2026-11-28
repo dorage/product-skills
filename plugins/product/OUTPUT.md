@@ -19,7 +19,7 @@ product 명령이 남기는 결과물과, 결과물끼리 무엇을 읽는지 �
   _humanize/{run_id}/        # 윤문 작업 파일. 01_input.txt 가 윤문 전 원문
 ```
 
-`/product:quick` 도 새 기능 폴더를 만들고 `requirements.md` 를 쓴다. draft 의 문서보다 짧고, 맨 뒤에 작은 「설계」 절이 있다. 뒤 단계 명령은 draft 의 문서처럼 이 파일을 읽는다.
+`/product:quick` 도 새 기능 폴더를 만들고 `requirements.md` 를 쓴다. 「참여자」 같은 해당 없는 절이 빠지고, 맨 뒤에 「설계」 절이 있다. 뒤 단계 명령은 draft 의 문서처럼 이 파일을 읽는다.
 
 features/, scenarios.md, kickstart.md, brief.md 를 뺀 마크다운 결과물은 다 쓴 뒤 `humanize-korean` 윤문을 거친다. 언제·어떻게 거치는지는 `references/spec-format.md` 「윤문」 한 곳에 있다.
 

@@ -4,18 +4,18 @@
 
 ## 첫 갈림길
 
-- 채팅으로 바로 시작하는 작은 작업 → `/product:quick {설명}`
-    - 스펙과 작은 설계를 새 기능 폴더의 `requirements.md` 한 장으로 받는다
-    - "작은 작업" 의 기준은 `skills/quick/SKILL.md` 「규모 확인」에 있다. 기준을 넘으면 quick 이 `/product:draft` 를 권한다
-- 다른 문서(회의록·기획서·wiki)에서 넘어온 내용으로 시작하는 작업, 또는 큰 작업 → 아래 「기본 흐름」
+- 채팅으로 바로 시작하는 작업 → `/product:quick {설명}`
+    - 스펙과 설계 절을 새 기능 폴더의 `requirements.md` 한 장으로 받는다. 크기는 따지지 않는다
+    - 설계가 크면 quick 이 `/product:design` 을 권한다. 그 뒤는 아래 「기본 흐름」의 design 부터 같다
+- 다른 문서(회의록·기획서·wiki)에서 넘어온 내용으로 시작하는 작업 → 아래 「기본 흐름」
 
 ```mermaid
 flowchart LR
-    start([설명 한 덩어리]) --> size{채팅으로 바로 시작하는<br/>작은 작업인가}
-    size -- 예 --> quick["/product:quick<br/>requirements.md"]
-    size -- 아니오 --> draft["/product:draft"]
+    start([설명 한 덩어리]) --> size{넘겨받은 문서가 있는가}
+    size -- 아니오 --> quick["/product:quick<br/>requirements.md"]
+    size -- 예 --> draft["/product:draft"]
     draft -. 참여자 확정 시 자동 .-> review["/product:persona-review"]
-    quick -. 규모 초과 .-> draft
+    quick -. 설계가 클 때 .-> design
     draft --> design["/product:design"]
     draft --> flow["/product:flow"]
     draft --> brief["/product:brief"]
