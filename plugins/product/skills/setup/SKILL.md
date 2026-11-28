@@ -1,39 +1,25 @@
 ---
 name: setup
-description: 지금 폴더에 product 를 붙여요. 리포지토리 외부 셋업(지금 폴더를 product 루트로 삼고 리포를 repos/ 아래 submodule 로 더함)과 리포지토리 내부 셋업(리포 안에 .product/ 를 만들어 커밋 1개) 중 하나를 고르게 하고, 문서를 쓰는 스킬이 찾을 product 폴더(.product/)와 설정 파일(.product-settings)을 만들어요. 셋업은 npm 의 product CLI(`@dorage/product`)가 맡고, 기대 버전이 없으면 설치하고, npm 이 없으면 같은 셋업을 하는 setup.sh 를 써요. 산출물 윤문(references/spec-format.md 「윤문」)에 쓰는 `humanize-korean@im-not-ai` 플러그인이 없으면 마켓(epoko77-ai/im-not-ai)을 더하고 설치해요. 이미 셋업한 폴더면 셋업 방식과 경로만 알려요. 트리거 - `/product:setup`, "product 준비해줘", "product 셋업해줘"
+description: 지금 폴더에 product 를 붙여요. 리포지토리 외부 셋업(지금 폴더를 product 루트로 삼고 리포를 repos/ 아래 submodule 로 더함)과 리포지토리 내부 셋업(리포 안에 .product/ 를 만들어 커밋 1개) 중 하나를 고르게 하고, 문서를 쓰는 스킬이 찾을 product 폴더(.product/)와 설정 파일(.product-settings)을 만들어요. 셋업은 npm 의 product CLI(`@dorage/product`)가 맡고, 기대 버전이 없으면 설치하고, npm 이 없으면 같은 셋업을 하는 setup.sh 를 써요. 산출물 윤문에 쓰는 윤문 도구(principles/polish-tool.md)가 없으면 설치해요. 이미 셋업한 폴더면 셋업 방식과 경로만 알려요. 트리거 - `/product:setup`, "product 준비해줘", "product 셋업해줘"
 ---
 
-# product:setup — product 폴더 셋업과 윤문 플러그인 준비
+# product:setup — product 폴더 셋업과 윤문 도구 준비
 
 지금 폴더에 product 폴더(`.product/`)와 설정 파일(`.product-settings`)을 만든다. 문서를 쓰는 스킬은 이 폴더를 `references/spec-format.md` 「저장 위치」대로 찾는다.
 
 셋업은 늘 `.product/` 를 만든다. 다른 이름을 쓰려면 셋업 뒤에 폴더 이름을 바꾸고 설정 파일에 `productDirName: {새 이름}` 한 줄을 더한다. `productDirName` 은 설정 파일이 있는 폴더 바로 아래 폴더 이름 하나다. `/` 나 `\` 가 든 경로, `.`, `..` 은 깨진 설정 파일로 본다. 설정 파일이 있으면 그 폴더를 product 루트로 보므로, 이미 셋업했다는 판단과 경로도 `productDirName` 을 따른다.
 
-절은 아래 순서로 탄다. 「CLI 준비」가 멈춰도 「윤문 플러그인」 결과는 답한다.
+절은 아래 순서로 탄다. 「CLI 준비」가 멈춰도 「윤문 도구」 결과는 답한다.
 
-- 「윤문 플러그인」: 늘 실행한다
+- 「윤문 도구」: 늘 실행한다
 - 「CLI 준비」: `product` 명령을 기대 버전으로 맞춘다
 - 「질문」: 지금 폴더를 살펴보고 필요한 것만 묻는다
 - 「셋업 실행」: 답을 옵션으로 넘겨 한 번에 셋업한다
 - 「답하기」: 결과를 알린다
 
-## 윤문 플러그인
+## 윤문 도구
 
-아래 명령을 그대로 실행한다.
-
-```bash
-if claude plugin list 2>/dev/null | grep -q 'humanize-korean@im-not-ai'; then
-  echo "PLUGIN_EXISTS"
-else
-  claude plugin marketplace list 2>/dev/null | grep -q 'im-not-ai' \
-    || claude plugin marketplace add epoko77-ai/im-not-ai </dev/null >/dev/null 2>&1
-  if claude plugin install humanize-korean@im-not-ai </dev/null >/dev/null 2>&1; then
-    echo "PLUGIN_INSTALLED"
-  else
-    echo "PLUGIN_FAILED"
-  fi
-fi
-```
+`${CLAUDE_PLUGIN_ROOT}/principles/polish-tool.md` 를 읽고 「설치」의 명령을 그대로 실행한다. 어떤 도구인지와 설치 명령은 그 문서에만 있다.
 
 ## CLI 준비
 
@@ -133,13 +119,13 @@ fi
 
 ## 답하기
 
-「윤문 플러그인」 결과를 맨 끝에 붙인다. 아래 「윤문 플러그인 결과」를 따른다.
+「윤문 도구」 결과를 맨 끝에 붙인다. 아래 「윤문 도구 결과」를 따른다.
 
 ### 셋업 결과
 
 `product` 의 `status` 와 `setup.sh` 의 첫 줄로 고른다.
 
-- 이미 셋업함 (「질문」에서 `here.settings` 가 `ok`, 또는 `already`·`ALREADY`): 한 줄로 답한다. 예: `이미 셋업했습니다: 리포지토리 내부 셋업, ~/work/shop/.product/`. 셋업 방식은 설정 파일의 `mode` 다 (`external` 은 리포지토리 외부 셋업, `internal` 은 리포지토리 내부 셋업). 이때 「CLI 준비」가 `CLI_OK` 이고 윤문 플러그인이 `PLUGIN_EXISTS` 면 이 한 줄만 답한다
+- 이미 셋업함 (「질문」에서 `here.settings` 가 `ok`, 또는 `already`·`ALREADY`): 한 줄로 답한다. 예: `이미 셋업했습니다: 리포지토리 내부 셋업, ~/work/shop/.product/`. 셋업 방식은 설정 파일의 `mode` 다 (`external` 은 리포지토리 외부 셋업, `internal` 은 리포지토리 내부 셋업). 이때 「CLI 준비」가 `CLI_OK` 이고 윤문 도구가 `TOOL_EXISTS` 면 이 한 줄만 답한다
 - `done`·`DONE`
     - 첫 줄: 셋업 방식과 product 폴더 경로. 예: `리포지토리 외부 셋업을 마쳤습니다: ~/work/cafe/.product/`
     - 외부 셋업: 더한 리포(`added`)를 한 줄로. 건너뛴 리포(`skipped`)가 있으면 리포마다 주소와 이유를 한 줄씩
@@ -160,12 +146,6 @@ fi
 - `CLI_FAILED`: 셋업은 하지 않았다는 것, 그 아래 줄의 실패 이유 한 줄, 직접 칠 설치 명령 `npm i -g @dorage/product@{기대 버전}`. 설치한 뒤 `/product:setup` 을 다시 부르라고 적는다
 - `NO_NPM`: 셋업 결과 아래에 "product CLI 가 없어서 문서를 쓰는 스킬은 node 를 설치한 뒤 `/product:setup` 을 다시 부르면 쓸 수 있습니다" 한 줄
 
-### 윤문 플러그인 결과
+### 윤문 도구 결과
 
-- `PLUGIN_EXISTS`: 따로 말하지 않는다
-- `PLUGIN_INSTALLED`: 두 줄을 답한다. 설치는 지금 세션에 바로 들어오지 않기 때문이다
-    - `humanize-korean@im-not-ai 를 설치했습니다.`
-    - `새 세션을 열어야 윤문이 동작합니다.`
-- `PLUGIN_FAILED`: 마스터가 직접 칠 두 줄을 답한다. 셋업은 그대로 쓸 수 있고, 윤문만 건너뛴다
-    - `/plugin marketplace add epoko77-ai/im-not-ai`
-    - `/plugin install humanize-korean@im-not-ai`
+`polish-tool.md` 「설치」가 결과 값(`TOOL_EXISTS`·`TOOL_INSTALLED`·`TOOL_FAILED`)마다 정한 대로 답한다. `TOOL_FAILED` 여도 셋업은 그대로 쓸 수 있고, 윤문만 건너뛴다.
