@@ -122,12 +122,14 @@ fi
 
 ### 기능 폴더
 
-- `{productDir}/features/{YYYYmmddHHMMSS}_{요청내용}/` 한 폴더에 한 요청의 `quick.md`·`requirements.md`·`design.md`·`flow.md`·`brief.md`·`tasks.md`·`scenarios.md`·`features/` 를 모은다
-    - 예: `.product/features/20261102143005_제휴카페-임직원-할인/requirements.md`
-- `{YYYYmmddHHMMSS}`: 폴더를 만드는 순간의 로컬 시각. 같은 이름의 폴더가 이미 있으면 1초 뒤 시각으로 다시 만든다
-- `{요청내용}`: 설명을 알아보기 쉽게 줄인 한국어. 원문을 그대로 옮기지 않고 핵심 명사 위주로 줄인다
-    - 공백은 `-` 로 바꾸고, 파일 이름에 못 쓰는 글자(`/ : ? * " < > |`)는 지운다. 50자 이내
-    - 예: "제휴 카페에서 임직원이 라떼 사면 할인해주는 기능 만들어줘" → `제휴카페-임직원-할인`
+- `{productDir}/features/{yymmdd}_{feature_summary}/` 한 폴더에 한 요청의 `requirements.md`·`design.md`·`flow.md`·`brief.md`·`tasks.md`·`scenarios.md`·`features/` 를 모은다
+    - 예: `.product/features/261102_partner-cafe-staff-discount/requirements.md`
+- `{yymmdd}`: 폴더를 만드는 날의 로컬 날짜 6자리 (예: 2026-11-02 → `261102`)
+- `{feature_summary}`: 설명을 영어 kebab-case 로 줄인 이름. 원문을 옮기지 않고 핵심 명사 위주로 줄인다
+    - 영어 소문자·숫자·`-` 만 쓴다. 50자 이내
+    - 예: "제휴 카페에서 임직원이 라떼 사면 할인해주는 기능 만들어줘" → `partner-cafe-staff-discount`
+- 같은 이름의 폴더가 이미 있으면 끝에 `-2`, `-3` 을 붙인다 (예: `261102_partner-cafe-staff-discount-2`)
+- 예전 `{YYYYmmddHHMMSS}_{한국어 요청내용}` 폴더는 이름을 바꾸지 않는다. 경로를 주면 이어 쓴다
 - 폴더에 브랜치 이름을 적지 않는다. 한 스펙이 여러 실행 계획과 브랜치로 나뉘기 때문이다
 
 ### 폴더 고르기
@@ -144,10 +146,10 @@ fi
 
 ```bash
 d=$(find "{productDir}/features" -mindepth 1 -maxdepth 1 -type d ! -name '.*' -exec basename {} \; 2>/dev/null)
-{ printf '%s\n' "$d" | grep -E '^[0-9]{14}' | sort -r; printf '%s\n' "$d" | grep -vE '^[0-9]{14}' | grep . | sort; } | head -n 4
+{ printf '%s\n' "$d" | grep -E '^[0-9]{6}_' | sort -r; printf '%s\n' "$d" | grep -vE '^[0-9]{6}_' | grep . | sort; } | head -n 4
 ```
 
-이름 앞 14자리 시각의 내림차순이 최근 순서다. 이름이 14자리 숫자로 시작하지 않는 폴더는 맨 뒤에 놓는다.
+이름 앞 6자리 날짜의 내림차순이 최근 순서다. 같은 날의 폴더끼리는 이름의 역순이다. 이름이 6자리 날짜와 `_` 로 시작하지 않는 폴더(예전 14자리 시각 폴더 포함)는 맨 뒤에 놓는다.
 
 - 쓰기 전에 채팅에 "{경로}에 씁니다" 한 줄을 남긴다. 경로가 정해지기 전에는 파일을 쓰지 않는다
 - 같은 파일이 이미 있으면 덮어쓰기 전에 읽고, 갱신인지 새 파일인지 한 번 묻는다
@@ -167,7 +169,7 @@ d=$(find "{productDir}/features" -mindepth 1 -maxdepth 1 -type d ! -name '.*' -e
 
 ### 대상과 때
 
-- 대상: `quick.md`·`requirements.md`·`design.md`·`flow.md`·`tasks.md`
+- 대상: `requirements.md`·`design.md`·`flow.md`·`tasks.md`
 - 거치지 않는 것: `brief.md`(입력의 문장을 한 글자도 바꾸지 않는 사본이다. `product:brief` 는 원본 `requirements.md` 가 윤문을 거치지 않았을 때 원본을 윤문한 뒤 쓴다. `references/brief-format.md` 「내용은 바꾸지 않는다」), `features/*.feature`·`scenarios.md`(Gherkin 키워드와 단계 문장이 깨진다), 공유 문서 경로(로컬 파일이 아니다)
 - 때: 스킬이 파일을 다 쓰고 자기 검증(`(작성 중)` 검색, 마커·구조 검증)을 마친 직후. 「답 반영」으로 고친 뒤와 `product:persona-review` 가 고친 뒤에도 다시 거친다
 - 플러그인이 없으면(`claude plugin list` 에 `humanize-korean@im-not-ai` 가 없으면) 건너뛰고, 끝맺음에 "윤문을 건너뛰었습니다. `/product:setup` 을 실행하세요" 한 줄을 붙인다. 문서 작성은 막지 않는다

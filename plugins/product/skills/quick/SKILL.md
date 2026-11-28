@@ -1,11 +1,11 @@
 ---
 name: quick
-description: 채팅으로 바로 시작하는 작은 작업(요구사항 1~2개, 결정 3개 이하)의 스펙을 기능 폴더에 quick.md 로 써요. 다른 문서에서 넘어온 내용으로 요구사항 문서를 쓰는 건 product:draft 가 맡아요. 포맷은 product:draft 와 같아요 - 필요한 결정(A1, 옵션과 추천안), 요구사항(사용자 스토리 + EARS 인수 조건 + 업무 규칙 + 범위 밖), 마커, 그리고 작은 설계(컴포넌트·시퀀스·오류·테스트 층). 코드는 바꾸지 않아요. 규모가 크면 product:draft 로 넘겨요. 마스터가 "A1. a" 처럼 답하면 같은 문서에 반영해요. 트리거 - `/product:quick {description}`, "간단히 스펙만", "채팅으로 바로 스펙"
+description: 채팅으로 바로 시작하는 작은 작업(요구사항 1~2개, 결정 3개 이하)의 스펙을 기능 폴더({yymmdd}_{feature_summary})의 requirements.md 로 써요. 다른 문서에서 넘어온 내용으로 요구사항 문서를 쓰는 건 product:draft 가 맡아요. 포맷은 product:draft 와 같아요 - 필요한 결정(A1, 옵션과 추천안), 요구사항(사용자 스토리 + EARS 인수 조건 + 업무 규칙 + 범위 밖), 마커, 그리고 작은 설계(컴포넌트·시퀀스·오류·테스트 층). 코드는 바꾸지 않아요. 규모가 크면 product:draft 로 넘겨요. 마스터가 "A1. a" 처럼 답하면 같은 문서에 반영해요. 트리거 - `/product:quick {description}`, "간단히 스펙만", "채팅으로 바로 스펙"
 ---
 
 # product:quick — 채팅으로 바로 시작하는 스펙
 
-마스터가 채팅에 쓴 설명 하나로 바로 스펙을 시작한다. 정리된 다른 문서(회의록, 기획서, wiki)가 없어도 된다. 그런 문서에서 넘어온 내용으로 요구사항 문서를 세우는 일은 `product:draft` 가 맡는다. 결과는 기능 폴더의 `quick.md` 한 파일이다. 코드는 바꾸지 않는다.
+마스터가 채팅에 쓴 설명 하나로 바로 스펙을 시작한다. 정리된 다른 문서(회의록, 기획서, wiki)가 없어도 된다. 그런 문서에서 넘어온 내용으로 요구사항 문서를 세우는 일은 `product:draft` 가 맡는다. 결과는 새 기능 폴더의 `requirements.md` 한 파일이고, 요구사항과 작은 설계를 함께 담는다. 코드는 바꾸지 않는다.
 
 먼저 `${CLAUDE_PLUGIN_ROOT}/references/spec-format.md` 와 `${CLAUDE_PLUGIN_ROOT}/references/quick.md` 를 읽고, 뒤 문서가 가리키는 `references/draft.md` 「요구사항 템플릿」과 `references/design.md` 도 읽는다. 결정·마커·답 반영·저장 위치·윤문은 spec-format 을, 문서의 모양은 `references/quick.md` 를 따른다. 이 스킬은 "언제 쓰고 어떤 순서로 쓰는가" 만 정한다.
 
@@ -22,15 +22,15 @@ description: 채팅으로 바로 시작하는 작은 작업(요구사항 1~2개,
 
 ## 저장 경로 정하기
 
-spec-format 「저장 위치」를 따른다. 파일 이름은 `quick.md` 다.
+spec-format 「저장 위치」를 따른다. 파일 이름은 `requirements.md` 다.
 
-- 경로를 받지 않았으면 `product:draft` 처럼 `{productDir}/features/` 아래에 새 기능 폴더를 만든다. 폴더 이름은 spec-format 「기능 폴더」의 `{YYYYmmddHHMMSS}_{요청내용}` 이다
+- 경로를 받지 않았으면 `product:draft` 처럼 `{productDir}/features/` 아래에 새 기능 폴더를 만든다. 폴더 이름은 spec-format 「기능 폴더」의 `{yymmdd}_{feature_summary}` 다 (예: `.product/features/261128_receipt-staff-discount-line/requirements.md`)
 - 마스터가 요청하기 전에는 이 파일을 커밋하지 않는다
 
 ## 쓰는 순서
 
 - 「조사」를 한다
-- Write 로 `quick.md` 를 한 번에 쓴다. 문서가 짧아서 뼈대를 먼저 만들지 않는다
+- Write 로 `requirements.md` 를 한 번에 쓴다. 문서가 짧아서 뼈대를 먼저 만들지 않는다
 - spec-format 「윤문」을 거친다
 
 ## 조사
@@ -40,9 +40,9 @@ spec-format 「저장 위치」를 따른다. 파일 이름은 `quick.md` 다.
 
 ## 답 반영
 
-마스터가 "A1. a" 처럼 답하면 spec-format 「답 반영」대로 같은 `quick.md` 를 고친다. 새 문서를 만들지 않는다. 고친 뒤 spec-format 「윤문」을 다시 거친다.
+마스터가 "A1. a" 처럼 답하면 spec-format 「답 반영」대로 같은 `requirements.md` 를 고친다. 새 문서를 만들지 않는다. 고친 뒤 spec-format 「윤문」을 다시 거친다.
 
-- 반영하다 규모 확인 조건에 걸리면 `product:draft` 로 넘기기를 권한다. 넘길 때는 `/product:draft 저장 경로는 {같은 기능 폴더}/requirements.md 다. {quick.md 경로} 를 토대로` 처럼 저장 경로와 넘겨받을 문서를 함께 적는다. draft 는 같은 기능 폴더에 `requirements.md` 를 쓰고, `quick.md` 는 지난 판으로 남는다
+- 반영하다 규모 확인 조건에 걸리면 `product:draft` 로 넘기기를 권한다. 넘길 때는 `/product:draft 저장 경로는 {이 requirements.md 경로} 다. 이 문서를 draft 모양으로 넓힌다` 처럼 같은 파일을 저장 경로로 준다. 「설계」 절은 뒤에 `/product:design` 이 design.md 로 옮긴다
 
 ## 끝맺음
 
@@ -57,4 +57,4 @@ spec-format 「저장 위치」를 따른다. 파일 이름은 `quick.md` 다.
 
 - 코드를 바꾸지 않는다
 - 경로를 정하기 전에 파일을 쓰지 않는다
-- `requirements.md`·`design.md` 이름으로 쓰지 않는다. 그 이름은 `product:draft`·`product:design` 의 문서라서, 다른 스킬이 quick 의 줄인 모양을 그 문서로 잘못 읽는다
+- `design.md` 를 따로 쓰지 않는다. 작은 설계는 `requirements.md` 의 「설계」 절에 둔다

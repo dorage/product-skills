@@ -13,7 +13,7 @@ npx tsx plugins/product/evals/run.ts
 
 | case | 스킬 | 결과물 | 미리 깔아 두는 입력 |
 | --- | --- | --- | --- |
-| `quick/receipt-line` | quick | `out/quick.md` | 없음 |
+| `quick/receipt-line` | quick | `out/requirements.md` | 없음 |
 | `draft/cafe-discount` | draft | `out/requirements.md` | 없음 |
 | `persona-review/cafe-discount` | persona-review | `out/requirements.md` (같은 파일을 고침) | 골든 `requirements.md` 에서 「참여자별 검토 기록」을 지운 것 |
 | `design/cafe-discount` | design | `out/design.md` | 골든 `requirements.md` |

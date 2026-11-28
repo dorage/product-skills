@@ -14,7 +14,7 @@
 - `/product:flow` — requirements.md 를 받아 pug-frame 와이어프레임 전에 확인할 화면흐름 문서(flow.md). 흐름별 mermaid 흐름도와 화면별 변경 표
 - `/product:task` — requirements.md 와 design.md 를 받아 구현 계획 문서(tasks.md)
 - `/product:brief` — requirements.md 에서 마커를 걷어 내고, 사람이 읽을 내용을 앞에, LLM 맥락용을 뒤에 둔 기획 문서(brief.md). 내용은 고치지 않고 자리만 옮긴다
-- `/product:quick` — 채팅으로 바로 시작하는 작은 작업의 스펙과 설계를 기능 폴더의 quick.md 하나로
+- `/product:quick` — 채팅으로 바로 시작하는 작은 작업의 스펙과 설계를 기능 폴더의 requirements.md 하나로
 - `/product:bdd` — requirements.md 경로를 주거나 requirements.md 만 있으면 정해진 인수 조건을 scenarios.md 의 gherkin 코드 블록으로(미결은 「미결 사항」에), 「완성」 design.md 도 있으면 E2E·통합 인수 조건을 Gherkin 시나리오(features/*.feature)
 - `/product:kickstart` — 세 문서와 지금 세션의 맥락을 인수인계 문서(kickstart.md)로 묶고, fable 모델의 새 세션을 백그라운드로 띄워 구현에 착수. 새 세션은 지시와 검수만 하고 코드 수정·커밋은 서브에이전트에 맡긴다
 - `/product:setup` — 리포지토리 외부 셋업(지금 폴더를 product 루트로 삼고 리포를 `repos/` 아래 submodule 로)과 내부 셋업(리포 안 `.product/` 를 커밋) 중 하나로 product 폴더를 만든다. product CLI(`npm i -g @dorage/product`)와 윤문 플러그인(`humanize-korean@im-not-ai`)도 준비한다

@@ -1,24 +1,24 @@
-# quick 스펙 (quick.md)
+# quick 스펙 (requirements.md)
 
-`product:quick` 이 기능 폴더에 `quick.md` 로 쓰는 스펙의 모양이다. `references/spec-format.md` 를 모두 따르고, 요구사항은 `references/draft.md`, 설계는 `references/design.md` 를 줄여 쓴다.
+`product:quick` 이 기능 폴더에 `requirements.md` 로 쓰는 스펙의 모양이다. `product:draft` 의 requirements.md 를 줄이고 작은 설계를 붙인 모양이다. `references/spec-format.md` 를 모두 따르고, 요구사항은 `references/draft.md`, 설계는 `references/design.md` 를 줄여 쓴다.
 
 ## 절 구성 (이 순서)
 
 - 제목: `# {기능} quick 스펙`
 - 다음 줄: `{기준 날짜} · @{작성자}`
 
-해당 없는 절은 뺀다. `requirements.md` 와 달리 "해당 없음" 줄을 남기지 않는다. 짧은 문서라 빈 절이 읽기를 방해하기 때문이다.
+해당 없는 절은 뺀다. draft 의 requirements.md 와 달리 "해당 없음" 줄을 남기지 않는다. 짧은 문서라 빈 절이 읽기를 방해하기 때문이다.
 
 - `## 필요한 결정`: spec-format 「열린 결정」「정해진 결정」 모양. 정해진 결정은 `### 정해진 결정` 하위 절에 결정마다 불릿으로 둔다. 열린 결정이 없으면 이 절을 뺀다
 - `## 요구사항`: `references/draft.md` 「요구사항 템플릿」. 요구사항이 하나면 `### 요구사항 1` 헤딩 하나
-- `## 설계`: 아래 「설계 절」. 설계 규모 기준을 넘으면 이 절 대신 "`/product:draft {설명}` 으로 requirements.md 를 만든 뒤 `/product:design`" 을 한 줄로 권한다
+- `## 설계`: 아래 「설계 절」. 설계 규모 기준을 넘으면 이 절 대신 "`/product:design {이 requirements.md 경로}` 로 설계 문서를 쓰세요" 를 한 줄로 권한다
 - `## 기존 시스템과 맞닿는 곳`: `@사실` 줄 3개 이하. 업무 언어로 쓰고, 경로는 「설계 절」의 컴포넌트에만 적는다 (`references/draft.md` 「이 문서의 수준」)
 
 ### 설계 절
 
 작은 작업은 요구사항과 설계를 두 문서로 나눠 주고받는 비용이 더 크다. 그래서 같은 문서에 설계를 붙인다. 모양은 `references/design.md` 「절 구성」을 줄인 것이다.
 
-- 설계 규모 기준: 컴포넌트 3개 이하, 스키마 변경 0건, 되돌리기 어려운 선택 0건. 하나라도 넘으면 `product:draft` → `product:design` 순서로 넘긴다. `product:design` 은 요구사항 문서가 있어야 쓸 수 있기 때문이다
+- 설계 규모 기준: 컴포넌트 3개 이하, 스키마 변경 0건, 되돌리기 어려운 선택 0건. 하나라도 넘으면 설계는 `product:design` 으로 넘긴다. quick 이 쓴 requirements.md 를 그대로 입력으로 받는다
 - 담는 항목 (해당 없는 항목은 "해당 없음" 줄 없이 뺀다)
     - 컴포넌트: 새로 만들거나 바꾸는 코드 단위마다 책임 한 문장, 인터페이스, 추적(`요구사항 {n} 인수 조건 {m}`). 기존 코드면 `@사실 ({origin/main 경로})`
     - 시퀀스: 호출이 3단계 이상이면 ```mermaid `sequenceDiagram` 하나. 메시지 라벨에 예시 숫자

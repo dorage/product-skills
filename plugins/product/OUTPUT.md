@@ -7,9 +7,8 @@ product 명령이 남기는 결과물과, 결과물끼리 무엇을 읽는지 �
 모든 결과물은 요청 하나당 기능 폴더 하나에 모인다. 기능 폴더는 `/product:setup` 으로 셋업한 product 폴더(`.product/`)의 `features/` 아래에 있다. 경로를 정하는 규칙은 `references/spec-format.md` 「저장 위치」 한 곳에 있다.
 
 ```text
-{product 폴더}/features/{YYYYmmddHHMMSS}_{요청내용}/
-  quick.md                 # /product:quick. 요구사항과 작은 설계를 한 장에
-  requirements.md          # 맨 끝 「참여자별 검토 기록」은 /product:persona-review 가 쓴다
+{product 폴더}/features/{yymmdd}_{feature_summary}/
+  requirements.md          # /product:draft 또는 /product:quick. 맨 끝 「참여자별 검토 기록」은 /product:persona-review 가 쓴다
   design.md
   flow.md
   tasks.md
@@ -20,7 +19,7 @@ product 명령이 남기는 결과물과, 결과물끼리 무엇을 읽는지 �
   _humanize/{run_id}/        # 윤문 작업 파일. 01_input.txt 가 윤문 전 원문
 ```
 
-`/product:quick` 은 새 기능 폴더를 만들고 `quick.md` 하나만 쓴다. `/product:draft` 말고는 `quick.md` 를 읽지 않는다. 이어서 설계·구현 계획 문서가 필요하면 `quick.md` 를 `/product:draft` 에 넘겨 같은 폴더에 requirements.md 를 만든다 (`skills/quick/SKILL.md` 「답 반영」).
+`/product:quick` 도 새 기능 폴더를 만들고 `requirements.md` 를 쓴다. draft 의 문서보다 짧고, 맨 뒤에 작은 「설계」 절이 있다. 뒤 단계 명령은 draft 의 문서처럼 이 파일을 읽는다.
 
 features/, scenarios.md, kickstart.md, brief.md 를 뺀 마크다운 결과물은 다 쓴 뒤 `humanize-korean` 윤문을 거친다. 언제·어떻게 거치는지는 `references/spec-format.md` 「윤문」 한 곳에 있다.
 
@@ -28,9 +27,7 @@ features/, scenarios.md, kickstart.md, brief.md 를 뺀 마크다운 결과물�
 
 ```mermaid
 flowchart LR
-    qck["quick.md<br/>/product:quick"]
-    req["requirements.md<br/>/product:draft"]
-    qck -. 규모 초과 .-> req
+    req["requirements.md<br/>/product:draft · /product:quick"]
     rev["/product:persona-review<br/>같은 문서를 보강"]
     des["design.md<br/>/product:design"]
     flw["flow.md<br/>/product:flow"]
@@ -59,8 +56,7 @@ flowchart LR
 
 그림에 없는 동작만 적는다.
 
-- quick.md: 앞 문서가 없다. 채팅으로 바로 시작하는 흐름의 시작점이다
-- requirements.md: 앞 문서가 없어도 된다. 넘겨받은 문서에서 시작하는 흐름의 시작점이다. quick.md 처럼 넘겨받은 문서가 있으면 읽고 옮겨 쓴다
+- requirements.md: 앞 문서가 없다. draft 는 넘겨받은 문서에서, quick 은 채팅에서 시작한다
 - persona-review: requirements.md 가 없으면 고치지 않고 `/product:draft` 를 안내한다. 새 파일을 만들지 않는다
 - design.md: requirements.md 가 없으면 쓰지 않고 `/product:draft` 를 안내한다. requirements.md 에 열린 결정이 남아 있어도 쓴다
 - tasks.md: 둘 중 하나라도 없으면 쓰지 않고 빠진 문서를 만드는 명령을 안내한다. design.md 가 「완성」 이 아니면 남은 결정을 알려 준다
@@ -76,6 +72,5 @@ flowchart LR
 - requirements.md 를 고쳤다 → `/product:design` 으로 설계에 반영한 뒤, 아래 design.md 줄을 따른다. brief 를 썼다면 `/product:brief`, 화면흐름을 썼다면 `/product:flow`, scenarios.md 를 썼다면 `/product:bdd {requirements.md 경로}` 도 다시 부른다
 - design.md 를 고쳤다 → `/product:task`, `/product:bdd` 를 다시 부른다
     - tasks.md 는 이미 끝난(`done`) 작업을 그대로 두고 고친다
-- quick.md 를 고쳤다 → requirements.md 로 넘긴 적이 있으면, requirements.md 가 이제 원본이다. quick.md 는 고치지 않는다
 - features/, scenarios.md, flow.md, brief 문서는 다른 문서가 읽지 않는다. 고쳐도 다시 부를 명령이 없다
 - tasks.md 를 고쳤다 → 이미 띄운 지휘 세션은 tasks.md 를 다시 읽으면 된다. kickstart.md 는 tasks.md 를 가리키기만 해서 다시 쓸 것이 없다
