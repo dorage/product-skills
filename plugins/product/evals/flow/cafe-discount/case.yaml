@@ -28,6 +28,11 @@ graders:
     max: 0
     arm: both
   - type: regex
+    name: regex-header-line
+    target: {source: file, path: out/flow.md}
+    pattern: '^# .+\n\n\d{4}-\d{2}-\d{2} · @.+ · 윤문 (안 함|\S+ \d+(\.\d+)+\S*)\n'
+    match: contains
+  - type: regex
     name: regex-path-flowchart-lr
     target: {source: file, path: out/flow.md}
     pattern: '#### 경로[^`]*```mermaid\s*\n\s*flowchart LR'

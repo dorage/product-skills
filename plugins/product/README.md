@@ -19,7 +19,7 @@
 - `/product:kickstart` — 세 문서와 지금 세션의 맥락을 인수인계 문서(kickstart.md)로 묶고, fable 모델의 새 세션을 백그라운드로 띄워 구현에 착수. 새 세션은 지시와 검수만 하고 코드 수정·커밋은 서브에이전트에 맡긴다
 - `/product:setup` — 리포지토리 외부 셋업(지금 폴더를 product 루트로 삼고 리포를 `repos/` 아래 submodule 로)과 내부 셋업(리포 안 `.product/` 를 커밋) 중 하나로 product 폴더를 만든다. product CLI(`npm i -g @dorage/product`)와 윤문 플러그인(`humanize-korean@im-not-ai`)도 준비한다
 
-문서를 쓰는 여덟 스킬이 함께 따르는 공용 포맷(결정·마커·답 반영·저장 위치·윤문)은 `references/spec-format.md` 한 곳에 있다. 단계마다 결과물 모양(절 구성·템플릿·완성 조건)은 `references/{스킬 이름}.md` (`draft`·`persona-review`·`design`·`flow`·`task`·`quick`·`bdd`·`kickstart`)에 있고, brief 스킬의 변환 규칙은 `references/brief-format.md` 에 있다. SKILL.md 에는 쓰는 과정만 둔다.
+문서를 쓰는 여덟 스킬이 함께 따르는 공용 포맷(결정·마커·답 반영·저장 위치·문서 머리말·윤문)은 `references/spec-format.md` 한 곳에 있다. 단계마다 결과물 모양(절 구성·템플릿·완성 조건)은 `references/{스킬 이름}.md` (`draft`·`persona-review`·`design`·`flow`·`task`·`quick`·`bdd`·`kickstart`)에 있고, brief 스킬의 변환 규칙은 `references/brief-format.md` 에 있다. SKILL.md 에는 쓰는 과정만 둔다.
 
 - 어떤 명령을 어떤 순서로 쓰는지: [WORKFLOW.md](WORKFLOW.md)
 - 결과물이 어디에 남고 서로 무엇을 읽는지: [OUTPUT.md](OUTPUT.md)

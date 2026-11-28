@@ -23,6 +23,8 @@ product 명령이 남기는 결과물과, 결과물끼리 무엇을 읽는지 �
 
 features/, scenarios.md, kickstart.md, brief.md 를 뺀 마크다운 결과물은 다 쓴 뒤 `humanize-korean` 윤문을 거친다. 언제·어떻게 거치는지는 `references/spec-format.md` 「윤문」 한 곳에 있다.
 
+윤문 대상 문서와 brief.md 는 제목 바로 아래 한 줄에 작성일자·저자·윤문 여부를 적는다. 윤문을 거쳤으면 윤문 도구의 이름과 버전이 붙는다(예: `2026-11-25 · @kanghyunlee · 윤문 humanize-korean@im-not-ai 2.4.6`). 줄 모양은 `references/spec-format.md` 「문서 머리말」 한 곳에 있다.
+
 ## 의존관계
 
 ```mermaid

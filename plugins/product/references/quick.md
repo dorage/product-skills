@@ -1,6 +1,6 @@
 # 채팅 답 스펙 (product:quick)
 
-`product:quick` 이 채팅 답 하나로 쓰는 스펙의 모양이다. `references/spec-format.md` 를 모두 따르고, 요구사항은 `references/draft.md`, 설계는 `references/design.md` 를 줄여 쓴다.
+`product:quick` 이 채팅 답 하나로 쓰는 스펙의 모양이다. `references/spec-format.md` 를 따르되 파일이 없는 채팅 답이라 머리말 줄(「문서 머리말」)은 두지 않는다. 요구사항은 `references/draft.md`, 설계는 `references/design.md` 를 줄여 쓴다.
 
 ## 답의 모양 (이 순서)
 
