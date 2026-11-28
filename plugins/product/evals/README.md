@@ -13,7 +13,7 @@ npx tsx plugins/product/evals/run.ts
 
 | case | 스킬 | 결과물 | 미리 깔아 두는 입력 |
 | --- | --- | --- | --- |
-| `quick/receipt-line` | quick | 마지막 채팅 답 | 없음 |
+| `quick/receipt-line` | quick | `out/quick.md` | 없음 |
 | `draft/cafe-discount` | draft | `out/requirements.md` | 없음 |
 | `persona-review/cafe-discount` | persona-review | `out/requirements.md` (같은 파일을 고침) | 골든 `requirements.md` 에서 「참여자별 검토 기록」을 지운 것 |
 | `design/cafe-discount` | design | `out/design.md` | 골든 `requirements.md` |
@@ -27,7 +27,7 @@ npx tsx plugins/product/evals/run.ts
 - 기준 trace 가 아직 없는 새 스킬의 case(지금은 persona-review, flow, brief)는 `baseline` 채점기를 두지 않는다. `--save-baseline` 으로 `baseline/current/traces/{스킬}.jsonl` 이 생긴 뒤 더한다
 - 프롬프트는 `/product:{스킬}` 로 부르고, 결과 경로를 적어 폴더를 묻지 않게 하고, 묻지 말고 열린 결정은 열린 채 추천안을 적어 두라고 한다
 - case 마다 채점기
-    - `file-output`: 결과 파일이 생겼다 (quick 은 대신 `write-none`: 파일을 만들지 않았다)
+    - `file-output`: 결과 파일이 생겼다
     - `ask-none`: `AskUserQuestion` 을 부르지 않았다
     - `regex-…`: 스킬의 references 문서에서 뽑은 규칙. 예: 인수 조건마다 마커 하나, 숫자 목록은 인수 조건에만, 요약·결론 헤딩 없음, 그룹마다 결정 5개 이하
     - `llm-…` 두 개: 같은 내용을 두 번 쓰지 않았는가, 입력의 마스터 문장·결정을 바꾸지 않았는가

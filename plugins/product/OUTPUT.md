@@ -4,10 +4,11 @@ product 명령이 남기는 결과물과, 결과물끼리 무엇을 읽는지 �
 
 ## 어디에 남는가
 
-`/product:quick` 을 뺀 모든 결과물은 요청 하나당 기능 폴더 하나에 모인다. 기능 폴더는 `/product:setup` 으로 셋업한 product 폴더(`.product/`)의 `features/` 아래에 있다. 경로를 정하는 규칙은 `references/spec-format.md` 「저장 위치」 한 곳에 있다.
+모든 결과물은 요청 하나당 기능 폴더 하나에 모인다. 기능 폴더는 `/product:setup` 으로 셋업한 product 폴더(`.product/`)의 `features/` 아래에 있다. 경로를 정하는 규칙은 `references/spec-format.md` 「저장 위치」 한 곳에 있다.
 
 ```text
 {product 폴더}/features/{YYYYmmddHHMMSS}_{요청내용}/
+  quick.md                 # /product:quick. 요구사항과 작은 설계를 한 장에
   requirements.md          # 맨 끝 「참여자별 검토 기록」은 /product:persona-review 가 쓴다
   design.md
   flow.md
@@ -19,7 +20,7 @@ product 명령이 남기는 결과물과, 결과물끼리 무엇을 읽는지 �
   _humanize/{run_id}/        # 윤문 작업 파일. 01_input.txt 가 윤문 전 원문
 ```
 
-`/product:quick` 은 채팅 답이라 파일을 남기지 않는다.
+`/product:quick` 은 새 기능 폴더를 만들고 `quick.md` 하나만 쓴다. 다른 스킬은 `quick.md` 를 읽지 않는다. 이어서 설계·구현 계획 문서가 필요하면 같은 폴더의 requirements.md 경로와 quick.md 내용을 `/product:draft` 에 넘긴다 (`skills/quick/SKILL.md` 「답 반영」).
 
 features/, scenarios.md, kickstart.md, brief.md 를 뺀 마크다운 결과물은 다 쓴 뒤 `humanize-korean` 윤문을 거친다. 언제·어떻게 거치는지는 `references/spec-format.md` 「윤문」 한 곳에 있다.
 
@@ -27,7 +28,9 @@ features/, scenarios.md, kickstart.md, brief.md 를 뺀 마크다운 결과물�
 
 ```mermaid
 flowchart LR
+    qck["quick.md<br/>/product:quick"]
     req["requirements.md<br/>/product:draft"]
+    qck -. 규모 초과 .-> req
     rev["/product:persona-review<br/>같은 문서를 보강"]
     des["design.md<br/>/product:design"]
     flw["flow.md<br/>/product:flow"]
@@ -56,7 +59,8 @@ flowchart LR
 
 그림에 없는 동작만 적는다.
 
-- requirements.md: 앞 문서가 없다. 모든 흐름의 시작점이다
+- quick.md: 앞 문서가 없다. 채팅으로 바로 시작하는 흐름의 시작점이다
+- requirements.md: 앞 문서가 없어도 된다. 넘겨받은 문서에서 시작하는 흐름의 시작점이다. quick.md 내용을 설명으로 받으면 그 내용을 옮겨 쓴다
 - persona-review: requirements.md 가 없으면 고치지 않고 `/product:draft` 를 안내한다. 새 파일을 만들지 않는다
 - design.md: requirements.md 가 없으면 쓰지 않고 `/product:draft` 를 안내한다. requirements.md 에 열린 결정이 남아 있어도 쓴다
 - tasks.md: 둘 중 하나라도 없으면 쓰지 않고 빠진 문서를 만드는 명령을 안내한다. design.md 가 「완성」 이 아니면 남은 결정을 알려 준다
