@@ -1,8 +1,8 @@
 # 스펙 포맷
 
-문서를 쓰는 모든 단계(`product:draft`·`product:persona-review`·`product:design`·`product:flow`·`product:task`·`product:brief-dev`·`product:brief-nondev`·`product:quick`·`product:bdd`)가 함께 따르는 공용 포맷이다. 결정·마커·답 반영·저장 위치·윤문의 모양은 이 문서 한 곳에 있다.
+문서를 쓰는 모든 단계(`product:draft`·`product:persona-review`·`product:design`·`product:flow`·`product:task`·`product:brief`·`product:quick`·`product:bdd`)가 함께 따르는 공용 포맷이다. 결정·마커·답 반영·저장 위치·윤문의 모양은 이 문서 한 곳에 있다.
 
-단계마다 결과물 모양(절 구성, 템플릿, 단계 전용 표기, 완성 조건)은 `references/{스킬 이름}.md` 에 있다. 두 brief 스킬은 `references/brief-format.md` 를 함께 쓴다. 단계 문서가 이 문서의 일부를 따르지 않으면, 단계 문서 맨 위에 예외를 적는다.
+단계마다 결과물 모양(절 구성, 템플릿, 단계 전용 표기, 완성 조건)은 `references/{스킬 이름}.md` 에 있다. brief 스킬은 `references/brief-format.md` 를 쓴다. 단계 문서가 이 문서의 일부를 따르지 않으면, 단계 문서 맨 위에 예외를 적는다.
 
 ## 한 번만 쓴다
 
@@ -92,7 +92,7 @@
 
 ## 저장 위치
 
-`product:draft`·`product:persona-review`·`product:design`·`product:flow`·`product:brief-dev`·`product:brief-nondev`·`product:task`·`product:bdd` 가 문서를 쓰는 자리다. 문서는 `/product:setup` 으로 셋업한 product 폴더(`.product/`) 안 기능 폴더에 모은다. 어느 폴더에서 스킬을 불러도 위로 가장 가까운 product 폴더 한 곳에 한 기능의 문서가 쌓이게 하려는 것이다.
+`product:draft`·`product:persona-review`·`product:design`·`product:flow`·`product:brief`·`product:task`·`product:bdd` 가 문서를 쓰는 자리다. 문서는 `/product:setup` 으로 셋업한 product 폴더(`.product/`) 안 기능 폴더에 모은다. 어느 폴더에서 스킬을 불러도 위로 가장 가까운 product 폴더 한 곳에 한 기능의 문서가 쌓이게 하려는 것이다.
 
 product 폴더 이름은 설정 파일(`.product-settings`)의 `productDirName` 으로 바꿀 수 있다. 없으면 `.product` 다. 스킬은 이름을 짐작하지 않고 아래 명령이 돌려준 `productDir` 만 쓴다. 아래 예시의 `.product/` 도 그 자리에 `productDir` 이 들어간다.
 
@@ -122,7 +122,7 @@ fi
 
 ### 기능 폴더
 
-- `{productDir}/features/{YYYYmmddHHMMSS}_{요청내용}/` 한 폴더에 한 요청의 `requirements.md`·`design.md`·`flow.md`·`brief-dev.md`·`brief-nondev.md`·`tasks.md`·`scenarios.md`·`features/` 를 모은다
+- `{productDir}/features/{YYYYmmddHHMMSS}_{요청내용}/` 한 폴더에 한 요청의 `requirements.md`·`design.md`·`flow.md`·`brief.md`·`tasks.md`·`scenarios.md`·`features/` 를 모은다
     - 예: `.product/features/20261102143005_제휴카페-임직원-할인/requirements.md`
 - `{YYYYmmddHHMMSS}`: 폴더를 만드는 순간의 로컬 시각. 같은 이름의 폴더가 이미 있으면 1초 뒤 시각으로 다시 만든다
 - `{요청내용}`: 설명을 알아보기 쉽게 줄인 한국어. 원문을 그대로 옮기지 않고 핵심 명사 위주로 줄인다
@@ -138,7 +138,7 @@ fi
     - `inRepos` 가 리포 이름이면 쓰기 전에 "{경로}는 실제 리포 `repos/{inRepos}/` 안이라 리포지토리 관리자에게 보일 수 있습니다" 한 줄을 남기고 그대로 쓴다
 - 없으면
     - `product:draft` → `{productDir}/features/` 아래에 새 기능 폴더를 만든다. `features/` 가 없으면 함께 만든다
-    - `product:persona-review`·`product:design`·`product:flow`·`product:brief-dev`·`product:brief-nondev`·`product:task`·`product:bdd` → `{productDir}/features/` 의 폴더를 최대 4개로 `AskUserQuestion` 한 번에 보여 주고 고르게 한다. 아래 명령의 순서대로 보여 주고, 첫 옵션이 가장 최근 폴더다
+    - `product:persona-review`·`product:design`·`product:flow`·`product:brief`·`product:task`·`product:bdd` → `{productDir}/features/` 의 폴더를 최대 4개로 `AskUserQuestion` 한 번에 보여 주고 고르게 한다. 아래 명령의 순서대로 보여 주고, 첫 옵션이 가장 최근 폴더다
         - 폴더가 하나도 없으면 쓰지 않고 "`/product:draft` 를 먼저 실행하세요" 한 줄을 남긴다
     - `legacyDir` 가 `null` 이 아니면 고르게 할 때(폴더가 없다는 줄을 남길 때도) "예전 기능은 `{legacyDir}` 에 있습니다. 경로를 주면 이어 씁니다" 한 줄을 함께 남긴다. 예전 보관 폴더 안의 파일은 옮기거나 지우지 않는다
 
@@ -167,8 +167,8 @@ d=$(find "{productDir}/features" -mindepth 1 -maxdepth 1 -type d ! -name '.*' -e
 
 ### 대상과 때
 
-- 대상: `requirements.md`·`design.md`·`flow.md`·`tasks.md`·`brief-dev.md`·`brief-nondev.md`
-- 거치지 않는 것: `features/*.feature`·`scenarios.md`(Gherkin 키워드와 단계 문장이 깨진다), `product:quick`(파일이 없는 채팅 답), 공유 문서 경로(로컬 파일이 아니다)
+- 대상: `requirements.md`·`design.md`·`flow.md`·`tasks.md`
+- 거치지 않는 것: `brief.md`(입력의 문장을 한 글자도 바꾸지 않는 사본이다. `product:brief` 는 원본 `requirements.md` 가 윤문을 거치지 않았을 때 원본을 윤문한 뒤 쓴다. `references/brief-format.md` 「내용은 바꾸지 않는다」), `features/*.feature`·`scenarios.md`(Gherkin 키워드와 단계 문장이 깨진다), `product:quick`(파일이 없는 채팅 답), 공유 문서 경로(로컬 파일이 아니다)
 - 때: 스킬이 파일을 다 쓰고 자기 검증(`(작성 중)` 검색, 마커·구조 검증)을 마친 직후. 「답 반영」으로 고친 뒤와 `product:persona-review` 가 고친 뒤에도 다시 거친다
 - 플러그인이 없으면(`claude plugin list` 에 `humanize-korean@im-not-ai` 가 없으면) 건너뛰고, 끝맺음에 "윤문을 건너뛰었습니다. `/product:setup` 을 실행하세요" 한 줄을 붙인다. 문서 작성은 막지 않는다
 

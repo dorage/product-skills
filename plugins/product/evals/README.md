@@ -9,7 +9,7 @@ npx tsx plugins/product/evals/run.ts
 
 ## 무엇을 보는가
 
-문서를 쓰는 아홉 스킬마다 case 하나를 둔다. 모두 같은 작은 도메인(제휴 카페 임직원 할인)을 쓴다.
+문서를 쓰는 여덟 스킬마다 case 하나를 둔다. 모두 같은 작은 도메인(제휴 카페 임직원 할인)을 쓴다.
 
 | case | 스킬 | 결과물 | 미리 깔아 두는 입력 |
 | --- | --- | --- | --- |
@@ -20,12 +20,11 @@ npx tsx plugins/product/evals/run.ts
 | `flow/cafe-discount` | flow | `out/flow.md` | 골든 `requirements.md` |
 | `task/cafe-discount` | task | `out/tasks.md` | 골든 `requirements.md`, `design.md` |
 | `bdd/cafe-discount` | bdd | `out/features/**/*.feature` | 골든 `requirements.md`, `design.md` |
-| `brief-dev/cafe-discount` | brief-dev | `out/brief-dev.md` | 골든 `requirements.md` |
-| `brief-nondev/cafe-discount` | brief-nondev | `out/brief-nondev.md` | 골든 `requirements.md` |
+| `brief/cafe-discount` | brief | `out/brief.md` | 골든 `requirements.md` |
 
 - 골든 입력은 `_fixtures/` 에 한 번만 있다. 결정이 모두 닫힌 「완성」 상태라 task·bdd 가 멈추지 않는다. 각 case 의 `scaffold.sh` 가 `_fixtures/stage.sh` 를 불러 필요한 것만 `out/` 에 복사하고, `.eval-case` 에 case 이름을 적고, 빈 git 저장소를 만든다
     - 골든 `requirements.md` 는 검토까지 끝난 문서라 맨 끝에 「참여자별 검토 기록」이 있다. persona-review case 의 `scaffold.sh` 는 깔아 둔 뒤 이 절을 지운다. 기록이 있으면 검토할 참여자가 없기 때문이다
-- 기준 trace 가 아직 없는 새 스킬의 case(지금은 persona-review, flow)는 `baseline` 채점기를 두지 않는다. `--save-baseline` 으로 `baseline/current/traces/{스킬}.jsonl` 이 생긴 뒤 더한다
+- 기준 trace 가 아직 없는 새 스킬의 case(지금은 persona-review, flow, brief)는 `baseline` 채점기를 두지 않는다. `--save-baseline` 으로 `baseline/current/traces/{스킬}.jsonl` 이 생긴 뒤 더한다
 - 프롬프트는 `/product:{스킬}` 로 부르고, 결과 경로를 적어 폴더를 묻지 않게 하고, 묻지 말고 열린 결정은 열린 채 추천안을 적어 두라고 한다
 - case 마다 채점기
     - `file-output`: 결과 파일이 생겼다 (quick 은 대신 `write-none`: 파일을 만들지 않았다)
@@ -106,7 +105,7 @@ npx tsx --test plugins/product/evals/*.test.ts
     - draft `regex-recommendation-shape`: 추천안을 `@초안 a안 —` 이 아닌 다른 모양으로 쓰면 떨어진다
     - design `regex-decision-has-arrow`: 볼드·이탤릭 D 결정 줄에 `->` 도 `@확정` 도 없으면 떨어진다. 정해진 결정을 다른 모양으로 쓰면 틀리게 잡을 수 있다
     - bdd `regex-korean-keywords`·`regex-no-english-blocks`: `references/bdd.md` 는 영어 문법 규칙과 한국어 키워드 예시(`# language: ko`)를 함께 둔다. 모델이 영어 키워드로 쓰면 둘 다 떨어진다
-    - brief 의 `count:5`(번호 줄 수)와 `count:10`(헤딩 수)은 골든 문서 모양에 묶여 있어서 골든을 고치면 함께 고친다
+    - brief 의 `count:5`(번호 줄 수)와 `count:15`(헤딩 수)는 골든 문서 모양에 묶여 있어서 골든을 고치면 함께 고친다. 헤딩 수는 골든 문서의 헤딩 10개에 brief 가 더하는 헤딩 5개(`# LLM 맥락용`, `## 구현 전에 확인할 것`, `## 정해진 원칙`, `## 지금 동작`, `### 지금 동작: 요구사항 1`)를 더한 값이다
 - 윤문 단계: 프롬프트가 건너뛰라고 한다. 격리된 HOME 에서 `claude plugin list` 가 멈춰 시간 초과로 0점이 나는 것을 막으려는 것이다
 - bdd 내용 검사: `files` 대상은 파일 내용이 아니라 새로 생긴 파일 경로 목록이다. 그래서 프롬프트 끝에서 `.feature` 를 `out/features-all.txt` 한 파일로 모으게 하고 그 파일을 검사한다. 스킬 밖 명령이 하나 더 들어간 것이다
 - `scaffold.sh` 가 `_fixtures/` 를 읽을 수 있는지: scaffold 는 평가 격리 밖에서 사용자 권한으로 돈다고 보았다

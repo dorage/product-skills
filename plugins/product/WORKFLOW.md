@@ -18,8 +18,7 @@ flowchart LR
     quick -. 규모 초과 .-> draft
     draft --> design["/product:design"]
     draft --> flow["/product:flow"]
-    draft --> bdev["/product:brief-dev"]
-    draft --> bnon["/product:brief-nondev"]
+    draft --> brief["/product:brief"]
     draft -. 설계 전 .-> bddp["/product:bdd<br/>scenarios.md"]
     design -- 「완성」 --> task["/product:task"]
     design -- 「완성」 --> bdd["/product:bdd<br/>features/"]
@@ -49,9 +48,8 @@ flowchart LR
 - 정해진 인수 조건을 예시로 맞춰 볼 때: 요구사항 문서가 생긴 뒤 `/product:bdd {requirements.md 경로}`
     - `scenarios.md` 에 시나리오와 「미결 사항」이 생긴다. 규칙은 `skills/bdd/SKILL.md` 「기획 경로」에 있다
     - 결정에 답한 뒤 같은 명령을 다시 부르면 미결 사항이 시나리오로 바뀐다
-- 다른 사람과 기획을 나눌 때: 요구사항 문서가 생긴 뒤 언제든
-    - 개발자에게 → `/product:brief-dev {폴더}`
-    - 운영·영업·디자인·경영 직원에게 → `/product:brief-nondev {폴더}`
+- 다른 사람과 기획을 나눌 때: 요구사항 문서가 생긴 뒤 언제든 `/product:brief {폴더}`
+    - 받은 사람은 `brief.md` 의 `# LLM 맥락용` 제목 앞까지만 읽으면 된다
 - 공유 문서로 만들 때: 설명에 "artifact" 또는 "아티팩트" 를 넣는다. draft·brief 가 로컬 마크다운 대신 공유 문서로 쓴다
 - 이미 있는 요구사항 문서를 참여자별로 다시 검토할 때: `/product:persona-review {폴더}`. 「참여자별 검토 기록」에 없는 참여자만 검토한다
 
