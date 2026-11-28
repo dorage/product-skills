@@ -22,11 +22,25 @@
 
 플러그인을 나눠 두는 이유는 상시 비용이다. 설치된 스킬의 설명은 모든 세션에 항상 들어간다. product 스킬 10개만으로 세션마다 약 3,270 토큰이다(`claude plugin details product@product-skills`). 쓰지 않는 역할의 스킬까지 설치하면 그만큼 모든 세션이 무거워진다.
 
+## 최신으로 올리기
+
+마켓플레이스 목록, 설치한 플러그인(스킬 포함), product CLI(`@dorage/product`)를 명령 하나로 최신으로 올린다. 올린 뒤 새 세션을 열어야 적용된다.
+
+```
+curl -fsSL https://raw.githubusercontent.com/dorage/product-skills/main/scripts/update.ts -o /tmp/product-skills-update.ts && npx -y tsx /tmp/product-skills-update.ts
+```
+
+- 이 리포를 받아 두었으면: `npx tsx scripts/update.ts`
+- 바꾸지 않고 무엇을 올릴지만 보기: 끝에 `--dry-run` 을 붙인다
+- 한 단계가 실패해도 나머지는 진행하고, 실패한 줄을 `✘` 로 보여 준다
+- 윤문 도구(`humanize-korean@im-not-ai`)는 이 리포가 내놓는 것이 아니라서 올리지 않는다
+
 ## 구조
 
 ```
 product-skills/
 ├── .claude-plugin/marketplace.json   ← 플러그인 목록
+├── scripts/update.ts                 ← 플러그인·스킬·CLI 를 한 번에 올리는 스크립트
 ├── principles/                       ← 여러 플러그인이 함께 쓰는 원칙의 원본
 ├── shared/                           ← 여러 플러그인이 함께 쓰는 파일 (필요해지면 만든다)
 └── plugins/
