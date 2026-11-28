@@ -11,6 +11,7 @@
 - `plugins/{플러그인}/principles/` - 그 플러그인의 스킬이 지키는 원칙. 원칙 하나가 파일 하나다 [[skill-principles-in-plugin]]
 - `plugins/{플러그인}/PRINCIPLE.md` - 그 플러그인에 어떤 원칙이 있는지 적은 목록
 - `plugins/shared/` - 여러 플러그인이 함께 쓰는 파일의 원본. 플러그인이 아니다. 처음 필요해질 때 만든다 [[shared-file-by-symlink]]
+- `scripts/update.ts` - 설치한 플러그인(스킬 포함)과 product CLI 를 한 번에 최신으로 올리는 스크립트. 실행 명령은 `README.md` 「최신으로 올리기」에 있다
 - `.claude/settings.json` - 이 리포 안에서 지금 브랜치의 플러그인을 쓰게 하는 설정 [[use-branch-plugins]]
 
 ## 원칙 문서
