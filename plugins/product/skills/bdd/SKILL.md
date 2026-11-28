@@ -74,5 +74,5 @@ This guidance assumes **Cucumber-compatible Gherkin** (the "Queen's Gherkin"). R
 
 - 기획 경로: 입력 폴더의 `scenarios.md` (예: `.product/features/20261102143005_제휴카페-임직원-할인/scenarios.md`)
 - 설계 경로: 입력 폴더의 `features/` 아래. 폴더 안 구조와 파일 이름은 `references/bdd.md` 「Files and organization」을 따른다 (예: `.product/features/20261102143005_제휴카페-임직원-할인/features/order/customer-pays-order.feature`)
-- 나머지는 spec-format 「저장 위치」를 따른다. 두 결과물 모두 윤문을 거치지 않는다 (spec-format 「윤문」)
+- 나머지는 spec-format 「저장 위치」를 따른다. 두 결과물 모두 윤문을 거치지 않는다 (`principles/polish-keeps-content.md` 「대상과 때」)
 - 마스터가 요청하기 전에는 커밋하지 않는다
