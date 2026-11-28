@@ -42,7 +42,7 @@ spec-format 「저장 위치」를 따른다. 파일 이름은 `quick.md` 다.
 
 마스터가 "A1. a" 처럼 답하면 spec-format 「답 반영」대로 같은 `quick.md` 를 고친다. 새 문서를 만들지 않는다. 고친 뒤 spec-format 「윤문」을 다시 거친다.
 
-- 반영하다 규모 확인 조건에 걸리면 `product:draft` 로 넘기기를 권한다. 넘길 때는 `/product:draft {같은 기능 폴더}/requirements.md {quick.md 내용}` 처럼 저장 경로와 `quick.md` 내용을 넘긴다. draft 는 설명 속 `*.md` 문자열을 저장 경로로 읽어서, `quick.md` 경로만 넘기면 그 파일을 덮어쓰기 때문이다. `quick.md` 는 지난 판으로 남는다
+- 반영하다 규모 확인 조건에 걸리면 `product:draft` 로 넘기기를 권한다. 넘길 때는 `/product:draft 저장 경로는 {같은 기능 폴더}/requirements.md 다. {quick.md 경로} 를 토대로` 처럼 저장 경로와 넘겨받을 문서를 함께 적는다. draft 는 같은 기능 폴더에 `requirements.md` 를 쓰고, `quick.md` 는 지난 판으로 남는다
 
 ## 끝맺음
 
