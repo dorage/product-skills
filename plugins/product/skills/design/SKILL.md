@@ -1,6 +1,6 @@
 ---
 name: design
-description: product:draft 가 쓴 요구사항 문서(requirements.md)를 받아, 같은 폴더에 설계 문서(design.md)를 써요. 시스템 아키텍처, 컴포넌트 설계, 시퀀스 다이어그램, 데이터 흐름, 오류 처리, 안전망, 테스트 전략, 요구사항 추적을 담고, 요구사항은 번호로 가리키기만 해요. 요구사항 문서에 열린 결정이 남아 있어도 추천안 기준으로 설계하고 옵션별 차이를 붙여요. 되돌리기 어려운 선택은 볼드 결정, 나머지는 추천안을 적용한 이탤릭 결정으로 둬요. 마스터가 "S1. a" 또는 결정 옆 `->` 에 답하면 같은 문서에 반영해요. 작은 작업의 설계는 `product:quick` 의 「설계」 절이 맡아요. 트리거 - `/product:design {requirements.md 경로}`, "설계 문서 써줘", "design.md 만들어줘"
+description: product:draft 가 쓴 요구사항 문서(requirements.md)를 받아, 같은 폴더에 설계 문서(design.md)를 써요. 시스템 아키텍처, 컴포넌트 설계, 시퀀스 다이어그램, 데이터 흐름, 오류 처리, 안전망, 테스트 전략, 요구사항 추적을 담고, 요구사항은 번호로 가리키기만 해요. 요구사항 문서에 열린 결정이 남아 있어도 추천안 기준으로 설계하고 옵션별 차이를 붙여요. 되돌리기 어려운 선택은 볼드 결정, 나머지는 추천안을 적용한 이탤릭 결정으로 둬요. 마스터가 "S1. a" 또는 결정 옆 `->` 에 답하면 같은 문서에 반영해요. 작은 설계는 `product:quick` 이 쓰는 requirements.md 의 「설계」 절이 맡아요. 트리거 - `/product:design {requirements.md 경로}`, "설계 문서 써줘", "design.md 만들어줘"
 ---
 
 # product:design — 요구사항 다음의 설계 문서
@@ -11,7 +11,7 @@ description: product:draft 가 쓴 요구사항 문서(requirements.md)를 받�
 
 - `product:draft`: 같은 기능의 요구사항 문서(무엇을). 이 스킬의 입력이다
 - `product:brief`: 같은 요구사항 문서를 마커 없이 옮기고 사람이 읽을 내용을 앞에 모은 기획 문서
-- `product:quick`: 요구사항 문서 없이 작은 작업의 스펙과 설계를 채팅 답 하나로 쓴다. 요구사항 문서가 이미 있으면 작아도 이 스킬로 짧은 `design.md` 를 쓴다
+- `product:quick`: 채팅에서 바로 스펙과 설계 절을 `requirements.md` 한 장에 쓴다. 그 문서로 이 스킬을 부르면 「설계」 절을 design.md 로 옮기고, requirements.md 의 그 절은 "design.md 를 본다" 한 줄로 바꾼다. 설계를 두 곳에 두지 않기 위해서다. 요구사항 문서가 이미 있으면 작아도 이 스킬로 짧은 `design.md` 를 쓴다
 - `spec-build`: 이미 있는 PR·브랜치를 검토한다. 이 스킬은 코드가 없을 때 쓴다
 - `product:bdd`: Gherkin 시나리오를 쓴다. 이 스킬의 테스트 전략은 시나리오를 다시 쓰지 않는다
 
@@ -58,7 +58,7 @@ spec-format 「답 반영」대로 같은 설계 문서를 고친다. 새 문서
 ## 끝맺음
 
 - 첫 줄
-    - `references/design.md` 「완성」이면: "완성 — 다음 단계로 넘어갈 수 있습니다." 와 다음 명령 한 줄 (예: `/product:task .product/features/20261102143005_제휴카페-임직원-할인/`)
+    - `references/design.md` 「완성」이면: "완성 — 다음 단계로 넘어갈 수 있습니다." 와 다음 명령 한 줄 (예: `/product:task .product/features/261102_partner-cafe-staff-discount/`)
     - 아니면: 다음에 답할 결정 하나. 요구사항 문서의 열린 결정이 먼저다. 구체 예시와 추천안을 붙인다
 - 둘째 줄: 문서 경로(클릭 가능한 `path`)
 - 무엇을 썼는지·바꿨는지 불릿 5개 이하. 「요구사항 추적」 숫자(예: 18/18)를 포함한다. 문서 내용을 다시 늘어놓지 않는다
