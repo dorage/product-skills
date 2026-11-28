@@ -7,6 +7,8 @@ description: product:draft 의 요구사항 문서(requirements.md)를 받아, p
 
 요구사항 문서를 받아 "어느 화면에 무엇이 끼어들고, 그 값을 무엇으로 정하는가" 를 `flow.md` 로 쓴다. pug-frame 와이어프레임은 그리는 데 시간이 많이 들고, 값의 정의가 어긋나도 다 그린 뒤에야 드러난다. 그 전에 흐름도와 화면 표로 먼저 맞춰 보게 하는 것이 목적이다. 코드와 와이어프레임 파일은 바꾸지 않는다.
 
+`[[이름]]` 은 `${CLAUDE_PLUGIN_ROOT}/principles/{이름}.md` 를 가리킨다. 다른 폴더에서 같은 이름의 파일을 찾지 않는다.
+
 먼저 `${CLAUDE_PLUGIN_ROOT}/references/spec-format.md` 와 `${CLAUDE_PLUGIN_ROOT}/references/flow.md` 를 읽는다. 결정·마커·답 반영은 앞 문서를, 그리는 범위·흐름도·화면 표·완성 조건은 뒤 문서를 따른다. 이 스킬은 "문서를 어떤 순서로 쓰는가" 만 정한다.
 
 - `product:draft`: 요구사항 문서(무엇을). 이 스킬의 입력이다
@@ -58,7 +60,7 @@ description: product:draft 의 요구사항 문서(requirements.md)를 받아, p
 - 「필요한 결정」은 마지막에 채운다
 - 「흐름도 확인」을 한다
 - `(작성 중)` 이 남았는지 검색해 없앤다
-- `${CLAUDE_PLUGIN_ROOT}/principles/polish-keeps-content.md` 를 읽고 그대로 윤문한다. 대상 목록에 `flow.md` 가 있다
+- [[polish-keeps-content]] 를 읽고 그대로 윤문한다. 대상 목록에 `flow.md` 가 있다
 
 ## 흐름도 확인
 

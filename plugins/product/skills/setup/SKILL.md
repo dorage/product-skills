@@ -7,6 +7,8 @@ description: 지금 폴더에 product 를 붙여요. 리포지토리 외부 셋�
 
 지금 폴더에 product 폴더(`.product/`)와 설정 파일(`.product-settings`)을 만든다. 문서를 쓰는 스킬은 이 폴더를 `references/spec-format.md` 「저장 위치」대로 찾는다.
 
+`[[이름]]` 은 `${CLAUDE_PLUGIN_ROOT}/principles/{이름}.md` 를 가리킨다. 다른 폴더에서 같은 이름의 파일을 찾지 않는다.
+
 셋업은 늘 `.product/` 를 만든다. 다른 이름을 쓰려면 셋업 뒤에 폴더 이름을 바꾸고 설정 파일에 `productDirName: {새 이름}` 한 줄을 더한다. `productDirName` 은 설정 파일이 있는 폴더 바로 아래 폴더 이름 하나다. `/` 나 `\` 가 든 경로, `.`, `..` 은 깨진 설정 파일로 본다. 설정 파일이 있으면 그 폴더를 product 루트로 보므로, 이미 셋업했다는 판단과 경로도 `productDirName` 을 따른다.
 
 절은 아래 순서로 탄다. 「CLI 준비」가 멈춰도 「윤문 도구」 결과는 답한다.
@@ -19,7 +21,7 @@ description: 지금 폴더에 product 를 붙여요. 리포지토리 외부 셋�
 
 ## 윤문 도구
 
-`${CLAUDE_PLUGIN_ROOT}/principles/polish-tool.md` 를 읽고 「설치」의 명령을 그대로 실행한다. 어떤 도구인지와 설치 명령은 그 문서에만 있다.
+[[polish-tool]] 를 읽고 「설치」의 명령을 그대로 실행한다. 어떤 도구인지와 설치 명령은 그 문서에만 있다.
 
 ## CLI 준비
 
@@ -148,4 +150,4 @@ fi
 
 ### 윤문 도구 결과
 
-`polish-tool.md` 「설치」가 결과 값(`TOOL_EXISTS`·`TOOL_INSTALLED`·`TOOL_FAILED`)마다 정한 대로 답한다. `TOOL_FAILED` 여도 셋업은 그대로 쓸 수 있고, 윤문만 건너뛴다.
+[[polish-tool]] 「설치」가 결과 값(`TOOL_EXISTS`·`TOOL_INSTALLED`·`TOOL_FAILED`)마다 정한 대로 답한다. `TOOL_FAILED` 여도 셋업은 그대로 쓸 수 있고, 윤문만 건너뛴다.

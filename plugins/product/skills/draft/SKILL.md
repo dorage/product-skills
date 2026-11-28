@@ -7,6 +7,8 @@ description: 다른 문서(회의록·기획서·wiki 등)에서 넘어온 내�
 
 다른 문서(회의록·기획서·wiki 등)에서 넘어온 내용과 설명 한 덩어리를 받아, 마스터가 결정만 내리면 구현에 들어갈 수 있는 기획 초안을 문서로 쓴다. 코드는 바꾸지 않는다.
 
+`[[이름]]` 은 `${CLAUDE_PLUGIN_ROOT}/principles/{이름}.md` 를 가리킨다. 다른 폴더에서 같은 이름의 파일을 찾지 않는다.
+
 먼저 `${CLAUDE_PLUGIN_ROOT}/references/spec-format.md` 와 `${CLAUDE_PLUGIN_ROOT}/references/draft.md` 를 읽는다. 결정·마커·답 반영은 앞 문서를, 절 구성과 요구사항 템플릿은 뒤 문서를 따른다. 이 스킬은 "문서를 어떤 순서로 쓰는가" 만 정한다.
 
 - `product:quick`: 같은 포맷을 채팅 설명 하나로 바로 시작해 `requirements.md` 한 장에 요구사항과 설계 절을 함께 쓴다. 넘겨받은 문서가 없으면 크기와 상관없이 그쪽을 권한다
@@ -52,7 +54,7 @@ spec-format 「저장 위치」를 따른다. 파일 이름은 `requirements.md`
 - 「필요한 결정」은 마지막에 채운다. 다른 절을 쓰면서 드러난 빈 곳이 모여야 쓸 수 있다
 - 다 쓰면 `(작성 중)` 이 남았는지 검색해 없앤다
 - 「참여자별 검토」를 한다
-- `${CLAUDE_PLUGIN_ROOT}/principles/polish-keeps-content.md` 를 읽고 그대로 윤문한다
+- [[polish-keeps-content]] 를 읽고 그대로 윤문한다
 
 ## 참여자별 검토
 

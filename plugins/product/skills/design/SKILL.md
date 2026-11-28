@@ -7,6 +7,8 @@ description: product:draft 가 쓴 요구사항 문서(requirements.md)를 받�
 
 요구사항 문서를 받아 "어떻게 만드는가" 를 설계 문서로 쓴다. 구현자가 코드 위치와 순서를 고르기만 하면 되게 하는 것이 목적이다. 코드는 바꾸지 않는다.
 
+`[[이름]]` 은 `${CLAUDE_PLUGIN_ROOT}/principles/{이름}.md` 를 가리킨다. 다른 폴더에서 같은 이름의 파일을 찾지 않는다.
+
 먼저 `${CLAUDE_PLUGIN_ROOT}/references/spec-format.md` 와 `${CLAUDE_PLUGIN_ROOT}/references/design.md` 를 읽는다. 결정·마커·답 반영은 앞 문서를, 절 구성·결정 표기·완성 조건은 뒤 문서를 따른다. 이 스킬은 "문서를 어떤 순서로 쓰는가" 만 정한다.
 
 - `product:draft`: 같은 기능의 요구사항 문서(무엇을). 이 스킬의 입력이다
@@ -35,7 +37,7 @@ description: product:draft 가 쓴 요구사항 문서(requirements.md)를 받�
 - 「요구사항 추적」을 채우며 빠진 인수 조건을 센다. 빠진 줄이 있으면 그 절로 돌아간다
 - 「필요한 결정」은 마지막에 채운다
 - `(작성 중)` 이 남았는지 검색해 없앤다
-- `${CLAUDE_PLUGIN_ROOT}/principles/polish-keeps-content.md` 를 읽고 그대로 윤문한다
+- [[polish-keeps-content]] 를 읽고 그대로 윤문한다
 
 ## 조사
 

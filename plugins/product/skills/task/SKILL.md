@@ -7,6 +7,8 @@ description: product:draft 의 요구사항 문서(requirements.md)와 product:d
 
 요구사항 문서와 설계 문서를 받아 "어떤 순서로 만드는가" 를 `tasks.md` 로 쓴다. 문서를 연 사람이 무엇을 동시에 돌릴 수 있고 어디까지 왔는지를 그림 하나로 보게 하는 것이 목적이다. 코드는 바꾸지 않는다.
 
+`[[이름]]` 은 `${CLAUDE_PLUGIN_ROOT}/principles/{이름}.md` 를 가리킨다. 다른 폴더에서 같은 이름의 파일을 찾지 않는다.
+
 먼저 `${CLAUDE_PLUGIN_ROOT}/references/spec-format.md` 와 `${CLAUDE_PLUGIN_ROOT}/references/task.md` 를 읽는다. 「한 번만 쓴다」는 앞 문서를, 작업 나누기·문서 구성·진행 규칙은 뒤 문서를 따른다. 이 스킬은 "문서를 어떤 순서로 쓰는가" 만 정한다.
 
 - `product:draft`: 요구사항 문서(무엇을). 이 스킬의 입력이다
@@ -36,7 +38,7 @@ description: product:draft 의 요구사항 문서(requirements.md)와 product:d
 - 입력 폴더의 `tasks.md` (예: `.product/features/261102_partner-cafe-staff-discount/tasks.md`). 나머지는 spec-format 「저장 위치」를 따른다
 - 이미 있는 `tasks.md` 를 고쳐 쓸 때는 이미 `done` 인 작업과 체크박스를 그대로 둔다
 - 마스터가 요청하기 전에는 커밋하지 않는다
-- 다 쓰면 `${CLAUDE_PLUGIN_ROOT}/principles/polish-keeps-content.md` 를 읽고 그대로 윤문한다
+- 다 쓰면 [[polish-keeps-content]] 를 읽고 그대로 윤문한다
 
 ## 조사
 

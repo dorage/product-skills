@@ -11,6 +11,8 @@ metadata:
 This document is a **context contract** for writing, reviewing, and maintaining Gherkin feature files that serve as
 **living documentation** and **specification by example**.
 
+`[[이름]]` 은 `${CLAUDE_PLUGIN_ROOT}/principles/{이름}.md` 를 가리킨다. 다른 폴더에서 같은 이름의 파일을 찾지 않는다.
+
 The goals are:
 - **Readable** by non-automation stakeholders
 - **Deterministic** enough for LLMs to follow
@@ -74,5 +76,5 @@ This guidance assumes **Cucumber-compatible Gherkin** (the "Queen's Gherkin"). R
 
 - 기획 경로: 입력 폴더의 `scenarios.md` (예: `.product/features/261102_partner-cafe-staff-discount/scenarios.md`)
 - 설계 경로: 입력 폴더의 `features/` 아래. 폴더 안 구조와 파일 이름은 `references/bdd.md` 「Files and organization」을 따른다 (예: `.product/features/261102_partner-cafe-staff-discount/features/order/customer-pays-order.feature`)
-- 나머지는 spec-format 「저장 위치」를 따른다. 두 결과물 모두 윤문을 거치지 않는다 (`principles/polish-keeps-content.md` 「대상과 때」)
+- 나머지는 spec-format 「저장 위치」를 따른다. 두 결과물 모두 윤문을 거치지 않는다 ([[polish-keeps-content]] 「대상과 때」)
 - 마스터가 요청하기 전에는 커밋하지 않는다

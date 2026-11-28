@@ -1,6 +1,8 @@
 # 스펙 포맷
 
-문서를 쓰는 모든 단계(`product:draft`·`product:persona-review`·`product:design`·`product:flow`·`product:task`·`product:brief`·`product:quick`·`product:bdd`)가 함께 따르는 공용 포맷이다. 결정·마커·답 반영·저장 위치·문서 머리말의 모양은 이 문서 한 곳에 있다. 윤문은 원칙 문서 `principles/polish-keeps-content.md` 에 있다.
+문서를 쓰는 모든 단계(`product:draft`·`product:persona-review`·`product:design`·`product:flow`·`product:task`·`product:brief`·`product:quick`·`product:bdd`)가 함께 따르는 공용 포맷이다. 결정·마커·답 반영·저장 위치·문서 머리말의 모양은 이 문서 한 곳에 있다. 윤문은 원칙 문서 [[polish-keeps-content]] 에 있다.
+
+`[[이름]]` 은 `${CLAUDE_PLUGIN_ROOT}/principles/{이름}.md` 를 가리킨다. 다른 폴더에서 같은 이름의 파일을 찾지 않는다.
 
 단계마다 결과물 모양(절 구성, 템플릿, 단계 전용 표기, 완성 조건)은 `references/{스킬 이름}.md` 에 있다. brief 스킬은 `references/brief-format.md` 를 쓴다. 단계 문서가 이 문서의 일부를 따르지 않으면, 단계 문서 맨 위에 예외를 적는다.
 
@@ -179,12 +181,12 @@ d=$(find "{productDir}/features" -mindepth 1 -maxdepth 1 -type d ! -name '.*' -e
 - `{작성일자}`: 문서를 처음 쓴 날. `YYYY-MM-DD` 로 쓰고, 고쳐 써도 바꾸지 않는다
 - `{저자}`: 그 문서를 쓰게 한 사람. 마스터가 설명에 이름을 주었으면 그 이름, 아니면 `git config user.name` 의 결과, 결과가 비면 컴퓨터 계정 이름(`whoami`)
 - 윤문 표기는 둘 중 하나다
-    - 거쳤다: `윤문 {도구 이름} {버전}`. 도구 이름과 버전은 `principles/polish-tool.md` 「도구 이름과 버전」에서 읽는다. 예: `2026-11-25 · @kanghyunlee · 윤문 some-tool@market 1.2.3`
+    - 거쳤다: `윤문 {도구 이름} {버전}`. 도구 이름과 버전은 [[polish-tool]] 「도구 이름과 버전」에서 읽는다. 예: `2026-11-25 · @kanghyunlee · 윤문 some-tool@market 1.2.3`
     - 거치지 않았다: `윤문 안 함`. 예: `2026-11-25 · @kanghyunlee · 윤문 안 함`
 - 표기는 지금 문서의 문장이 실제로 거친 결과와 같아야 한다
     - 문서를 새로 쓸 때는 `윤문 안 함` 으로 쓴다
-    - 문장을 고치면(「답 반영」, `product:persona-review` 의 보강) `윤문 안 함` 으로 되돌린다. 고친 문장은 아직 다듬지 않은 문장이기 때문이다. 윤문에 들어서면 가장 먼저 이 일을 한다 (`principles/polish-keeps-content.md` 「순서」)
-    - 도구 표기로 바꾸는 자리는 한 곳뿐이다. `principles/polish-keeps-content.md` 「덮어쓰기 전 검사」가 `SAME` 이어서 윤문본으로 덮어쓴 뒤다. 윤문을 건너뛰었거나 `DIFF` 로 원본을 유지했으면 `윤문 안 함` 그대로 둔다
+    - 문장을 고치면(「답 반영」, `product:persona-review` 의 보강) `윤문 안 함` 으로 되돌린다. 고친 문장은 아직 다듬지 않은 문장이기 때문이다. 윤문에 들어서면 가장 먼저 이 일을 한다 ([[polish-keeps-content]] 「순서」)
+    - 도구 표기로 바꾸는 자리는 한 곳뿐이다. [[polish-keeps-content]] 「덮어쓰기 전 검사」가 `SAME` 이어서 윤문본으로 덮어쓴 뒤다. 윤문을 건너뛰었거나 `DIFF` 로 원본을 유지했으면 `윤문 안 함` 그대로 둔다
     - 여러 번 거쳤으면 마지막으로 거친 도구와 버전을 적는다
 - 표기는 아래 명령으로 바꾼다. `{표기}` 자리에 `안 함` 또는 `{도구 이름} {버전}` 을 넣는다
 
@@ -195,6 +197,6 @@ perl -pi -e 'BEGIN { $m = shift } if (!$d && /^\d{4}-\d{2}-\d{2} · @/) { s/^(.*
 - 이 명령은 문서에서 처음 나오는 머리말 줄 하나만 고친다. 날짜와 저자는 그대로 두고 그 뒤를 표기로 바꾼다
     - 윤문 표기가 없는 옛 문서의 `{날짜} · @{저자}` 줄에는 표기가 붙는다
     - 머리말 줄이 아예 없는 옛 문서는 아무것도 바뀌지 않는다. 줄을 새로 만들지 않는다. 작성일자와 저자를 지어내게 되기 때문이다
-- 두는 문서: `principles/polish-keeps-content.md` 「대상과 때」의 대상 문서
+- 두는 문서: [[polish-keeps-content]] 「대상과 때」의 대상 문서
 - `brief.md`: 원본 `requirements.md` 의 머리말 줄을 그대로 옮긴다. brief 의 문장은 원본의 문장이라 원본의 표기가 그대로 맞다
 - 두지 않는 것: `features/*.feature`·`scenarios.md`, `kickstart.md`, 공유 문서 경로로 쓴 문서. 윤문을 거칠 일이 없는 결과물이고, 저마다 맨 위 모양(Gherkin 머리, 읽을 문서 목록, 공유 문서 도구의 날짜·작성자 줄)이 따로 있다
