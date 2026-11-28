@@ -19,6 +19,7 @@
 - `pdfinfo`, `pdftotext` (poppler): 검사 스크립트가 쪽 수, 쪽 크기, 넣지 않을 말을 센다
 - `npx tsx` 또는 Node 24 이상: 검사·자료 모으기 스크립트를 돌린다
 - `git`, `gh` (GitHub CLI): progress 가 커밋과 PR 본문을 읽는다
+- `humanize-korean@im-not-ai` 플러그인: 뼈대 문장을 윤문한다. 없으면 윤문을 건너뛴다 (`/plugin marketplace add epoko77-ai/im-not-ai`, `/plugin install humanize-korean@im-not-ai`)
 
 ## 고친 뒤 반영하기
 

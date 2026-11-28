@@ -27,6 +27,7 @@
 ```
 product-skills/
 ├── .claude-plugin/marketplace.json   ← 플러그인 목록
+├── principles/                       ← 여러 플러그인이 함께 쓰는 원칙의 원본
 ├── shared/                           ← 여러 플러그인이 함께 쓰는 파일 (필요해지면 만든다)
 └── plugins/
     └── {플러그인}/

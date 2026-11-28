@@ -272,12 +272,12 @@ test("윤문 도구 표기의 @ 가 마커 규칙에 걸리지 않는다", () =>
   assert.ok(check(graderSet("task").find((g) => g.name === "regex-no-decision-markers")!, line));
 });
 
-test("spec-format 의 표기 바꾸는 명령과 덮어쓰기 전 검사가 머리말 줄과 부딪히지 않는다", () => {
+test("표기 바꾸는 명령(spec-format)과 덮어쓰기 전 검사(polish-keeps-content)가 머리말 줄과 부딪히지 않는다", () => {
   const spec = readFileSync(join(pluginDir, "references", "spec-format.md"), "utf8");
   const perl = /^perl -pi -e '(.+)' "\{표기\}" \{파일\}$/m.exec(spec);
   assert.ok(perl, "spec-format 에 표기 바꾸는 명령이 없습니다");
-  const keep = /^keep\(\) \{\n[\s\S]*?\n\}$/m.exec(spec);
-  assert.ok(keep, "spec-format 에 keep() 이 없습니다");
+  const keep = /^keep\(\) \{\n[\s\S]*?\n\}$/m.exec(readFileSync(join(pluginDir, "principles", "polish-keeps-content.md"), "utf8"));
+  assert.ok(keep, "polish-keeps-content 에 keep() 이 없습니다");
   const dir = mkdtempSync(join(tmpdir(), "header-"));
   const mark = (file: string, m: string) => execFileSync("perl", ["-pi", "-e", perl[1], m, file]);
   const first = (file: string) => readFileSync(file, "utf8").split("\n")[2];

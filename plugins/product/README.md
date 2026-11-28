@@ -8,18 +8,18 @@
 
 예전 이름은 `sdd` 다(0.10.0 에서 바꿈). `sdd@product-skills` 나 `sdd@dotfiles` 가 설치되어 있으면 `/plugin uninstall` 로 지운 뒤 위 명령으로 설치한다. 0.11.0 부터 문서는 `~/.sdd/` 대신 `/product:setup` 으로 셋업한 product 폴더(`.product/`)에 쌓인다. 예전 `~/.sdd/` 문서는 옮기거나 지우지 않고, 경로를 주면 이어 쓴다.
 
-- `/product:draft` — 구현 전 요구사항 문서(requirements.md)
+- `/product:draft` — 다른 문서(회의록·기획서·wiki)에서 넘어온 내용으로 구현 전 요구사항 문서(requirements.md)
 - `/product:persona-review` — requirements.md 의 참여자마다 에이전트를 띄워 빠진 과정을 찾아 같은 문서에 보강. 참여자가 확정되면 draft 가 부른다
 - `/product:design` — requirements.md 를 받아 설계 문서(design.md)
 - `/product:flow` — requirements.md 를 받아 pug-frame 와이어프레임 전에 확인할 화면흐름 문서(flow.md). 흐름별 mermaid 흐름도와 화면별 변경 표
 - `/product:task` — requirements.md 와 design.md 를 받아 구현 계획 문서(tasks.md)
 - `/product:brief` — requirements.md 에서 마커를 걷어 내고, 사람이 읽을 내용을 앞에, LLM 맥락용을 뒤에 둔 기획 문서(brief.md). 내용은 고치지 않고 자리만 옮긴다
-- `/product:quick` — 작은 작업의 스펙과 설계를 채팅 답 하나로
+- `/product:quick` — 채팅으로 바로 시작하는 작업의 스펙과 설계를 기능 폴더의 requirements.md 하나로
 - `/product:bdd` — requirements.md 경로를 주거나 requirements.md 만 있으면 정해진 인수 조건을 scenarios.md 의 gherkin 코드 블록으로(미결은 「미결 사항」에), 「완성」 design.md 도 있으면 E2E·통합 인수 조건을 Gherkin 시나리오(features/*.feature)
 - `/product:kickstart` — 세 문서와 지금 세션의 맥락을 인수인계 문서(kickstart.md)로 묶고, fable 모델의 새 세션을 백그라운드로 띄워 구현에 착수. 새 세션은 지시와 검수만 하고 코드 수정·커밋은 서브에이전트에 맡긴다
-- `/product:setup` — 리포지토리 외부 셋업(지금 폴더를 product 루트로 삼고 리포를 `repos/` 아래 submodule 로)과 내부 셋업(리포 안 `.product/` 를 커밋) 중 하나로 product 폴더를 만든다. product CLI(`npm i -g @dorage/product`)와 윤문 플러그인(`humanize-korean@im-not-ai`)도 준비한다
+- `/product:setup` — 리포지토리 외부 셋업(지금 폴더를 product 루트로 삼고 리포를 `repos/` 아래 submodule 로)과 내부 셋업(리포 안 `.product/` 를 커밋) 중 하나로 product 폴더를 만든다. product CLI(`npm i -g @dorage/product`)와 윤문 도구(`principles/polish-tool.md`)도 준비한다
 
-문서를 쓰는 여덟 스킬이 함께 따르는 공용 포맷(결정·마커·답 반영·저장 위치·문서 머리말·윤문)은 `references/spec-format.md` 한 곳에 있다. 단계마다 결과물 모양(절 구성·템플릿·완성 조건)은 `references/{스킬 이름}.md` (`draft`·`persona-review`·`design`·`flow`·`task`·`quick`·`bdd`·`kickstart`)에 있고, brief 스킬의 변환 규칙은 `references/brief-format.md` 에 있다. SKILL.md 에는 쓰는 과정만 둔다.
+문서를 쓰는 여덟 스킬이 함께 따르는 공용 포맷(결정·마커·답 반영·저장 위치·문서 머리말)은 `references/spec-format.md` 한 곳에 있다. 스킬이 지키는 원칙은 `principles/` 에 있고 목록은 [PRINCIPLE.md](PRINCIPLE.md) 에 있다. 지금은 윤문 원칙 둘이다. 단계마다 결과물 모양(절 구성·템플릿·완성 조건)은 `references/{스킬 이름}.md` (`draft`·`persona-review`·`design`·`flow`·`task`·`quick`·`bdd`·`kickstart`)에 있고, brief 스킬의 변환 규칙은 `references/brief-format.md` 에 있다. SKILL.md 에는 쓰는 과정만 둔다.
 
 - 어떤 명령을 어떤 순서로 쓰는지: [WORKFLOW.md](WORKFLOW.md)
 - 결과물이 어디에 남고 서로 무엇을 읽는지: [OUTPUT.md](OUTPUT.md)
