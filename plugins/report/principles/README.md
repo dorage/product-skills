@@ -31,6 +31,7 @@ report 플러그인의 글과 자료를 만드는 스킬들이 함께 쓰는 원
 - `label-estimates.md` 추정은 추정이라고 적고 어떻게 구했는지 댄다
 - `progress-not-activity.md` 활동량이 아니라 진척을 보인다
 - `readers-words.md` 읽는 사람의 말로 쓴다
+- `polish-without-mark.md` 문장은 윤문하되 윤문 기록은 자료에 적지 않는다
 
 쪽 모양에 관한 원칙
 
@@ -42,5 +43,5 @@ report 플러그인의 글과 자료를 만드는 스킬들이 함께 쓰는 원
 
 ## 쓰는 스킬
 
-- `report:presentation`: `progress-not-activity.md`, `readers-words.md`, `chart-shows-signal.md` 를 뺀 15개
-- `report:progress`: `written-vs-spoken.md` 를 뺀 17개. `decidable-ask.md` 는 정해 주실 것이 있을 때만
+- `report:presentation`: `progress-not-activity.md`, `readers-words.md`, `chart-shows-signal.md` 를 뺀 16개
+- `report:progress`: `written-vs-spoken.md` 를 뺀 18개. `decidable-ask.md` 는 정해 주실 것이 있을 때만
