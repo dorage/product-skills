@@ -7,6 +7,8 @@ description: product:draft 의 요구사항 문서(requirements.md)를 받아, �
 
 요구사항 문서 하나를 받아, 참여자마다 그 사람 입장에서 기능을 처음부터 끝까지 따라가며 빠진 과정을 찾고 같은 문서를 보강한다. 코드는 바꾸지 않는다.
 
+`[[이름]]` 은 `${CLAUDE_PLUGIN_ROOT}/principles/{이름}.md` 를 가리킨다. 다른 폴더에서 같은 이름의 파일을 찾지 않는다.
+
 먼저 `${CLAUDE_PLUGIN_ROOT}/references/spec-format.md`, `${CLAUDE_PLUGIN_ROOT}/references/draft.md`, `${CLAUDE_PLUGIN_ROOT}/references/persona-review.md` 를 읽는다. 결정·마커·답 반영은 첫 문서를, 요구사항 문서의 모양은 둘째 문서를, 검토 질문·에이전트 프롬프트·반영 규칙·기록 모양은 셋째 문서를 따른다. 이 스킬은 "어떤 순서로 검토하는가" 만 정한다.
 
 - 문서를 쓴 사람이 다시 읽으면 쓴 흐름을 그대로 따라가서, 쓸 때 놓친 곳을 또 놓친다. 그래서 참여자마다 다른 에이전트가 새로 읽는다
@@ -44,7 +46,7 @@ description: product:draft 의 요구사항 문서(requirements.md)를 받아, �
 
 ## 윤문
 
-- 마스터가 직접 불렀으면 고친 뒤 `${CLAUDE_PLUGIN_ROOT}/principles/polish-keeps-content.md` 를 읽고 그대로 윤문한다
+- 마스터가 직접 불렀으면 고친 뒤 [[polish-keeps-content]] 를 읽고 그대로 윤문한다
 - `product:draft` 가 불렀으면 거치지 않는다. draft 가 이 스킬이 끝난 뒤 한 번 거친다
 
 ## 끝맺음

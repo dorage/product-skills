@@ -119,4 +119,4 @@ npx tsx --test plugins/product/evals/*.test.ts
 - `product:setup`: HOME 을 건드리고 플러그인을 설치해서 평가 안에서 돌리지 않는다
 - 스킬이 알맞은 말에 불리는지(트리거) 평가: 프롬프트가 `/product:{스킬}` 로 직접 부른다
 - CI: 실행마다 비용이 들어서 사람이 버전을 올릴 때 직접 돌린다
-- 윤문: 평가에는 product 플러그인만 올라가고 윤문 도구는 없어서 윤문 단계는 건너뛴다 (`principles/polish-keeps-content.md`)
+- 윤문: 평가에는 product 플러그인만 올라가고 윤문 도구는 없어서 윤문 단계는 건너뛴다 ([[polish-keeps-content]])

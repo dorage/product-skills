@@ -21,7 +21,7 @@ product 명령이 남기는 결과물과, 결과물끼리 무엇을 읽는지 �
 
 `/product:quick` 도 새 기능 폴더를 만들고 `requirements.md` 를 쓴다. 「참여자」 같은 해당 없는 절이 빠지고, 맨 뒤에 「설계」 절이 있다. 뒤 단계 명령은 draft 의 문서처럼 이 파일을 읽는다.
 
-features/, scenarios.md, kickstart.md, brief.md 를 뺀 마크다운 결과물은 다 쓴 뒤 윤문을 거친다. 언제 거치고 무엇을 지키는지는 `principles/polish-keeps-content.md` 에, 어떤 도구로 하는지는 `principles/polish-tool.md` 에 있다.
+features/, scenarios.md, kickstart.md, brief.md 를 뺀 마크다운 결과물은 다 쓴 뒤 윤문을 거친다. 언제 거치고 무엇을 지키는지는 [[polish-keeps-content]] 에, 어떤 도구로 하는지는 [[polish-tool]] 에 있다.
 
 윤문 대상 문서와 brief.md 는 제목 바로 아래 한 줄에 작성일자·저자·윤문 여부를 적는다. 윤문을 거쳤으면 윤문 도구의 이름과 버전이 붙는다(예: `2026-11-25 · @kanghyunlee · 윤문 some-tool@market 1.2.3`). 줄 모양은 `references/spec-format.md` 「문서 머리말」 한 곳에 있다.
 
