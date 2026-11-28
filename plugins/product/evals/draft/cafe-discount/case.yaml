@@ -29,6 +29,11 @@ graders:
     max: 0
     arm: both
   - type: regex
+    name: regex-header-line
+    target: {source: file, path: out/requirements.md}
+    pattern: '^# .+\n\n\d{4}-\d{2}-\d{2} · @.+ · 윤문 (안 함|\S+ \d+(\.\d+)+\S*)\n'
+    match: contains
+  - type: regex
     name: regex-ears-has-marker
     target: {source: file, path: out/requirements.md}
     pattern: '^\d+\. (WHEN|IF|WHILE|WHERE|THE)(?!.*@(결정|해석|초안|미정|사실|가정|확정)).*$'
