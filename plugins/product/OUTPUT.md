@@ -16,12 +16,12 @@ product 명령이 남기는 결과물과, 결과물끼리 무엇을 읽는지 �
   kickstart.md             # /product:kickstart 의 인수인계 문서. 커밋하지 않는다
   scenarios.md             # requirements.md 경로로, 또는 design.md 없는 폴더로 /product:bdd
   features/{도메인}/<actor>-<flow>.feature   # design.md 가 있을 때 /product:bdd
-  _humanize/{run_id}/        # 윤문 작업 파일. 01_input.txt 가 윤문 전 원문
+  _humanize/                # {파일 이름}.before 가 윤문 전 원문. 윤문 도구의 작업 파일도 여기 모인다
 ```
 
 `/product:quick` 은 채팅 답이라 파일을 남기지 않는다.
 
-features/, scenarios.md, kickstart.md, brief.md 를 뺀 마크다운 결과물은 다 쓴 뒤 `humanize-korean` 윤문을 거친다. 언제·어떻게 거치는지는 `references/spec-format.md` 「윤문」 한 곳에 있다.
+features/, scenarios.md, kickstart.md, brief.md 를 뺀 마크다운 결과물은 다 쓴 뒤 윤문을 거친다. 언제 거치고 무엇을 지키는지는 `principles/polish-keeps-content.md` 에, 어떤 도구로 하는지는 `principles/polish-tool.md` 에 있다.
 
 ## 의존관계
 

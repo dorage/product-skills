@@ -106,7 +106,7 @@ npx tsx --test plugins/product/evals/*.test.ts
     - design `regex-decision-has-arrow`: 볼드·이탤릭 D 결정 줄에 `->` 도 `@확정` 도 없으면 떨어진다. 정해진 결정을 다른 모양으로 쓰면 틀리게 잡을 수 있다
     - bdd `regex-korean-keywords`·`regex-no-english-blocks`: `references/bdd.md` 는 영어 문법 규칙과 한국어 키워드 예시(`# language: ko`)를 함께 둔다. 모델이 영어 키워드로 쓰면 둘 다 떨어진다
     - brief 의 `count:5`(번호 줄 수)와 `count:15`(헤딩 수)는 골든 문서 모양에 묶여 있어서 골든을 고치면 함께 고친다. 헤딩 수는 골든 문서의 헤딩 10개에 brief 가 더하는 헤딩 5개(`# LLM 맥락용`, `## 구현 전에 확인할 것`, `## 정해진 원칙`, `## 지금 동작`, `### 지금 동작: 요구사항 1`)를 더한 값이다
-- 윤문 단계: 프롬프트가 건너뛰라고 한다. 격리된 HOME 에서 `claude plugin list` 가 멈춰 시간 초과로 0점이 나는 것을 막으려는 것이다
+- 윤문 단계: 프롬프트가 건너뛰라고 한다. 격리된 HOME 에서 윤문 도구의 준비 확인 명령이 멈춰 시간 초과로 0점이 나는 것을 막으려는 것이다
 - bdd 내용 검사: `files` 대상은 파일 내용이 아니라 새로 생긴 파일 경로 목록이다. 그래서 프롬프트 끝에서 `.feature` 를 `out/features-all.txt` 한 파일로 모으게 하고 그 파일을 검사한다. 스킬 밖 명령이 하나 더 들어간 것이다
 - `scaffold.sh` 가 `_fixtures/` 를 읽을 수 있는지: scaffold 는 평가 격리 밖에서 사용자 권한으로 돈다고 보았다
 - aggregate-result.json 모양: `cases[].name`, `cases[].graders[].type`, `cases[].arms.with[].graders[]`, `arms.with[].tracePath`, `partial` 을 읽는다. 모르는 필드는 무시한다. 결과 파일은 `--output-dir` 에 생긴다고 보았다 (`--json <파일>` 옵션은 이 버전에 없다)
@@ -118,4 +118,4 @@ npx tsx --test plugins/product/evals/*.test.ts
 - `product:setup`: HOME 을 건드리고 플러그인을 설치해서 평가 안에서 돌리지 않는다
 - 스킬이 알맞은 말에 불리는지(트리거) 평가: 프롬프트가 `/product:{스킬}` 로 직접 부른다
 - CI: 실행마다 비용이 들어서 사람이 버전을 올릴 때 직접 돌린다
-- humanize-korean 윤문: 평가에는 product 플러그인만 올라가서 윤문 단계는 건너뛴다 (spec-format 「윤문」)
+- 윤문: 평가에는 product 플러그인만 올라가고 윤문 도구는 없어서 윤문 단계는 건너뛴다 (`principles/polish-keeps-content.md`)

@@ -35,7 +35,7 @@ description: product:draft 가 쓴 요구사항 문서(requirements.md)를 받�
 - 「요구사항 추적」을 채우며 빠진 인수 조건을 센다. 빠진 줄이 있으면 그 절로 돌아간다
 - 「필요한 결정」은 마지막에 채운다
 - `(작성 중)` 이 남았는지 검색해 없앤다
-- spec-format 「윤문」을 거친다
+- `${CLAUDE_PLUGIN_ROOT}/principles/polish-keeps-content.md` 를 읽고 그대로 윤문한다
 
 ## 조사
 
@@ -47,7 +47,7 @@ description: product:draft 가 쓴 요구사항 문서(requirements.md)를 받�
 
 ## 답 반영
 
-spec-format 「답 반영」대로 같은 설계 문서를 고친다. 새 문서를 만들지 않는다. 고친 뒤 spec-format 「윤문」을 다시 거친다. 다른 점만 적는다.
+spec-format 「답 반영」대로 같은 설계 문서를 고친다. 새 문서를 만들지 않는다. 고친 뒤 같은 원칙 문서대로 다시 윤문한다. 다른 점만 적는다.
 
 - 답은 두 군데서 온다: 채팅의 "S1. a", 문서의 결정 제목 `->` 옆. 둘 다 읽는다
 - `->` 옆 답이 "추천안" 이면 추천안을 `@확정` 으로 옮긴다

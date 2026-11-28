@@ -44,7 +44,7 @@ description: product:draft 의 요구사항 문서(requirements.md)를 받아, �
 
 ## 윤문
 
-- 마스터가 직접 불렀으면 고친 뒤 spec-format 「윤문」을 거친다
+- 마스터가 직접 불렀으면 고친 뒤 `${CLAUDE_PLUGIN_ROOT}/principles/polish-keeps-content.md` 를 읽고 그대로 윤문한다
 - `product:draft` 가 불렀으면 거치지 않는다. draft 가 이 스킬이 끝난 뒤 한 번 거친다
 
 ## 끝맺음
